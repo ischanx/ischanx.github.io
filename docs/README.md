@@ -1,149 +1,27 @@
 ---
 home: true
-heroImage: '/vuepress/topic.png'
-faceImage: '/vuepress/head.png'
-heroImageStyle: {
-  maxWidth: '800px',
-  width: '100%',
-  height: '15%',,
-  display: block,
-  margin: '24% auto -18% auto',
-  //border: '1px dashed #000',
-  box-shadow: '8px 8px 20px #022',
-  borderRadius: '1rem',
-  background: 'rgba(0, 0, 0, 0.8) none repeat scroll !important',
+bgImage: '/banner.jpg'
+bgImageStyle: {
+  height: '450px'
 }
+# faceImage: '/head.png'
+# heroImage: /hero_write.png
+# heroImageStyle: {
+#   maxHeight: '200px',
+#   display: block,
+#   margin: '6rem auto 1.5rem',
+#   borderRadius: '50%',
+#   boxShadow: '0 5px 18px rgba(0,0,0,0.2)'
+# }
 isShowTitleInHome: true
-actionText: '开启进阶之路'
-actionLink: /views/
+actionText: About Me
+actionLink: /views/personalInfo/
 features:
-- title: 
-  details: 把所有的不快给昨天
-- title: 
-  details: 把所有的努力给今天
-- title: 
-  details: 把所有的希望给明天
-footer: MIT Licensed | Copyright © 2018-present Evan You
+- title: Who am I？
+  details: A programmer? A human being? Or a matter combination?
+- title: Where am I？
+  details: In a city? On earth? Or in a small part of space?
+- title: What am I gona do？
+  details: Work? Struggle? Or go to a destination I don't know?
+# footer: 'reco_luan'
 ---
-
-<Clock/>
-
-::: tip 昨天今天明天
-
-问一问，人的一生能有几天 <br/>
-算一算，人的一生不过三天 <br/>
-
-跑过去的是昨天 <br/>
-奔过来的是明天 <br/>
-正在走的是今天 <br/>
-
-不要忘记昨天 <br/>
-认真计划明天 <br/>
-好好把握今天 <br/>
-
-但愿到了明天 <br/>
-今天已成昨天 <br/>
-而你依然在我身边 <br/>
-
-春梦无痕，秋夜缠绵 <br/>
-如歌岁月，似水流年 <br/>
-
-但愿到了明天 <br/>
-今天已成昨天 <br/>
-而我依然在你心间  
-
-:::
-
-<!-- <CanvasNest color='0,23,255' zIndex='-2'></CanvasNest> -->
-
-<script>
-  
-</script>
-
-<style>
-.home .content__default:not(.custom) {
-  max-width: 100% !important;
-  margin: 0  !important;
-  padding: 0 !important;
-}
-.home .hero h1 {
-    display: none;
-}
-.home img {
-   transform: scale(0.8,0.8) !important;
-   transition: all 1s!important;
-}
-.home img:hover {
-   transform: scale(1)!important;
-   transition:all 2s !important;
-}
-/* 阻止描述冒泡 */
-.home .hero .description{
-    pointer-events: none;
-    cursor: default;
-    opacity: 0.6;
-}
-.home .feature p {
-    color: #476582 !important;
-}
-.home .hero .description {
-    color: #476582 !important;
-}
-.wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 200px;
-    min-height: 10vh;
-    background: transparent none repeat scroll!important;
-    position: fixed;
-    top: -120%;
-    left: -1%;
-}
-
-@media screen and (max-width: 768px){
-  .clock {
-    margin-top: -35%
-  }
-}
-
-@media screen and (max-width: 700px){
-  .wrap {
-    top:-107%;
-    transform: scale(0.68,0.58);
-  }
-  .home img {    
-    margin: 24% auto -6% auto !important;
-  }
-  .home .feature {
-    width: 100%;
-    text-align: center;
-    color: rgb(71, 101, 130) !important;
-    padding: 5px !important;
-    margin: -12px;
-    margin-left: 0px;
-  }
-  .clock {
-    margin-top: 0%;
-    background: rgba(0, 0, 0, 0) none repeat scroll !important;
-    background-image: url() !important;
-  }
-}
-.clock {
-  transition: all 2s;
-}
-.wrap {
-  transition: all 2s;
-}
-.clock:hover {
-  transform: scale(0.55) !important;
-  transition: all 2s;
-}
-.wrap:hover {
-  transform: scale(1.15) !important;
-  transition: all 2s;
-}
-
-</style>
-
