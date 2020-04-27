@@ -1,0 +1,211 @@
+/*
+// valine
+#valine:last-child
+  position relative
+  margin-top: 90px
+  &:last-child::before
+    position: absolute
+    top: -95px
+    left 0
+    display: block
+    content 'NOTE: 评论暂时关闭，如有疑问或 bug，请点击右上角 GitHub 按钮提交 issue。'
+    color: #3eaf7c
+    font-size: 18px
+    line-height: 30px
+  .vwrap
+    display: none
+*/
+
+.content__default:not(.custom) {
+  padding-top: initial !important;
+}
+
+// 侧边栏样式
+.sidebar > .sidebar-links > li > a.sidebar-link {
+  font-size: 1.4em !important;
+  margin-left: 0.5em;
+}
+a.sidebar-link {
+  font-size: 16px !important;
+}
+a.sidebar-link.active {
+    color: #42b983 !important;
+    font-size: 16px !important;
+    background: #c3d4b742 !important;
+}
+.sidebar-sub-headers a.sidebar-link {
+    margin: 0 1rem 0 1rem !important;
+}
+
+blockquote {
+	background-color: transparent !important;
+    margin: 20px !important;
+    padding: 0 !important;
+    font-size: 1rem !important;
+    color: #999 !important;
+    border-left: .25rem solid #dfe2e5 !important;
+    margin-left: 0 !important;
+    padding-left: 1rem !important;
+}
+
+// tip,warning,danger容器样式
+.custom-block.tip {
+    background-color: #d4d4d452 !important;
+}
+.custom-block.warning {
+    background-color: #ffa16d47 !important;
+}
+.custom-block.danger {
+    background-color: #f9b4b457 !important;
+}
+// details容器样式
+ summary {
+    font-weight: 550;
+    font-size: 16px;
+    margin-top: 0.2rem;
+    padding-top: 11px;
+    padding-bottom: 11px;
+    background-color: #75826b42;
+    border-radius: 5px;
+}
+
+// 时间线样式
+.timeline-wrapper .year-wrapper li {
+    padding: 10px 20px 10px !important;
+    border-bottom: 2px solid #999da06b !important;
+    background: #c1c1e626;
+    border-radius: 5rem;
+    margin: 5px 0px;
+    transition: all .5s;
+}
+.timeline-wrapper .year-wrapper li:hover {
+    transform:  translate(50px,0);
+    transition: all .5s;
+}
+.timeline-wrapper .year-wrapper li .date:before {
+    top: 22px !important;
+    border: 1px solid !important;
+}
+.timeline-wrapper:after {
+    background: skyblue !important;
+}
+.timeline-wrapper .desc:before, .timeline-wrapper .year:before {
+  background: cadetblue !important;
+}
+
+//主页，评论偏左
+.page, .password-wrapper-in {
+    margin-left: 8rem !important;
+}
+.comments-wrapper {
+    padding: 2rem 2rem 2rem 10rem !important;
+}
+#valine .vwrap .vedit #veditor{
+  background: url('/znote/img/other/comment.png')  
+  background-position: 90% 60%
+  background-size: 16rem 10rem
+  background-repeat: no-repeat
+}
+
+$mobileSidebarWidth = $sidebarWidth * 0.82
+
+// narrow desktop / iPad
+@media (max-width: $MQNarrow)
+  .sidebar
+    font-size 15px
+    width $mobileSidebarWidth !important;
+  .page, .password-wrapper-in
+    margin-left $mobileSidebarWidth !important;
+  .comments-wrapper 
+    padding: 2rem 2rem 2rem $mobileSidebarWidth*1.1 !important;
+
+// wide mobile
+@media (max-width: $MQMobile)
+  .sidebar
+    top 0
+    padding-top $navbarHeight !important;
+    transform translateX(-100%)
+    transition transform .2s ease
+  .page, .password-wrapper-in
+    margin-left 0  !important;
+  .comments-wrapper 
+    padding: 2rem 2rem 2rem 2rem !important;
+  .theme-container
+    &.sidebar-open
+      .sidebar
+        transform translateX(0) !important;
+    &.no-navbar
+      .sidebar
+        padding-top: 0 !important;
+  .password-shadow
+    padding-left 0 !important;
+
+// narrow mobile
+@media (max-width: $MQMobileNarrow)
+  h1
+    font-size 1.9rem
+  .content__default
+    div[class*="language-"]
+      margin 0.85rem -1.5rem  !important;
+      border-radius 0
+//about me
+@media (min-width: ($MQMobile + 1px))
+  .theme-container.no-sidebar
+    .sidebar
+      display none
+    .page, .password-wrapper-in
+      margin-left 0  !important;
+    .comments-wrapper 
+      padding: 2rem 2rem 2rem 2rem !important;
+
+//标签列表样式
+.abstract-item {
+  background-color: #acdcfd3d !important;  
+  transition: all .5s;
+}
+.abstract-item:hover {
+    transform:  scale(1.02);
+    transition: all .5s;
+}
+
+//滚动条样式
+::-webkit-scrollbar
+  width: 13px !important;
+  height: 5px;
+/*滚动条的设置*/
+::-webkit-scrollbar-thumb {
+	background-color:#ccc !important; 
+	background-clip:padding-box !important; 
+	-webkit-border-radius: 0em !important; 
+	-moz-border-radius: 0em !important; 
+	border-radius: 0em !important; 
+}
+/*滚动条凹槽的颜色，还可以设置边框属性 */
+::-webkit-scrollbar-track-piece {
+	background-color:#f1f1f194 !important; 
+	-webkit-border-radius: 0em !important; 
+	-moz-border-radius: 0em !important; 
+	border-radius: 0em !important; 
+}
+/*滚动条鼠标移上去*/
+::-webkit-scrollbar-thumb:hover {
+	background-color:#bbb !important; 
+}
+
+//navbar字体大小
+.navbar .links
+  font-size: 15.5px !important;
+
+//容器样式
+.theorem
+  margin 1rem 0
+  padding .1rem 1.5rem
+  border-radius 0.4rem
+  background-color #c9daea61
+  .title
+    font-weight bold
+.custom-block
+  &.right
+    color transparentify($textColor, 0.4)
+    font-size 0.9rem
+    text-align right
