@@ -12,7 +12,7 @@ categories:
 ## [Vue][Element Warn][Form]model is required for validate to work!
 
 ### 1. 属性绑定错误(常见)
-确保使用:model，而不是v-model
+确保使用`:model`，而不是`v-model`
 ```html
 <el-form :model="form" ref="form" :rules="rules"
     label-position="left" label-width="120px">
