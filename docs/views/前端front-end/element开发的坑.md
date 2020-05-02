@@ -1,6 +1,7 @@
 ---
 title: "element-ui开发中遇坑记录"
 date: 2020-04-22
+sidebarDepth: 2
 tags:
 - "Element"
 - "Vue"
