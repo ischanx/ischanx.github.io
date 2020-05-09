@@ -8,7 +8,8 @@ module.exports = {
     // dest: 'public',
     head: [
         ['link', { rel: 'icon', href: '/favicon.ico' }],
-        ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }]
+        ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }]，
+        ['script', { type: 'text/javascript', src: '/assets/baidu.js' }],
     ],
     theme: 'reco',
     themeConfig: {
@@ -39,6 +40,11 @@ module.exports = {
         searchMaxSuggestions: 10,
         // 自动形成侧边导航
         // sidebar: 'auto',
+        // 备案
+        record: '粤ICP备20036386号-1',
+        recordLink: 'http://www.beian.miit.gov.cn/',
+        cyberSecurityRecord: '公安部备案文案',
+        cyberSecurityLink: '公安部备案指向链接',
     },
     markdown: {
         lineNumbers: true
