@@ -1,11 +1,26 @@
 module.exports = [
     { text: 'Home', link: '/', icon: 'reco-home' },
     { text: 'TimeLine', link: '/timeline/', icon: 'reco-date' },
-    { text: 'Daily', link: '/练习/', icon: 'reco-menu' },
+    { text: 'Daily', link: '/练习/' },
     {
 
-        text: 'Common sites🎈',
+        text: 'Sites🎈',
         items: [{
+            text: '洛谷',
+            link: 'https://www.luogu.com.cn/',
+        }, {
+            text: 'Virtual Judge',
+            link: 'https://vjudge.net/',
+        }, {
+            text: 'LeetCode',
+            link: 'https://leetcode-cn.com/',
+        }, {
+            text: 'Vue.js',
+            link: 'https://cn.vuejs.org/v2/guide/',
+        }, {
+            text: 'BootCDN',
+            link: 'https://www.bootcdn.cn/',
+        },{
             text: 'Java SE API Documentation',
             link: 'https://docs.oracle.com/javase/8/docs/api/index.html',
         }, {
@@ -17,15 +32,6 @@ module.exports = [
         }, {
             text: 'Stackoverflow',
             link: 'https://stackoverflow.com/',
-        }, {
-            text: 'LeetCode',
-            link: 'https://leetcode-cn.com/',
-        }, {
-            text: 'Vue.js',
-            link: 'https://cn.vuejs.org/v2/guide/',
-        }, {
-            text: 'BootCDN',
-            link: 'https://www.bootcdn.cn/',
         }, {
             text: 'Linux命令大全',
             link: 'https://www.linuxcool.com/',

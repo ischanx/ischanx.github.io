@@ -15,4 +15,7 @@ module.exports = {
     'sitemap': {
         hostname: 'https://www.chanx.tech'
     },
+    '@vuepress/medium-zoom':{
+        
+    }
 }
