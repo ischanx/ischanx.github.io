@@ -43,8 +43,8 @@ module.exports = {
         // 备案
         record: '粤ICP备20036386号-1',
         recordLink: 'http://www.beian.miit.gov.cn/',
-        cyberSecurityRecord: '公安部备案文案',
-        cyberSecurityLink: '公安部备案指向链接',
+        cyberSecurityRecord: '粤公网安备 44060602001609号',
+        cyberSecurityLink: 'http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44060602001609',
     },
     markdown: {
         lineNumbers: true

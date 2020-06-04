@@ -24,6 +24,7 @@
 		"whatwg-fetch": "3.0.0"
 	},
 	"devDependencies": {
-		"vuepress-plugin-auto-sidebar": "^1.4.1"
+		"vuepress-plugin-auto-sidebar": "^1.4.1",
+		"vuepress-plugin-baidu-autopush": "^1.0.1"
 	}
 }
