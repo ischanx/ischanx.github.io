@@ -29,3 +29,14 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BRANCH: master
           FOLDER: docs/.vuepress/dist
+      
+      # 部署到个人阿里云服务器
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@2.0.0
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          LOCAL_DIR: docs/.vuepress/dist
+          REMOTE_DIR: /
+          ARGS: --delete --transfer-all --exclude=logreport --verbose
