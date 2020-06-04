@@ -30,7 +30,7 @@ jobs:
           BRANCH: master
           FOLDER: docs/.vuepress/dist
       
-      # 部署到个人服务器上
+      # 部署到个人服务器
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@2.0.0
         env:
