@@ -4,7 +4,6 @@ date: 2020-05-02
 sidebarDepth: 2
 tags:
 - "Javascript"
-- "笔记"
 categories:
 - "前端front-end"
 - "笔记"
