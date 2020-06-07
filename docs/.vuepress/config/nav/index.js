@@ -1,10 +1,11 @@
 module.exports = [
     { text: '主页', link: '/', icon: 'reco-home' },
     { text: '时间轴', link: '/timeline/', icon: 'reco-date' },
-    { text: '每日打卡', link: '/练习/' },
+    { text: '每日AC', link: '/练习/每日oj' ,icon:'reco-api'},
     {
 
         text: '快速访问🎈',
+        icon: 'reco-menu',
         items: [{
             text: '洛谷',
             link: 'https://www.luogu.com.cn/',
