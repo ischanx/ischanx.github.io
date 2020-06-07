@@ -6,8 +6,7 @@ module.exports = Object.assign({}, themeReco, {
     nav,
     sidebar: {
         '/practices/': [
-            '200428',
-            'c-aaa'
+            '每日oj',
         ]
     },
     // logo: '/head.png',

@@ -1,10 +1,10 @@
 module.exports = [
-    { text: 'Home', link: '/', icon: 'reco-home' },
-    { text: 'TimeLine', link: '/timeline/', icon: 'reco-date' },
-    { text: 'Daily', link: '/练习/' },
+    { text: '主页', link: '/', icon: 'reco-home' },
+    { text: '时间轴', link: '/timeline/', icon: 'reco-date' },
+    { text: '每日打卡', link: '/练习/' },
     {
 
-        text: 'Sites🎈',
+        text: '快速访问🎈',
         items: [{
             text: '洛谷',
             link: 'https://www.luogu.com.cn/',

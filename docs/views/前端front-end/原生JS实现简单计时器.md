@@ -17,6 +17,7 @@ categories:
 ---
 
 在线预览: **[点我查看demo](http://demo.chanx.tech/timer.html)**
+<!-- more -->
 
 ## 做什么
 用原生的js实现一个简单计时器。比如说记录编辑框他输入内容所用的时间。
