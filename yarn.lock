@@ -8109,6 +8109,16 @@ vuepress-html-webpack-plugin@^3.2.0:
     toposort "^1.0.0"
     util.promisify "1.0.0"
 
+vuepress-plugin-auto-sidebar@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/vuepress-plugin-auto-sidebar/-/vuepress-plugin-auto-sidebar-1.4.1.tgz#c8586447affb2faa4155a9828916bb9bd594f188"
+  integrity sha512-sJHMkd8ASvKnSp0dBeceQDirpW+56oWZNZgaip/yyvhpz3txjj2F5ECx7VuGwy0L/pahpIyyKwOsXY7POuMcfw==
+
+vuepress-plugin-baidu-autopush@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/vuepress-plugin-baidu-autopush/-/vuepress-plugin-baidu-autopush-1.0.1.tgz#e5042170f05a585c4a38f876e01ff4706cd82fbe"
+  integrity sha512-KVQkrmMgPY+GG8dtI2wcRxUv1n2h5DM8aFs75ltsSlFBSS9C/vfLb2LmywXAsoCXk2EHya2p66cpn7BxofK+Mw==
+
 vuepress-plugin-boxx@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/vuepress-plugin-boxx/-/vuepress-plugin-boxx-0.0.7.tgz#8337d27eaf5b3f609eb7befdb3681ce5f0eac17c"
@@ -8356,9 +8366,9 @@ websocket-driver@>=0.5.1:
     websocket-extensions ">=0.1.1"
 
 websocket-extensions@>=0.1.1:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
-  integrity sha512-nqHUnMXmBzT0w570r2JpJxfiSD1IzoI+HGVdd3aZ0yNi3ngvQ4jv1dtHt5VGxfI2yj5yqImPhOK4vmIh2xMbGg==
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
+  integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
 whatwg-fetch@3.0.0:
   version "3.0.0"
