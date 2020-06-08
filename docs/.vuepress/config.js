@@ -4,7 +4,7 @@ const sidebarConf = require('./config/sidebar/index')
 const pluginsConf = require('./config/plugins/index')
 module.exports = {
     title: "CHANX's Blog",
-    description: 'More ideas,more tries.',
+    description: '理想很丰满的小陈同学',
     // dest: 'public',
     head: [
         ['link', { rel: 'icon', href: '/favicon.ico' }],
@@ -24,6 +24,10 @@ module.exports = {
                 location: 3, // 在导航栏菜单中所占的位置，默认3
                 text: '标签' // 默认 “标签”
             }
+        },
+        valineConfig: {
+            appId: 'WDOa3anONgcA8zAgpDghKeSv-9Nh9j0Va',// your appId
+            appKey: 'emlMPDhG39GxfHfM4q9RvOMA', // your appKey
         },
         authorAvatar: '/avatar.png',
         // 最后更新时间
@@ -45,6 +49,20 @@ module.exports = {
         recordLink: 'http://www.beian.miit.gov.cn/',
         cyberSecurityRecord: '粤公网安备 44060602001609号',
         cyberSecurityLink: 'http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44060602001609',
+        friendLink: [
+            {
+                title: '午后南杂',
+                desc: 'Enjoy when you can, and endure when you must.',
+                email: '1156743527@qq.com',
+                link: 'https://www.recoluan.com'
+            },
+            {
+                title: 'vuepress-theme-reco',
+                desc: 'A simple and beautiful vuepress Blog & Doc theme.',
+                avatar: "https://vuepress-theme-reco.recoluan.com/icon_vuepress_reco.png",
+                link: 'https://vuepress-theme-reco.recoluan.com'
+            },
+        ]
     },
     markdown: {
         lineNumbers: true

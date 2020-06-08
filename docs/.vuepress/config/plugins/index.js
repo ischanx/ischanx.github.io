@@ -22,5 +22,12 @@ module.exports = {
         options: {
             margin: 16
         }
+    },
+    "dynamic-title":{
+        showIcon: "/favicon.ico",
+        showText: "(/≧▽≦/)欢迎回来！",
+        hideIcon: "/favicon.ico",
+        hideText: "(●—●)哦吼,不要走！",
+        recoverTime: 2000
     }
 }
