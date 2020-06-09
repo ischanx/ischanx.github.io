@@ -53,20 +53,32 @@ categories:
     value={this.state.value}
     onChange={this.onChange.bind(this)}
     onActionClick={this.onActionClick.bind(this)}
-    />
+/>
 ```
 
 套上了组件你以为可以了？不不不不
 
-安卓已经完全没有问题，ios的话你会发现**不能正常搜索和软键盘右下角不是搜索**
+```html
+<Atform onSubmit={this.onActionClick.bind(this)}>
+    <AtSearchBar
+        value={this.state.value}
+        onChange={this.onChange.bind(this)}
+        onActionClick={this.onActionClick.bind(this)}
+    />
+</Atform>
+```
+这样子软键盘上的搜索按钮就能起作用了
+
+那ios软键盘还有一个完成按钮怎么触发呢？
 
 ```html
-<AtSearchBar
-    value={this.state.value}
-    onChange={this.onChange.bind(this)}
-    onActionClick={this.onActionClick.bind(this)}
-    onBlur={this.onActionClick.bind(this)}
+<Atform onSubmit={this.onActionClick.bind(this)}>
+    <AtSearchBar
+        value={this.state.value}
+        onChange={this.onChange.bind(this)}
+        onActionClick={this.onActionClick.bind(this)}
+        onBlur={this.onActionClick.bind(this)}
     />
+</Atform>
 ```
-
-没错...采用失去焦点即搜索的办法能兼容ios搜索问题   但是软键盘的就不清楚怎么兼容ios了
+采用失去焦点即搜索的办法即可

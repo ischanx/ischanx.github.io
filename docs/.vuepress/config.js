@@ -31,7 +31,6 @@ module.exports = {
             recordIP:true,
             placeholder:'小陈同学需要你的评论...',
             visitor:true,
-
         },
         authorAvatar: '/avatar.png',
         // 最后更新时间
