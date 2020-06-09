@@ -14,6 +14,7 @@ module.exports = {
     theme: 'reco',
     themeConfig: {
         type: 'blog',
+        smoothScroll: true,
         // 博客设置
         blogConfig: {
             category: {
