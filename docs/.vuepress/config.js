@@ -36,10 +36,17 @@ module.exports = {
         authorAvatar: '/avatar.png',
         // 最后更新时间
         lastUpdated: '上次更新时间', // string | boolean
+        repo: 'Mr-CHANX/mr-chanx.github.io',
+        // 如果你的文档不在仓库的根部
+        docsDir: 'docs',
+        // 可选，默认为 master
+        docsBranch: 'source',
+        editLinks: true,
+        editLinkText: '在 GitHub 上编辑此页！',
         // 作者
         author: 'CHANX',
         // 项目开始时间
-        startYear: '2020',
+        startYear: '2019',
         nav: navConf,
         // sidebar: sidebarConf,
         // logo: '/head.png',

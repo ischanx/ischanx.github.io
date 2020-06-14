@@ -1,5 +1,5 @@
 ---
-title: 'Daily Online Judge'
+title: '每日刷题打卡'
 date: 2020-06-07 22:47:14
 # 永久链接
 # permalink: '/daily-oj'
@@ -11,4 +11,4 @@ date: 2020-06-07 22:47:14
 # sticky: 1
 ---
 
-## 暂无
+## 初定2020-07开工
