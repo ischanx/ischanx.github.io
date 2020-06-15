@@ -40,4 +40,4 @@ jobs:
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           LOCAL_DIR: docs/.vuepress/dist
           REMOTE_DIR: /
-          ARGS: --delete --transfer-all --exclude=logreport --verbose
+          # ARGS: --delete --transfer-all --exclude=logreport --verbose
