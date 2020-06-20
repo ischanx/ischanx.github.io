@@ -3,13 +3,40 @@ const navConf = require('./config/nav/index')
 const sidebarConf = require('./config/sidebar/index')
 const pluginsConf = require('./config/plugins/index')
 module.exports = {
-    title: "CHANX's Blog",
-    description: '理想很丰满的小陈同学',
+    title: "CHANX's Blog | 陈小白の博客",
+    description: '想学后台的菜鸟前端陈小白',
     // dest: 'public',
     head: [
         ['link', { rel: 'icon', href: '/favicon.ico' }],
         ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }],
-        ['script', { type: 'text/javascript', src: '/assets/js/baidu.js' }],
+        ["meta", {name: "robots", content: "all"}],
+        ["meta", {name: "author", content: "CHANX"}],
+        ['meta', { name: 'keywords', content: 'chanx,chanxblog,想学后台的小白前端小陈同学,前端,后台,tech,blog,vuepress-blog' }],
+        // ['script', { type: 'text/javascript', src: '/assets/js/baidu.js' }],
+        ['script', {}, `
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?a949a9b30eb86ac0159e735ff8670c03";
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(hm, s);
+
+                // 引入谷歌,不需要可删除这段
+                var hm1 = document.createElement("script");
+                hm1.src = "https://www.googletagmanager.com/gtag/js?id=UA-169923503-1";
+                var s1 = document.getElementsByTagName("script")[0]; 
+                s1.parentNode.insertBefore(hm1, s1);
+            })();
+
+            // 谷歌加载,不需要可删除
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-169923503-1');
+        `],
+        ['script', {"data-ad-client":"ca-pub-6661696030972028",async:true,src:"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"}, `
+        `],
     ],
     theme: 'reco',
     themeConfig: {
