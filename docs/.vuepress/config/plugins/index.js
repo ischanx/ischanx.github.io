@@ -1,7 +1,13 @@
 module.exports = {
     '@vuepress/medium-zoom': {
-
+        selector: '.theme-reco-content:not(a) img',
+        options:{
+            background:'#fff',
+        }
+        
     },
+    '@vuepress/plugin-active-header-links':{},
+    '@vuepress/plugin-nprogress':{},
     'flowchart': {
 
     },
@@ -14,14 +20,6 @@ module.exports = {
     },
     'sitemap': {
         hostname: 'https://www.chanx.tech'
-    },
-    '@vuepress/medium-zoom': {
-        selector: 'img.zoom-custom-imgs',
-        // medium-zoom options here
-        // See: https://github.com/francoischalifour/medium-zoom#options
-        options: {
-            margin: 16
-        }
     },
     "dynamic-title":{
         showIcon: "/favicon.ico",
