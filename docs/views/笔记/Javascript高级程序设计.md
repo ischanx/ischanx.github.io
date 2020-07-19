@@ -6,7 +6,7 @@ tags:
 - "Javascript"
 categories:
 - "前端front-end"
-- "笔记"
+- "笔记note"
 ---
 阅读《Javascript高级程序设计》红宝书的笔记记录，参杂一些个人的思考和想法。
 <!-- more -->
