@@ -97,25 +97,25 @@ categories:
 
 首先是判断手机类型，默认是安卓，防止意外情况。
 ```javascript
-    var u = navigator.userAgent;
-    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-    var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-    let type;
-    if(!isAndroid && isIOS){
-        type = "ios";
-    }else type = "android";
-    this.setState({phoneType:type});
+var u = navigator.userAgent;
+var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+let type;
+if(!isAndroid && isIOS){
+    type = "ios";
+}else type = "android";
+this.setState({phoneType:type});
 ```
 然后监听输入框的获得焦点事件，触发下列行为
 ```javascript
-    setTimeout(function () {
-        //ios高度特殊处理，-30px是为了页面样式
-        if(_this.state.phoneType == "ios"){
-            document.getElementsByClassName("taro_router")[0].style.minHeight = 'calc(50%-30px)';
-            document.getElementsByClassName("taro_router")[0].style.maxHeight = 'calc(50%-30px)';
-        }
-        //输入框滚动置底，底部与页面底部对齐
-        document.getElementsByClassName("item__footer")[0].scrollIntoViewIfNeeded(false);
-    }, 10);
+setTimeout(function () {
+    //ios高度特殊处理，-30px是为了页面样式
+    if(_this.state.phoneType == "ios"){
+        document.getElementsByClassName("taro_router")[0].style.minHeight = 'calc(50%-30px)';
+        document.getElementsByClassName("taro_router")[0].style.maxHeight = 'calc(50%-30px)';
+    }
+    //输入框滚动置底，底部与页面底部对齐
+    document.getElementsByClassName("item__footer")[0].scrollIntoViewIfNeeded(false);
+}, 10);
 ```
 记得失去焦点的时候进行恢复操作即可
