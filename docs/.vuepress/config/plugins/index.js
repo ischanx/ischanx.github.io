@@ -11,10 +11,10 @@ module.exports = {
     'flowchart': {
 
     },
-    "vuepress-plugin-auto-sidebar": {
-        // collapsable: true,
-        // titleMode: "titlecase",
-    },
+    // "vuepress-plugin-auto-sidebar": {
+    //     // collapsable: true,
+    //     // titleMode: "titlecase",
+    // },
     "vuepress-plugin-baidu-autopush":{
 
     },

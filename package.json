@@ -11,7 +11,9 @@
     "@vuepress/plugin-pwa": "1.2.0",
     "@vuepress/plugin-register-components": "1.2.0",
     "axios": "^0.19.0",
+    "chokidar": "^3.4.1",
     "jquery": "^3.5.0",
+    "mkdirp": "^1.0.4",
     "moment": "^2.24.0",
     "vuepress": "^1.4.0",
     "vuepress-plugin-boxx": "0.0.7",
@@ -20,7 +22,7 @@
     "vuepress-plugin-nuggets-style-copy": "^1.0.3",
     "vuepress-plugin-sitemap": "2.3.0",
     "vuepress-plugin-smooth-scroll": "0.0.9",
-    "vuepress-theme-reco": "1.2.2",
+    "vuepress-theme-reco": "1.5.4",
     "whatwg-fetch": "3.0.0"
   },
   "devDependencies": {
