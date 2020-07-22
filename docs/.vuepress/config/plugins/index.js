@@ -27,5 +27,11 @@ module.exports = {
         hideIcon: "/favicon.ico",
         hideText: "(●—●)哦吼,不要走！",
         recoverTime: 2000
+    },
+    "vuepress-plugin-nuggets-style-copy":{
+        copyText: "复制代码",
+        tip: {
+            content: "复制成功!"
+        }
     }
 }
