@@ -23,7 +23,7 @@ categories:
 
 **这里举一个我码博客文章的一个Markdown模板**
 
-![image-20200530162713944](https://www.chanx.tech/images/image-20200530162713944.png)
+![image-20200530162713944](https://chanx-1251137349.file.myqcloud.com/image-20200530162713944.png)
 
 <u>打开配置文件：文件 - 首选项 - 用户片段  - markdown.json</u>
 
@@ -116,7 +116,7 @@ $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:anot
 
 **你还需要打开vscode的配置文件setting.json**
 
-![image-20200530164742943](https://www.chanx.tech/images/image-20200530164742943.png)
+![image-20200530164742943](https://chanx-1251137349.file.myqcloud.com/image-20200530164742943.png)
 
 **添加如下代码**
 
@@ -132,6 +132,6 @@ $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:anot
 
 然后享受模板带来的快乐吧！
 
-![image-20200530164913044](https://www.chanx.tech/images/image-20200530164913044.png)
+![image-20200530164913044](https://chanx-1251137349.file.myqcloud.com/image-20200530164913044.png)
 
-![image-20200530164906681](https://www.chanx.tech/images/image-20200530164906681.png)
+![image-20200530164906681](https://chanx-1251137349.file.myqcloud.com/image-20200530164906681.png)
