@@ -54,8 +54,8 @@ module.exports = {
             }
         },
         valineConfig: {
-            appId: 'WDOa3anONgcA8zAgpDghKeSv-9Nh9j0Va',// your appId
-            appKey: 'emlMPDhG39GxfHfM4q9RvOMA', // your appKey
+            appId: process.env.VALINEID,// your appId
+            appKey: process.env.VALINEKEY, // your appKey
             recordIP:true,
             placeholder:'小陈同学需要你的评论...',
             visitor:true,

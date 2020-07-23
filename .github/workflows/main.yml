@@ -21,6 +21,9 @@ jobs:
 
       # 生成静态文件
       - name: Build
+        env:
+          VALINEID: ${{ secrets.VALINEID }}
+          VALINEKEY: ${{ secrets.VALINEKEY }}
         run: npm install && npm run docs:build
 
       # 部署到 GitHub Pages
