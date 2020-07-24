@@ -331,5 +331,6 @@ Valine 的初始化挂载器。可以是一个`CSS 选择器`，也可以是一�
 
 ---
 
-
+::: tip
 部分文字整理自[Valine官网](https://valine.js.org/)、[Valine-Admin](https://github.com/zhaojun1998/Valine-Admin)及其他相关网页
+:::
