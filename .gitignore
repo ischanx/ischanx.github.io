@@ -4,3 +4,5 @@ docs/.vuepress/dist/
 docs/.vuepress/public/images
 .vscode/
 .temp/
+*.exe
+*.cpp
