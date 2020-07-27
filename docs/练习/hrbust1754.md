@@ -17,12 +17,12 @@ tags:
 - '数据结构与算法'
 ---
 
-## 题目描述-Description
+## **题目描述-Description**
 You are given two vectors v1=(x1,x2,...,xn) and v2=(y1,y2,...,yn). The scalar product of these vectors is a single number, calculated as x1y1+x2y2+...+xnyn.
 
 
 Suppose you are allowed to permute the coordinates of each vector as you wish. Choose two permutations such that the scalar product of your two new vectors is the smallest possible, and output that minimum scalar product.
-### 输入-Input
+### **输入-Input**
 There are multiple test cases.
 
 For each test case, the first line contains integer number n. The next two lines contain n integers each (1<=n<=800), giving the coordinates of v1 and v2 respectively.
@@ -36,19 +36,19 @@ For each test case, the first line contains integer number n. The next two lines
 1 2 3 4 5
 1 0 1 0 1
 ```
-### 输出-Output
+### **输出-Output**
 For each test case, output a line X, where X is the minimum scalar product of all permutations of the two given vectors.
 ```
 -25
 6
 ```
-### 提示-Hint
+### **提示-Hint**
 无
-## 分析思路
+## **分析思路**
 输入整数n，给两行分别有长度n的数字。对每行数字进行排列，使得两行数字的向量积是最小的
 
 思路：每一项都是最小的*最大的
-## 代码实现
+## **代码实现**
 ```cpp
 #include <cstdio>
 #include <cmath>
@@ -84,4 +84,4 @@ int main(){
     return 0;
 }
 ```
-## 错误分析
+## **错误分析**

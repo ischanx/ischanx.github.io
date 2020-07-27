@@ -17,13 +17,13 @@ tags:
 - '数据结构与算法'
 ---
 
-## 题目描述-Description
+## **题目描述-Description**
 You are given an N x N matrix with 0 and 1 values. You can swap any two adjacent rows of the matrix.
 
 Your goal is to have all the 1 values in the matrix below or on the main diagonal. That is, for each X where 1 ≤ X ≤ N, there must be no 1 values in row X that are to the right of column X.
 
 Return the minimum number of row swaps you need to achieve the goal.
-### 输入-Input
+### **输入-Input**
 The first line of input gives the number of cases, T. T test cases follow.
 The first line of each test case has one integer, N. Each of the next N lines contains N characters. Each character is either 0 or 1.
 ```
@@ -41,7 +41,7 @@ The first line of each test case has one integer, N. Each of the next N lines co
 1100
 1000
 ```
-### 输出-Output
+### **输出-Output**
 For each test case, output
 
 Case #X: K
@@ -53,10 +53,10 @@ Case #1: 0
 Case #2: 2
 Case #3: 4
 ```
-### 提示-Hint
+### **提示-Hint**
 1 ≤ T ≤ 60
 1 ≤ N ≤ 8
-## 分析思路
+## **分析思路**
 给N*N的0-1矩阵，每次只能交换其中两行，最少交换多少次能变成”下三角矩阵“（第X行的X列后不能有1
 
 取每一行最后一个1的坐标为元素构成序列，此行无1则元素为0
@@ -66,7 +66,7 @@ Case #3: 4
 题目保证了最后必定能出现合法的矩阵，我们从第一个元素开始，寻找最靠近并且满足此行条件的元素进行交换，这样交换次数就是最少的
 
 
-## 代码实现
+## **代码实现**
 ```cpp
 #include <cstdio>
 #include <cmath>
@@ -120,5 +120,5 @@ int main(){
     return 0;
 }
 ```
-## 错误分析
+## **错误分析**
 每一次都要对序列数组进行初始化
