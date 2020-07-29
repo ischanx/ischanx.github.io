@@ -3,15 +3,15 @@ const navConf = require('./config/nav/index')
 const sidebarConf = require('./config/sidebar/index')
 const pluginsConf = require('./config/plugins/index')
 module.exports = {
-    title: "CHANX's Blog | 陈小白の博客",
-    description: '想学后台的菜鸟前端陈小白',
+    title: "CHANX's Blog",
+    description: '陈小白の博客',
     // dest: 'public',
     head: [
         ['link', { rel: 'icon', href: '/favicon.ico' }],
         ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }],
         ["meta", {name: "robots", content: "all"}],
         ["meta", {name: "author", content: "CHANX"}],
-        ['meta', { name: 'keywords', content: 'chanx,chanxblog,想学后台的小白前端小陈同学,前端,后台,tech,blog,vuepress-blog' }],
+        ['meta', { name: 'keywords', content: 'chanx,chanxblog,陈小白の博客,前端,后台,tech,blog,vuepress-blog' }],
         // ['script', { type: 'text/javascript', src: '/assets/js/baidu.js' }],
         ['script', {}, `
             var _hmt = _hmt || [];
@@ -35,8 +35,10 @@ module.exports = {
 
             gtag('config', 'UA-169923503-1');
         `],
-        ['script', {"data-ad-client":"ca-pub-6661696030972028",async:true,src:"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"}, `
-        `],
+        ['script', {"data-ad-client":"ca-pub-6661696030972028",async:true,src:"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"}, ``],
+        ['script',{src:"/assets/js/jq3.5.1.js"}, ``],
+        ['script',{src:"/assets/js/mouse.js"}, ``],
+        
     ],
     theme: 'reco',
     themeConfig: {
@@ -97,8 +99,14 @@ module.exports = {
             {
                 title: 'vuepress-theme-reco',
                 desc: 'A simple and beautiful vuepress Blog & Doc theme.',
-                avatar: "https://vuepress-theme-reco.recoluan.com/icon_vuepress_reco.png",
+                logo: "https://vuepress-theme-reco.recoluan.com/icon_vuepress_reco.png",
                 link: 'https://vuepress-theme-reco.recoluan.com'
+            },
+            {
+                title: 'YOYLING.',
+                desc: '大道至简 大简至极',
+                logo: "https://yoyling.com/favicon.png",
+                link: 'https://yoyling.com'
             },
         ]
     },
