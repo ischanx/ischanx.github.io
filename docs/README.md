@@ -1,6 +1,6 @@
 ---
 home: true
-bgImage: '/banner.jpg'
+# bgImage: '/banner.jpg'
 bgImageStyle: {
   height: '350px'
 }

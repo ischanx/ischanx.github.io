@@ -20,8 +20,8 @@ module.exports = [
             text: 'Vue.js',
             link: 'https://cn.vuejs.org/v2/guide/',
         }, {
-            text: 'BootCDN',
-            link: 'https://www.bootcdn.cn/',
+            text: 'Can I Use',
+            link: 'https://www.caniuse.com/#home',
         },{
             text: 'Java SE API Documentation',
             link: 'https://docs.oracle.com/javase/8/docs/api/index.html',

@@ -59,7 +59,7 @@ module.exports = {
             appId: process.env.VALINEID,// your appId
             appKey: process.env.VALINEKEY, // your appKey
             recordIP:true,
-            placeholder:'小陈同学需要你的评论...',
+            placeholder:'填写邮箱地址可以及时收到回复噢...',
             visitor:true,
         },
         authorAvatar: '/avatar.png',
