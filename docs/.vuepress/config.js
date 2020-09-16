@@ -108,6 +108,18 @@ module.exports = {
                 logo: "https://yoyling.com/favicon.png",
                 link: 'https://yoyling.com'
             },
+            {
+                title: 'CZM',
+                desc: '菜鸟明De博客',
+                logo: "https://images.cnblogs.com/cnblogs_com/chzhm/1750023/o_200916140121timg.jpg",
+                link: 'https://czmderepository.github.io/'
+            },
+            {
+                title: 'Liang的个人博客',
+                desc: 'Liang的个人博客',
+                logo: "https://liang5757.github.io/img/avatar.jpg",
+                link: 'https://liang5757.github.io/'
+            },
         ]
     },
     markdown: {
