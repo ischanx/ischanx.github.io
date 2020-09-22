@@ -83,7 +83,7 @@ module.exports = {
         search: true,
         searchMaxSuggestions: 10,
         // 自动形成侧边导航
-        // sidebar: 'auto',
+        sidebar: 'auto',
         // 备案
         record: '粤ICP备20036386号-1',
         recordLink: 'http://www.beian.miit.gov.cn/',
