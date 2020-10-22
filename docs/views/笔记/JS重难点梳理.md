@@ -1,3 +1,27 @@
+---
+title: 'JS重难点梳理'
+date: 2020-10-22 20:38:32
+# 永久链接
+# permalink: '/hello-world'
+# 文章访问密码
+# keys: '123'
+# 是否发布文章
+# publish: false
+# 置顶: 降序，可以按照 1, 2, 3, ... 来降低置顶文章的排列优先级
+# sticky: 1
+# sidebar: false
+# sidebarDepth: 2
+# isTimeLine: false
+# isShowComment: true
+tags:
+- 'javascript'
+- ''
+categories:
+- '笔记'
+---
+
+
+
 ## 第6章 面向对象的程序设计
 
 ### 理解对象
