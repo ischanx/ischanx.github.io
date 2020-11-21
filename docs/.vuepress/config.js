@@ -56,8 +56,8 @@ module.exports = {
             }
         },
         valineConfig: {
-            appId: process.env.VALINEID,// your appId
-            appKey: process.env.VALINEKEY, // your appKey
+            appId: 'WDOa3anONgcA8zAgpDghKeSv-9Nh9j0Va',// your appId
+            appKey: 'emlMPDhG39GxfHfM4q9RvOMA', // your appKey
             recordIP:true,
             placeholder:'填写邮箱地址可以及时收到回复噢...',
             visitor:true,
