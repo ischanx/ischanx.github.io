@@ -32,20 +32,42 @@ categories:
 
 **那就用Windows Terminal！Ohhhhhhhhhhhhhhhh**
 
+
+
+## Windows Terminal作为主要命令行工具
+
+首先从微软商店下载好，并确认可以使用
+
 https://www.microsoft.com/zh-cn/p/windows-terminal-preview/9n0dx20hk701?activetab=pivot:overviewtab#
 
-
-
-
+###  右键打开Terminal
 
 你可能还想更方便地打开，如
 
 <img src="https://chanx-1251137349.file.myqcloud.com/image-20201027200001700.png" alt="image-20201027200001700" style="zoom: 50%;" />
 
 - `win + R`打开运行窗口，输入`regedit`
-- 打开`计算机\HKEY_CLASSES_ROOT\Directory\Background\shell`
-- 右键新建项`在此处打开 Terminal`
-- 新建项`command`
-- 修改默认值为`cmd /c set CURRENT_PATH="%V" & start C:\Users\admin\AppData\Local\Microsoft\WindowsApps\wt.exe`
 
-注意`C:\Users\admin\AppData\Local\Microsoft\WindowsApps\wt.exe`要修改为你自己的路径
+- 打开`计算机\HKEY_CLASSES_ROOT\Directory\Background\shell`
+
+- 右键新建项命名为`wt`，修改默认值为你想要的名字如`在此打开 Terminal`
+
+- 如有需要的话可以将这个命令置顶，则添加新字符串值`Position`，值为`Top`
+
+- 新建一个项`command`，默认值`%USERPROFILE%\AppData\Local\Microsoft\WindowsApps\wt.exe`
+
+  注意：如失效，可尝试将%USERPROFILE%改为指定用户目录如`C:\Users\<username>`，并重启，`<username>`记得改成自己的用户名
+
+一般出现`explorer.exe`错误多是没有用管理员权限写入导致的
+
+### 在当前目录打开
+
+添加一行配置`"startingDirectory": null,`
+
+目的是从目录右键打开时终端路径在你当前的目录下
+
+![image-20201031111710347](https://chanx-1251137349.file.myqcloud.com/image-20201031111710347.png)
+
+![image-20201031111732159](https://chanx-1251137349.file.myqcloud.com/image-20201031111732159.png)
+
+其他配置文件可以查看[官方文档](https://aka.ms/terminal-profile-settings)

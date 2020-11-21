@@ -14,10 +14,10 @@ date: 2020-10-22 20:38:32
 # isTimeLine: false
 # isShowComment: true
 tags:
-- 'javascript'
+- 'Javascript'
 - ''
 categories:
-- '笔记'
+- '笔记note'
 ---
 
 
