@@ -4,7 +4,7 @@ const sidebarConf = require('./config/sidebar/index')
 const pluginsConf = require('./config/plugins/index')
 module.exports = {
     title: "CHANX's Blog",
-    description: '陈小白の博客',
+    description: '橙小白の博客',
     // dest: 'public',
     head: [
         ['link', { rel: 'icon', href: '/favicon.ico' }],
@@ -56,8 +56,8 @@ module.exports = {
             }
         },
         valineConfig: {
-            appId: 'WDOa3anONgcA8zAgpDghKeSv-9Nh9j0Va',// your appId
-            appKey: 'emlMPDhG39GxfHfM4q9RvOMA', // your appKey
+            appId: process.env.VALINEID,// your appId
+            appKey: process.env.VALINEKEY, // your appKey
             recordIP:true,
             placeholder:'填写邮箱地址可以及时收到回复噢...',
             visitor:true,
