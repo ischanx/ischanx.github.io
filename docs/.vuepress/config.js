@@ -85,8 +85,8 @@ module.exports = {
         // 自动形成侧边导航
         sidebar: 'auto',
         // 备案
-        record: '粤ICP备20036386号-1',
-        recordLink: 'http://www.beian.miit.gov.cn/',
+        record: '粤ICP备20036386号',
+        recordLink: 'https://beian.miit.gov.cn/',
         cyberSecurityRecord: '粤公网安备 44060602001609号',
         cyberSecurityLink: 'http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44060602001609',
         friendLink: [
