@@ -6,3 +6,5 @@ docs/.vuepress/public/images
 .temp/
 *.exe
 *.cpp
+.idea
+dist

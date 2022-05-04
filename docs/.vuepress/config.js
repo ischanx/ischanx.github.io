@@ -10,8 +10,8 @@ module.exports = {
         ['link', { rel: 'icon', href: '/favicon.ico' }],
         ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }],
         ["meta", {name: "robots", content: "all"}],
-        ["meta", {name: "author", content: "CHANX"}],
-        ['meta', { name: 'keywords', content: 'chanx,chanxblog,陈小白の博客,前端,后台,tech,blog,vuepress-blog' }],
+        ["meta", {name: "author", content: "ischanx"}],
+        ['meta', { name: 'keywords', content: 'chanx,chanxblog,frontend,前端,后台,tech,blog,vuepress-blog' }],
         // ['script', { type: 'text/javascript', src: '/assets/js/baidu.js' }],
         ['script', {}, `
             var _hmt = _hmt || [];
@@ -65,7 +65,7 @@ module.exports = {
         authorAvatar: '/avatar.png',
         // 最后更新时间
         lastUpdated: '上次更新时间', // string | boolean
-        repo: 'Mr-CHANX/mr-chanx.github.io',
+        repo: 'ischanx/mr-chanx.github.io',
         // 如果你的文档不在仓库的根部
         docsDir: 'docs',
         // 可选，默认为 master
