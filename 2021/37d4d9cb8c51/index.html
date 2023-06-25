@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN,en,default" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/avatar.png">
+  <link rel="icon" href="/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="ischanx">
+  <meta name="keywords" content="chanx,chanxblog,前端,后台,tech,blog,hexo">
+  
+    <meta name="description" content="场景 某个请求被重复触发 某个函数被重复触发  多次触发合并成一次，或一段时间内触发合并成一次。思路其实与节流类似 为什么？  具体业务场景需要。如element-ui中上传组件多选文件会多次触发上传钩子，需要合并成一次上传 性能优化考虑。某个高频的http请求进行聚合，降低请求频率  先举个例子，某个上传函数被多次触发 1234567const upload &#x3D; (filename) &#x3D;&gt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端函数或请求的聚合">
+<meta property="og:url" content="https://www.chanx.tech/2021/37d4d9cb8c51/">
+<meta property="og:site_name" content="Chanx &#39;s Blog">
+<meta property="og:description" content="场景 某个请求被重复触发 某个函数被重复触发  多次触发合并成一次，或一段时间内触发合并成一次。思路其实与节流类似 为什么？  具体业务场景需要。如element-ui中上传组件多选文件会多次触发上传钩子，需要合并成一次上传 性能优化考虑。某个高频的http请求进行聚合，降低请求频率  先举个例子，某个上传函数被多次触发 1234567const upload &#x3D; (filename) &#x3D;&gt;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-31T10:44:32.000Z">
+<meta property="article:modified_time" content="2023-06-25T14:54:51.928Z">
+<meta property="article:author" content="ischanx">
+<meta property="article:tag" content="Javascript">
+<meta property="article:tag" content="Element">
+<meta property="article:tag" content="设计模式及应用">
+<meta property="article:tag" content="性能优化">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>前端函数或请求的聚合 - Chanx &#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.chanx.tech","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#1890ff","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":true}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 30vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Chanx &#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="前端函数或请求的聚合"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        ischanx
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-03-31 18:44" pubdate>
+          2021年3月31日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          9 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">前端函数或请求的聚合</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><ul>
+<li>某个请求被重复触发</li>
+<li>某个函数被重复触发</li>
+</ul>
+<p>多次触发合并成一次，或一段时间内触发合并成一次。思路其实与<strong>节流</strong>类似</p>
+<p>为什么？</p>
+<ul>
+<li>具体业务场景需要。如<code>element-ui</code>中上传组件多选文件会多次触发上传钩子，需要合并成一次上传</li>
+<li>性能优化考虑。某个高频的http请求进行聚合，降低请求频率</li>
+</ul>
+<p><strong>先举个例子，某个上传函数被多次触发</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> <span class="hljs-title function_">upload</span> = (<span class="hljs-params">filename</span>) =&gt; &#123;<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;正式上传&quot;</span>, filename);<br>&#125;<br><br><span class="hljs-title function_">upload</span>(<span class="hljs-string">&quot;a&quot;</span>);<br><span class="hljs-title function_">upload</span>(<span class="hljs-string">&quot;b&quot;</span>);<br><span class="hljs-title function_">upload</span>(<span class="hljs-string">&quot;c&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>正式上传 a 正式上传 b 正式上传 c</p>
+</blockquote>
+<p>需求： 希望多个文件能放在一次正式上传</p>
+<h2 id="宏任务"><a href="#宏任务" class="headerlink" title="宏任务"></a>宏任务</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> file = [];<br><span class="hljs-keyword">const</span> upload = (<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">let</span> collect = <span class="hljs-literal">null</span>;<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params">filename</span>)&#123;<br>    file.<span class="hljs-title function_">push</span>(filename); <span class="hljs-comment">// 记录要上传的文件</span><br>    <span class="hljs-keyword">if</span>(!collect)&#123;<br>      collect = <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">()=&gt;</span>&#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;正式上传&quot;</span>, file);<br>        collect = <span class="hljs-literal">null</span>;<br>      &#125;,<span class="hljs-number">0</span>);<br>    &#125;<br>  &#125;<br>&#125;)();<br><br><span class="hljs-title function_">upload</span>(<span class="hljs-string">&quot;a&quot;</span>);<br><span class="hljs-title function_">upload</span>(<span class="hljs-string">&quot;b&quot;</span>);<br><span class="hljs-title function_">upload</span>(<span class="hljs-string">&quot;c&quot;</span>); <br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>正式上传 [“a”, “b”, “c”]</p>
+</blockquote>
+<p><strong>思路：三次上传钩子实际上是同步代码，宏任务会在同步代码执行完成后再去触发。利用闭包记录下是否已经设置宏任务和需要上传的文件</strong></p>
+<h2 id="微任务"><a href="#微任务" class="headerlink" title="微任务"></a>微任务</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> file = [];<br><span class="hljs-keyword">const</span> upload = (<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">let</span> collect = <span class="hljs-literal">null</span>;<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params">filename</span>)&#123;<br>    file.<span class="hljs-title function_">push</span>(filename);<br>    <span class="hljs-keyword">if</span>(!collect)&#123;<br>      collect = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>().<span class="hljs-title function_">then</span>(<span class="hljs-function">()=&gt;</span>&#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;正式上传&quot;</span>, file);<br>        collect = <span class="hljs-literal">null</span>;<br>      &#125;)<br>    &#125;<br>  &#125;<br>&#125;)();<br><br><br><br><span class="hljs-title function_">upload</span>(<span class="hljs-string">&quot;a&quot;</span>);<br><span class="hljs-title function_">upload</span>(<span class="hljs-string">&quot;b&quot;</span>);<br><span class="hljs-title function_">upload</span>(<span class="hljs-string">&quot;c&quot;</span>); <br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>正式上传 [“a”, “b”, “c”]</p>
+</blockquote>
+<p><strong>思路：其实跟宏任务一样，只不过<code>promise.then</code>会在同步代码后，<code>setTimeout</code>前触发</strong></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>总的来说，就是对原有的上传钩子进行了<strong>封装</strong>，或者叫<strong>代理</strong>。并利用<strong>事件循环</strong>的执行顺序，在合适的时机再去执行上传操作。</p>
+<blockquote>
+<p>Q：那是不是只有以上两种方案呢？当然不是。思路一致，但是实现各有不同。</p>
+<p>A：比如说，知道触发次数，可以考虑使用计数器在最后一次触发；标记变量可以使用其他写法来实现；</p>
+<p>Q：我只想聚合一部分，怎么办？</p>
+<p>A：<code>setTimeout</code>设置时间；或者设置临界值再推几个宏&#x2F;微任务，注意记录文件做相应修改</p>
+<p>Q：那异步触发的怎么去做聚合？</p>
+<p>A：我可能是利用一下<code>Promise.all</code>吧。没有深入想，此处不多说。</p>
+<p>说到聚合 + 性能优化，其实还有后端接口的聚合。利用中间层进行接口聚合，前端再去请求聚合后的接口，也能优化前端体验</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AFfront-end/" class="category-chain-item">前端front-end</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Javascript/">#Javascript</a>
+      
+        <a href="/tags/Element/">#Element</a>
+      
+        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%8F%8A%E5%BA%94%E7%94%A8/">#设计模式及应用</a>
+      
+        <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">#性能优化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>前端函数或请求的聚合</div>
+      <div>https://www.chanx.tech/2021/37d4d9cb8c51/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>ischanx</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年3月31日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2023年6月25日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/56645601677a/" title="打开新标签页与noopener">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">打开新标签页与noopener</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/7410f8b3a3b6/" title="JS实现拖拽移动元素">
+                        <span class="hidden-mobile">JS实现拖拽移动元素</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"ischanx/ischanx.github.io","repo-id":"MDEwOlJlcG9zaXRvcnkyNTkxODA5Njc=","category":"Announcements","category-id":"DIC_kwDOD3LJp84CXbNd","theme-light":"light","theme-dark":"dark","mapping":"title","reactions-enabled":1,"emit-metadata":0,"input-position":"top","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <span style="font-size: 12px;"> © 2019 - 2023 Chanx | Powered by  <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>&nbsp;&amp;&nbsp; <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> </span> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      粤ICP备20036386号
+    </a>
+  </span>
+  
+    
+      <span>
+        <a
+          href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44060602001609"
+          rel="nofollow noopener"
+          class="beian-police"
+          target="_blank"
+        >
+          
+            <span style="visibility: hidden; width: 0">|</span>
+            <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+          
+          <span>粤公网安备44060602001609号</span>
+        </a>
+      </span>
+    
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

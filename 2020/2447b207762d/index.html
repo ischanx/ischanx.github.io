@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN,en,default" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/avatar.png">
+  <link rel="icon" href="/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="ischanx">
+  <meta name="keywords" content="chanx,chanxblog,前端,后台,tech,blog,hexo">
+  
+    <meta name="description" content="本文并不会系统地讲AES及其应用，只是遇到案例学习了然后记录一下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端AES加密的简单应用">
+<meta property="og:url" content="https://www.chanx.tech/2020/2447b207762d/">
+<meta property="og:site_name" content="Chanx &#39;s Blog">
+<meta property="og:description" content="本文并不会系统地讲AES及其应用，只是遇到案例学习了然后记录一下">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-21T12:43:32.000Z">
+<meta property="article:modified_time" content="2023-06-25T14:54:51.928Z">
+<meta property="article:author" content="ischanx">
+<meta property="article:tag" content="chanx,chanxblog,前端,后台,tech,blog,hexo">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>前端AES加密的简单应用 - Chanx &#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.chanx.tech","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#1890ff","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":true}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 30vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Chanx &#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="前端AES加密的简单应用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        ischanx
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-11-21 20:43" pubdate>
+          2020年11月21日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">前端AES加密的简单应用</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文并不会系统地讲AES及其应用，只是遇到案例学习了然后记录一下</p>
+<span id="more"></span>
+
+<p>再次说明，本文并不是为了系统学习和比较各种加密方式…(我还不会)</p>
+<h2 id="什么是AES"><a href="#什么是AES" class="headerlink" title="什么是AES"></a>什么是AES</h2><p>高级加密标准(AES,Advanced Encryption Standard)为最常见的对称加密算法。对称加密算法也就是<strong>加密和解密用相同的密钥</strong></p>
+<h2 id="如何利用AES"><a href="#如何利用AES" class="headerlink" title="如何利用AES"></a>如何利用AES</h2><p>首先AES这家伙只要你知道密钥就能加密解密的，而前端代码一般是公开的，或者说是破解可能需要一定成本。最终也只是为了数据不要明文存着让人一眼看出这个样子罢了。遇到了两个例子，分享一下。</p>
+<h3 id="数据传输加密"><a href="#数据传输加密" class="headerlink" title="数据传输加密"></a>数据传输加密</h3><blockquote>
+<p>背景：遇上了某qt应用，学校用其发布活动，但各种功能极其不人性化，于是想通过前端代码找到接口做个定时器抓取数据，过程中遇到一些小困难(知识点)。</p>
+</blockquote>
+<p>如题，前端后端交互的时候数据会被丢来丢去。要是中途被人截胡，明文的话可能会导致某些数据的泄露，加个密就能让数据难看一点。</p>
+<h4 id="固定密钥"><a href="#固定密钥" class="headerlink" title="固定密钥"></a>固定密钥</h4><p>固定密钥就是前后端约定好一个密钥，然后写死在代码里面就完事。我用密钥<code>“123456”</code>加密，你用<code>“123456”</code>解密，你说这好吗？</p>
+<h4 id="变化密钥"><a href="#变化密钥" class="headerlink" title="变化密钥"></a>变化密钥</h4><p>比固定密钥高大上一点点…就是密钥能通过逻辑生成，每次不是同一个</p>
+<p>但是是同一套逻辑，花点时间搞懂就也就能生成密钥了（不然哪里来的本文</p>
+<p>密钥是变化的，那么前后端如何都知道密钥是什么呢？</p>
+<blockquote>
+<p> 张三：这个我知道！把密钥放在请求里送给后端</p>
+<p>我：那密钥明文放在请求里我加密有什么用？</p>
+<p>李四：那就把密钥放在密文里</p>
+<p>我：？？？后端不知道密钥，看着密文拿头去解密是吧</p>
+<p>张三李四：有道理，那怎么办？</p>
+<p>我：整点看起来比较正常而且经常变化的<strong>数据</strong>去生成密钥不就得了，然后同时把<strong>数据</strong>发给后端</p>
+</blockquote>
+<p>以上提到的一个数据实例便是：<strong>时间戳</strong></p>
+<p>时间戳这种看起来普普通通的东西 &#x3D;&gt; 好东西</p>
+<p><strong>前端利用时间戳生成密钥并对数据进行加密，再把时间戳附带在请求头里</strong></p>
+<p><strong>后端接收到数据密文的时候，提取请求头的时间戳生成密钥，再去解密</strong></p>
+<p>如果直接就用时间戳当密钥的话，那真的是不太行噢。那我们就对时间戳做些简单处理，要是有人拿时间戳去碰碰，也能让他碰一脸灰！</p>
+<hr>
+<p><strong>下面就是案例具体代码，仅提供思路，不能直接跑。敏感部分已去掉</strong></p>
+<p>涉及到的js库有：<a target="_blank" rel="noopener" href="https://github.com/emn178/js-md5">js-md5</a>、<a target="_blank" rel="noopener" href="https://github.com/brix/crypto-js">crypto-js</a></p>
+<p><strong>时间戳混淆&#x2F;获取密钥</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">u</span>(<span class="hljs-params">t</span>) &#123;<br>  <span class="hljs-keyword">var</span> e = <span class="hljs-title function_">kmd5</span>(<span class="hljs-string">&quot;5%^&amp;#@*321!`~,;:&quot;</span> + t + <span class="hljs-string">&quot;TT_APP000000&#x27;;-=&quot;</span>),	<span class="hljs-comment">//加长版时间戳利用md5生成固定长度字符串</span><br>      n = <span class="hljs-built_in">parseInt</span>(t / <span class="hljs-number">1e3</span>);<br>  e = e.<span class="hljs-title function_">split</span>(<span class="hljs-string">&quot;&quot;</span>);<br>  <span class="hljs-comment">// 再做处理，为了生成密钥</span><br>  <span class="hljs-keyword">let</span> i = (e = n % <span class="hljs-number">2</span> == <span class="hljs-number">0</span> ? e.<span class="hljs-title function_">filter</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">t, e</span>) &#123;<br>      <span class="hljs-keyword">return</span> e % <span class="hljs-number">2</span> == <span class="hljs-number">0</span><br>  &#125;) : e.<span class="hljs-title function_">filter</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">t, e</span>) &#123;<br>      <span class="hljs-keyword">return</span> e % <span class="hljs-number">2</span> != <span class="hljs-number">0</span><br>  &#125;)).<span class="hljs-title function_">join</span>(<span class="hljs-string">&quot;&quot;</span>);<br>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">CryptoJS</span>.<span class="hljs-property">enc</span>.<span class="hljs-property">Utf8</span>.<span class="hljs-title function_">parse</span>(i)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>参数加密</strong></p>
+<p>参数t为字符串类型，请用<code>JSON.stringify</code>处理相关类型的数据，e为请求头中的时间戳</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">encryptHttp</span>(<span class="hljs-params">t, e</span>) &#123;<br>  <span class="hljs-keyword">let</span> n = <span class="hljs-title function_">u</span>(e),<br>  i = <span class="hljs-title class_">CryptoJS</span>.<span class="hljs-property">enc</span>.<span class="hljs-property">Utf8</span>.<span class="hljs-title function_">parse</span>(t);<br>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">CryptoJS</span>.<span class="hljs-property">AES</span>.<span class="hljs-title function_">encrypt</span>(i, n, &#123;<br>      <span class="hljs-attr">mode</span>: <span class="hljs-title class_">CryptoJS</span>.<span class="hljs-property">mode</span>.<span class="hljs-property">ECB</span><br>  &#125;).<span class="hljs-title function_">toString</span>()<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>加密后还需做相关处理（视具体情况</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> miwen = <span class="hljs-title function_">encryptHttp</span>(data,time)<br>miwen = <span class="hljs-built_in">encodeURI</span>(miwen);<br>miwen = miwen.<span class="hljs-title function_">replace</span>(<span class="hljs-string">&quot;+&quot;</span>, <span class="hljs-string">&quot;%2B&quot;</span>);<br><br><span class="hljs-comment">// 最后把密文放进参数里</span><br>&#123;<br>    <span class="hljs-attr">params</span>:miwen<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p><strong>响应解密</strong></p>
+<p>参数t为响应的密文，e为请求头中的时间戳</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">decryptHttp</span>(<span class="hljs-params">t, e</span>) &#123;<br>  <span class="hljs-keyword">let</span> n = <span class="hljs-title function_">u</span>(e);<br>  <span class="hljs-keyword">let</span> i = <span class="hljs-title class_">CryptoJS</span>.<span class="hljs-property">AES</span>.<span class="hljs-title function_">decrypt</span>(t, n, &#123;<br>      <span class="hljs-attr">mode</span>: <span class="hljs-title class_">CryptoJS</span>.<span class="hljs-property">mode</span>.<span class="hljs-property">ECB</span><br>  &#125;);<br>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">CryptoJS</span>.<span class="hljs-property">enc</span>.<span class="hljs-property">Utf8</span>.<span class="hljs-title function_">stringify</span>(i).<span class="hljs-title function_">toString</span>()<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="数据持久化加密"><a href="#数据持久化加密" class="headerlink" title="数据持久化加密"></a>数据持久化加密</h3><p>数据持久化保存到浏览器<code>storage</code>里，明文保存可能也不太好。那就加个密再丢进去吧！</p>
+<h4 id="固定密钥-1"><a href="#固定密钥-1" class="headerlink" title="固定密钥"></a>固定密钥</h4><p>一般也就用这个办法了。比如说<code>Vuex持久化</code>，在刷新前保存数据，刷新后读取数据。</p>
+<h4 id="变化密钥-1"><a href="#变化密钥-1" class="headerlink" title="变化密钥"></a>变化密钥</h4><p>没仔细想过，要实现的话估计也就是上面那个思路，找些普普通通的当变化源</p>
+<hr>
+<p>下面是<code>Vuex持久化</code>一个案例，仅提供思路，不保证能使用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 不使用持久化插件：插件每次操作vuex都会触发storage保存，vuex操作比较多的时候有一定影响且插件保存数据为明文信息</span><br><span class="hljs-comment">// 页面加载时读取缓存数据到vuex</span><br><span class="hljs-keyword">if</span> (sessionStorage.<span class="hljs-title function_">getItem</span>(<span class="hljs-string">&quot;miwen&quot;</span>)) &#123;<br>  <span class="hljs-comment">// 取缓存中经过加密的密文</span><br>  <span class="hljs-keyword">const</span> saveData = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-title class_">CryptoJS</span>.<span class="hljs-property">AES</span>.<span class="hljs-title function_">decrypt</span>(sessionStorage.<span class="hljs-title function_">getItem</span>(<span class="hljs-string">&quot;miwen&quot;</span>), <span class="hljs-string">&quot;123456&quot;</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-title class_">CryptoJS</span>.<span class="hljs-property">enc</span>.<span class="hljs-property">Utf8</span>));<br>  <span class="hljs-comment">// 数据导入到vuex</span><br>  <span class="hljs-variable language_">this</span>.<span class="hljs-property">$store</span>.<span class="hljs-title function_">replaceState</span>(<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">$store</span>.<span class="hljs-property">state</span>, saveData));<br>&#125;<br><br><span class="hljs-comment">// 在页面刷新时将vuex里的信息保存到sessionStorage里</span><br><span class="hljs-variable language_">window</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&quot;beforeunload&quot;</span>, <span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-comment">// 选择需要保存的数据</span><br>  <span class="hljs-keyword">const</span> saveKeys = [<span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;token&quot;</span>];<br>  <span class="hljs-keyword">const</span> saveData = &#123;&#125;;<br>  <span class="hljs-keyword">const</span> state = <span class="hljs-variable language_">this</span>.<span class="hljs-property">$store</span>.<span class="hljs-property">state</span>;<br>  saveKeys.<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">key</span> =&gt;</span> &#123;<br>    saveData[key] = state[key];<br>  &#125;);<br>  <span class="hljs-comment">// 取需要保存的数据并进行AES加密</span><br>  <span class="hljs-keyword">const</span> ciphertext = <span class="hljs-title class_">CryptoJS</span>.<span class="hljs-property">AES</span>.<span class="hljs-title function_">encrypt</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(saveData), <span class="hljs-string">&quot;123456&quot;</span>).<span class="hljs-title function_">toString</span>();<br>  sessionStorage.<span class="hljs-title function_">setItem</span>(<span class="hljs-string">&quot;miwen&quot;</span>, ciphertext);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AFfront-end/" class="category-chain-item">前端front-end</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>前端AES加密的简单应用</div>
+      <div>https://www.chanx.tech/2020/2447b207762d/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>ischanx</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年11月21日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2023年6月25日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/7410f8b3a3b6/" title="JS实现拖拽移动元素">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">JS实现拖拽移动元素</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/c98cd32c8840/" title="HTML+CSS实现打字机效果">
+                        <span class="hidden-mobile">HTML+CSS实现打字机效果</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"ischanx/ischanx.github.io","repo-id":"MDEwOlJlcG9zaXRvcnkyNTkxODA5Njc=","category":"Announcements","category-id":"DIC_kwDOD3LJp84CXbNd","theme-light":"light","theme-dark":"dark","mapping":"title","reactions-enabled":1,"emit-metadata":0,"input-position":"top","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <span style="font-size: 12px;"> © 2019 - 2023 Chanx | Powered by  <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>&nbsp;&amp;&nbsp; <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> </span> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      粤ICP备20036386号
+    </a>
+  </span>
+  
+    
+      <span>
+        <a
+          href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44060602001609"
+          rel="nofollow noopener"
+          class="beian-police"
+          target="_blank"
+        >
+          
+            <span style="visibility: hidden; width: 0">|</span>
+            <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+          
+          <span>粤公网安备44060602001609号</span>
+        </a>
+      </span>
+    
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

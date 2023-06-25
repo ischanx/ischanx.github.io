@@ -1,0 +1,825 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN,en,default" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/avatar.png">
+  <link rel="icon" href="/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="ischanx">
+  <meta name="keywords" content="chanx,chanxblog,前端,后台,tech,blog,hexo">
+  
+    <meta name="description" content="在使用JavaScript的时候，可能会经常看见控制台输出信息里有__proto__或者prototype；又或者是你在使用字符串的时候用到一些方法，你会好奇它究竟是写在哪里；又或者是你对JavaScript里面没有类的产生疑惑 几种函数作为普通函数1234&#x2F;&#x2F;定义函数function foo()&amp;#123;&amp;#125;&#x2F;&#x2F;调用函数foo();  作为构造函数当一个函数被用来创建新对象的时候，我们">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS原型链那些事">
+<meta property="og:url" content="https://www.chanx.tech/2020/a030ee3fe414/">
+<meta property="og:site_name" content="Chanx &#39;s Blog">
+<meta property="og:description" content="在使用JavaScript的时候，可能会经常看见控制台输出信息里有__proto__或者prototype；又或者是你在使用字符串的时候用到一些方法，你会好奇它究竟是写在哪里；又或者是你对JavaScript里面没有类的产生疑惑 几种函数作为普通函数1234&#x2F;&#x2F;定义函数function foo()&amp;#123;&amp;#125;&#x2F;&#x2F;调用函数foo();  作为构造函数当一个函数被用来创建新对象的时候，我们">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/aa0xz_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/aa9xs_0.png">
+<meta property="article:published_time" content="2020-09-22T11:04:59.000Z">
+<meta property="article:modified_time" content="2023-06-25T14:54:51.924Z">
+<meta property="article:author" content="ischanx">
+<meta property="article:tag" content="Javascript">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://img.chanx.tech/i/2022/06/12/aa0xz_0.png">
+  
+  
+  
+  <title>JS原型链那些事 - Chanx &#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.chanx.tech","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#1890ff","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":true}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 30vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Chanx &#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="JS原型链那些事"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        ischanx
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-09-22 19:04" pubdate>
+          2020年9月22日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">JS原型链那些事</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>在使用JavaScript的时候，可能会经常看见控制台输出信息里有<code>__proto__</code>或者<code>prototype</code>；又或者是你在使用字符串的时候用到一些方法，你会好奇它究竟是写在哪里；又或者是你对JavaScript里面没有类的产生疑惑</p>
+<h2 id="几种函数"><a href="#几种函数" class="headerlink" title="几种函数"></a>几种函数</h2><h3 id="作为普通函数"><a href="#作为普通函数" class="headerlink" title="作为普通函数"></a>作为普通函数</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//定义函数</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>)&#123;&#125;<br><span class="hljs-comment">//调用函数</span><br><span class="hljs-title function_">foo</span>();<br></code></pre></td></tr></table></figure>
+
+<h3 id="作为构造函数"><a href="#作为构造函数" class="headerlink" title="作为构造函数"></a>作为构造函数</h3><p>当一个函数被用来创建新对象的时候，我们会叫他为<code>构造函数</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//按照惯例，作为构造函数的函数名首字母需要大写</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Foo</span>(<span class="hljs-params"></span>)&#123;&#125;<br><span class="hljs-keyword">const</span> obj = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Foo</span>();<br><br><span class="hljs-comment">//当我们使用new操作符的时候，实际上会进行下面几个步骤</span><br><span class="hljs-comment">//创建一个新的对象</span><br><span class="hljs-keyword">const</span> obj = &#123;&#125;;<br><span class="hljs-comment">//原型链连接/对象关联</span><br>obj.<span class="hljs-property">__proto__</span> = <span class="hljs-title class_">Foo</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>;<br><span class="hljs-comment">//把新对象作为函数的上下文</span><br><span class="hljs-title class_">Foo</span>.<span class="hljs-title function_">apply</span>(obj, <span class="hljs-variable language_">arguments</span>);<br><span class="hljs-comment">//Foo不返回对象，所以返回新对象</span><br><span class="hljs-keyword">return</span> obj;<br></code></pre></td></tr></table></figure>
+
+<h3 id="作为对象"><a href="#作为对象" class="headerlink" title="作为对象"></a>作为对象</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params"></span>)&#123;&#125;<br>foo.<span class="hljs-property">name</span> = <span class="hljs-string">&quot;tom&quot;</span>;<br>foo[<span class="hljs-string">&#x27;age&#x27;</span>] = <span class="hljs-number">20</span>;<br></code></pre></td></tr></table></figure>
+
+<p>以上这三种使用方式中，以普通函数来调用的方式十分常见，不再赘述。下面要讲的就是当一个函数<strong>被作为构造函数</strong>来使用和<strong>被作为对象</strong>来使用的时候，分别是什么样的，以及它们之间与原型链的关系是什么样的</p>
+<h2 id="proto-和prototype"><a href="#proto-和prototype" class="headerlink" title="__proto__和prototype"></a><code>__proto__</code>和<code>prototype</code></h2><p><strong>对象</strong>有一个特殊的<code>__proto__</code>的内置属性，<strong>其实它就是对其他对象的引用</strong>。几乎所有的对象在创建这个属性的时候都会被赋予一个非空的值。<strong>需要注意的是，这个属性可以为空，虽然少见。</strong>它是实现原型链的关键，因为它会指向构造函数的原型对象，即 prototype 属性上的对象，而构造函数原型对象上的<code>__proto__</code> 又指向上一级，即：<code>构造函数.prototype.__proto__ === 上一级构造函数.prototype</code>，以此类推层层往上，就形成了我们所说的原型链。</p>
+<p><code>prototype</code>是<strong>函数</strong>特有的一个属性，它是构造函数的原型对象。JavaScript 是一种基于原型的语言，每个对象都拥有一个原型对象，对象以其原型为模板，从原型继承方法和属性。</p>
+<p>先来看看下面的代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> obj = &#123;<br>	a = <span class="hljs-number">2</span>;<br>&#125;;<br>obj.<span class="hljs-property">a</span>;	<span class="hljs-comment">//2</span><br></code></pre></td></tr></table></figure>
+
+<p>相信大家都能一下子把结果说出来，结果是2</p>
+<p>我们再来看看</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> anotherObj = &#123;<br>	a = <span class="hljs-number">2</span>;<br>&#125;;<br><span class="hljs-comment">//创建一个关联到anotherObj的对象</span><br><span class="hljs-keyword">var</span> obj = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">create</span>(anotherObj);<br>obj.<span class="hljs-property">a</span>;	<span class="hljs-comment">//2</span><br></code></pre></td></tr></table></figure>
+
+<p>显然，此时<code>obj</code>上并没有<code>a</code>属性，那么这个值是哪里来的？这就是我们即将要说的<strong>原型链</strong></p>
+<p>当你试图引用对象的属性时会触发<code>get</code>操作：</p>
+<ol>
+<li>对于默认的<code>get</code>操作，第一步是检查对象本身是否有这个属性，如果有的话就直接使用。</li>
+<li>但是如果<code>a</code>属性不在对象本身，就会继续访问原型链（<code>???.__proto__</code>）找到这个属性直至跑完整条原型链</li>
+</ol>
+<p><strong>哪里是原型链的尽头</strong></p>
+<p>由于所有普通（内置）对象都源于<code>Object.prototype</code>，所以他们的原型链最终都会指向<code>Object.prototype</code>。而<code>Object.prototype.__proto__</code>为<code>null</code>，这不就断了吗。</p>
+<h2 id="函数和对象"><a href="#函数和对象" class="headerlink" title="函数和对象"></a>函数和对象</h2><h3 id="基本"><a href="#基本" class="headerlink" title="基本"></a>基本</h3><p>首先我们要知道下面几个关系</p>
+<ol>
+<li>所有的原型对象都是由<code>Object</code>创建出来的</li>
+<li>所有函数对象都是由<code>Function</code>创建出来的。Function是一个构造函数，通过new调用可以生成函数对象，即我们一般自定义的那种函数。所以<code>Fucntion</code>这个构造函数的<code>prototype</code>是所有函数的<code>__proto__</code></li>
+</ol>
+<p>另外，<code>__proto__</code>是对象的属性；<code>prototype</code>是函数的属性</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title class_">Function</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">__proto__</span> === <span class="hljs-title class_">Object</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span><br><br><span class="hljs-title class_">Object</span>.<span class="hljs-property">__proto__</span> === <span class="hljs-title class_">Function</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span><br></code></pre></td></tr></table></figure>
+
+<p>分析以上两行代码：</p>
+<ol>
+<li>看到<code>Function.prototype</code>，说明此时<code>Function</code>是当成构造函数来使用的。前面说过构造函数都由<code>Object</code>创建出来的</li>
+<li>看到<code>Object.__proto__</code>，说明此时<code>Object</code>是被当前对象来使用的，前面说过函数对象都是由<code>Function</code>创建出来的</li>
+</ol>
+<h3 id="特例"><a href="#特例" class="headerlink" title="特例"></a>特例</h3><p>Object和Function既是对象，又是函数，两者内部同时含有<code>__proto__</code>和<code>prototype</code>属性，他们关系较为复杂，以下做归纳。</p>
+<blockquote>
+<p>Function.prototype指向”内置函数“。而Object.prototype指向”根源对象“</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title class_">Object</span>.<span class="hljs-property">__proto__</span> === <span class="hljs-title class_">Function</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span> <span class="hljs-comment">//true</span><br><span class="hljs-title class_">Object</span>.<span class="hljs-property">__proto__</span> === <span class="hljs-title class_">Function</span>.<span class="hljs-property">__proto__</span><span class="hljs-comment">//true</span><br><span class="hljs-title class_">Object</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span> === <span class="hljs-title class_">Function</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">__proto__</span> <span class="hljs-comment">// true</span><br><span class="hljs-comment">//因此</span><br><span class="hljs-title class_">Function</span> <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Object</span> <span class="hljs-comment">//true</span><br><span class="hljs-title class_">Object</span> <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Function</span> <span class="hljs-comment">//true</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img.chanx.tech/i/2022/06/12/aa0xz_0.png" srcset="/img/loading.gif" lazyload alt="image-20200922205901071"></p>
+<h3 id="梳理"><a href="#梳理" class="headerlink" title="梳理"></a>梳理</h3><p><img src="https://img.chanx.tech/i/2022/06/12/aa9xs_0.png" srcset="/img/loading.gif" lazyload alt="proto"></p>
+<ol>
+<li><p>函数<code>prototype</code>属性指向原型对象</p>
+</li>
+<li><p>所有的原型对象都是由<code>Object</code>创建出来的</p>
+<ul>
+<li><code>Foo.prototype.__proto__ === Object.prototype</code></li>
+<li><code>Function.prototype.__proto__ === Object.prototype</code></li>
+</ul>
+</li>
+<li><p>所有函数对象都是由<code>Function</code>创建出来的</p>
+<ul>
+<li><code>Foo.__proto__ === Function.prototype</code></li>
+<li><code>Function.__proto__ === Function.prototype</code></li>
+<li><code>Object.__proto__ === Function.prototype</code></li>
+</ul>
+</li>
+<li><p>普通对象指向构造函数的原型</p>
+<ul>
+<li><code>Obj.__proto__ === Foo.prototype</code></li>
+</ul>
+</li>
+</ol>
+<p>::: right</p>
+<p>部分内容参考自<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36470086/article/details/82599604">不要做切图仔</a>、<a target="_blank" rel="noopener" href="https://blog.csdn.net/dingpanqing3307/article/details/101261244?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param">dingpanqing3307</a>、<a target="_blank" rel="noopener" href="http://blod.wxinxianyun.com/views/category1/2019/091205.html#%E8%A7%A3%E5%86%B3%E9%A2%84%E7%95%99%E9%97%AE%E9%A2%98">山水有轻音</a></p>
+<p>:::</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AFfront-end/" class="category-chain-item">前端front-end</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Javascript/">#Javascript</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>JS原型链那些事</div>
+      <div>https://www.chanx.tech/2020/a030ee3fe414/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>ischanx</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年9月22日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2023年6月25日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/2758254fdd97/" title="JS重难点梳理">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">JS重难点梳理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/cron/" title="使用Cron表达式">
+                        <span class="hidden-mobile">使用Cron表达式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"ischanx/ischanx.github.io","repo-id":"MDEwOlJlcG9zaXRvcnkyNTkxODA5Njc=","category":"Announcements","category-id":"DIC_kwDOD3LJp84CXbNd","theme-light":"light","theme-dark":"dark","mapping":"title","reactions-enabled":1,"emit-metadata":0,"input-position":"top","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <span style="font-size: 12px;"> © 2019 - 2023 Chanx | Powered by  <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>&nbsp;&amp;&nbsp; <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> </span> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      粤ICP备20036386号
+    </a>
+  </span>
+  
+    
+      <span>
+        <a
+          href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44060602001609"
+          rel="nofollow noopener"
+          class="beian-police"
+          target="_blank"
+        >
+          
+            <span style="visibility: hidden; width: 0">|</span>
+            <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+          
+          <span>粤公网安备44060602001609号</span>
+        </a>
+      </span>
+    
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

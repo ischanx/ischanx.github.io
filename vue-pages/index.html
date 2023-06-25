@@ -1,0 +1,841 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN,en,default" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/avatar.png">
+  <link rel="icon" href="/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="ischanx">
+  <meta name="keywords" content="chanx,chanxblog,前端,后台,tech,blog,hexo">
+  
+    <meta name="description" content="首先搭建一个脚手架项目，vuecli4 + vue2默认配置 + router + vuex。此时得到一个原始的vue单页面应用项目，去掉组件。 多页面应用结构了解单页面在项目根目录下新建vue.config.js文件，我们先看看默认配置了解一下单页应用  1234567891011121314module.exports &#x3D; &amp;#123;  publicPath: &quot;&#x2F;&quot;,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue多页面应用配置">
+<meta property="og:url" content="https://www.chanx.tech/vue-pages/">
+<meta property="og:site_name" content="Chanx &#39;s Blog">
+<meta property="og:description" content="首先搭建一个脚手架项目，vuecli4 + vue2默认配置 + router + vuex。此时得到一个原始的vue单页面应用项目，去掉组件。 多页面应用结构了解单页面在项目根目录下新建vue.config.js文件，我们先看看默认配置了解一下单页应用  1234567891011121314module.exports &#x3D; &amp;#123;  publicPath: &quot;&#x2F;&quot;,">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/aghmr_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/apwha_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/cr4xb_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/aqb4q_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/arf0c_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/as3v1_0.png">
+<meta property="article:published_time" content="2020-10-27T11:45:41.000Z">
+<meta property="article:modified_time" content="2023-06-25T14:54:51.924Z">
+<meta property="article:author" content="ischanx">
+<meta property="article:tag" content="Vue">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://img.chanx.tech/i/2022/06/12/aghmr_0.png">
+  
+  
+  
+  <title>vue多页面应用配置 - Chanx &#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.chanx.tech","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#1890ff","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":true}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 30vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Chanx &#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="vue多页面应用配置"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        ischanx
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-10-27 19:45" pubdate>
+          2020年10月27日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          26 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">vue多页面应用配置</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>首先搭建一个脚手架项目，<code>vuecli4 + vue2默认配置 + router + vuex</code>。此时得到一个原始的<strong>vue单页面应用</strong>项目，去掉组件。</p>
+<h2 id="多页面应用结构"><a href="#多页面应用结构" class="headerlink" title="多页面应用结构"></a>多页面应用结构</h2><h3 id="了解单页面"><a href="#了解单页面" class="headerlink" title="了解单页面"></a>了解单页面</h3><p>在项目根目录下新建<code>vue.config.js</code>文件，我们先看看默认配置了解一下单页应用</p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/aghmr_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027173459149"></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">publicPath</span>: <span class="hljs-string">&quot;/&quot;</span>,<br>  <span class="hljs-attr">productionSourceMap</span>: <span class="hljs-literal">false</span>,<br>  <span class="hljs-comment">// 页面入口</span><br>  <span class="hljs-attr">pages</span>:&#123;<br>    <span class="hljs-attr">index</span>: &#123;<br>      <span class="hljs-attr">entry</span>: <span class="hljs-string">&quot;src/main.js&quot;</span>,<br>      <span class="hljs-attr">title</span>: <span class="hljs-string">&quot;标题&quot;</span>,<br>    &#125;,<br>  &#125;,<br>  <span class="hljs-attr">devServer</span>: &#123;<br>    <span class="hljs-attr">open</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">//关闭自动打开浏览器</span><br>  &#125;<br> &#125;<br></code></pre></td></tr></table></figure>
+
+<p>此时打包后的<code>index.html</code>会使用<code>main.js</code>作为入口，可以理解为初始化的执行文件</p>
+<p>当然，我们不想让他叫<code>index.html</code>，给他换个名字是吧，比如<code>demo.html</code></p>
+<p>我们修改一下页面对象的名字，如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">publicPath</span>: <span class="hljs-string">&quot;/&quot;</span>,<br>  <span class="hljs-attr">productionSourceMap</span>: <span class="hljs-literal">false</span>,<br>  <span class="hljs-comment">// 页面入口</span><br>  <span class="hljs-attr">pages</span>:&#123;<br>    <span class="hljs-attr">demo</span>: &#123;<br>      <span class="hljs-attr">entry</span>: <span class="hljs-string">&quot;src/main.js&quot;</span>,<br>      <span class="hljs-attr">title</span>: <span class="hljs-string">&quot;标题&quot;</span>,<br>    &#125;,<br>  &#125;,<br>  <span class="hljs-attr">devServer</span>: &#123;<br>    <span class="hljs-attr">open</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">//关闭自动打开浏览器</span><br>  &#125;<br> &#125;<br></code></pre></td></tr></table></figure>
+
+<p>此时打包后的页面文件为<code>demo.html</code>，它会使用<code>main.js</code>作为入口</p>
+<p>当然，我们可能还要加入<strong>模板页面</strong>，打包的时候以它为模板</p>
+<p>我们在根目录新建一个HTML文件，就叫<code>template.html</code>吧</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">utf-8</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">viewport</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;width=device-width,initial-scale=1&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span><br>        &lt;%= htmlWebpackPlugin.options.title %&gt;<br>    <span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">app</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p><code>&lt;%= htmlWebpackPlugin.options.title %&gt;</code>对应的是页面对象的<code>title</code>属性，当然还有其他一些属性</p>
+<p>此时，<code>vue.config.js</code>需要修改一下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">publicPath</span>: <span class="hljs-string">&quot;/&quot;</span>,<br>  <span class="hljs-attr">productionSourceMap</span>: <span class="hljs-literal">false</span>,<br>  <span class="hljs-comment">// 页面入口</span><br>  <span class="hljs-attr">pages</span>:&#123;<br>    <span class="hljs-attr">index</span>: &#123;<br>      <span class="hljs-attr">entry</span>: <span class="hljs-string">&quot;src/main.js&quot;</span>,<br>      <span class="hljs-comment">// 模板文件</span><br>      <span class="hljs-attr">template</span>: <span class="hljs-string">&quot;template.html&quot;</span>,<br>      <span class="hljs-comment">// 在 dist/index.html 的输出</span><br>      <span class="hljs-attr">filename</span>: <span class="hljs-string">&quot;index.html&quot;</span>,<br>      <span class="hljs-comment">// 当使用 title 选项时，</span><br>      <span class="hljs-comment">// template 中的 title 标签需要是 &lt;title&gt;&lt;%= htmlWebpackPlugin.options.title %&gt;&lt;/title&gt;</span><br>      <span class="hljs-attr">title</span>: <span class="hljs-string">&quot;标题&quot;</span>,<br>    &#125;,<br>  &#125;,<br>  <span class="hljs-attr">devServer</span>: &#123;<br>    <span class="hljs-attr">open</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">//关闭自动打开浏览器</span><br>  &#125;<br> &#125;<br></code></pre></td></tr></table></figure>
+
+<p>此时打包后会输出<code>index.html</code>文件</p>
+<blockquote>
+<p>问题来了，修改页面对象的名字跟页面对象中的filename属性有什么关系呢？</p>
+<p>我认为在filename为空的情况下，打包时会使用页面对象的名字</p>
+<p>总的来说，就是filename属性优先</p>
+</blockquote>
+<p>这么一来，<code>vue单页面应用</code>的结构好像摸得差不多了</p>
+<p><strong>访问HTML文件，然后通过入口JS文件进行初始化（如实例化Vue），把<code>App.vue</code>挂到网页上</strong></p>
+<h3 id="基于单页面改造多页面"><a href="#基于单页面改造多页面" class="headerlink" title="基于单页面改造多页面"></a>基于单页面改造多页面</h3><p>基于单页面应用，如何改造成多页面应用？</p>
+<p>上面我们知道，一个<code>Vue单页面应用</code>入口由三部分组成：网页模板<code>.html</code>、入口文件<code>.js</code>、Vue页面<code>.vue</code></p>
+<blockquote>
+<p>网页模板不是必须提供的，但打包时会生成默认的模板</p>
+</blockquote>
+<p>那么每一个页面都是这样子的咯，我们开始改造？</p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/apwha_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027181144590"></p>
+<p>根据两个页面对象的<code>filename</code>，我们知道打包后是两个页面文件<code>app1.html</code>和<code>app2.html</code></p>
+<p>那<code>index.html</code>是什么？</p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/cr4xb_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027181312761"></p>
+<p>可以看到<code>index.html</code>里面并没有逻辑代码，所以纯粹就是输出了一个默认的网页模板</p>
+<p>打开浏览器，看下我们的成果</p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/aqb4q_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027181619615"></p>
+<p><strong>多页面应用get!!!</strong></p>
+<blockquote>
+<p>多页面应用中各页面是相互独立的, 因为他们各自拥有自己的Vue实例和router实例和vuex实例</p>
+<p>可以说是两个独立的项目</p>
+</blockquote>
+<h3 id="自动生成页面对象"><a href="#自动生成页面对象" class="headerlink" title="自动生成页面对象"></a>自动生成页面对象</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> glob = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;glob&quot;</span>);<br><span class="hljs-comment">// 获取文件信息 =&gt; 生成pages对象</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">handleEntry</span>(<span class="hljs-params">entry</span>) &#123;<br>  <span class="hljs-keyword">const</span> entries = &#123;&#125;;<br>  <span class="hljs-keyword">let</span> entryBaseName = <span class="hljs-string">&quot;&quot;</span>;<br>  <span class="hljs-keyword">let</span> entryPathName = <span class="hljs-string">&quot;&quot;</span>;<br>  <span class="hljs-keyword">let</span> entryTemplate = <span class="hljs-string">&quot;&quot;</span>;<br><br>  glob.<span class="hljs-title function_">sync</span>(entry).<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">item</span> =&gt;</span> &#123;<br>    entryBaseName = path.<span class="hljs-title function_">basename</span>(item, path.<span class="hljs-title function_">extname</span>(item));<br>    entryTemplate = item.<span class="hljs-title function_">split</span>(<span class="hljs-string">&quot;/&quot;</span>).<span class="hljs-title function_">splice</span>(-<span class="hljs-number">3</span>);<br>    entryPathName = entryBaseName;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * entry为pages下页面文件夹名字的js文件，如pages/app1/app1.js</span><br><span class="hljs-comment">     * template为pages下页面文件夹的html文件</span><br><span class="hljs-comment">     */</span><br>    entries[entryPathName] = &#123;<br>      <span class="hljs-attr">entry</span>: <span class="hljs-string">`src/<span class="hljs-subst">$&#123;entryTemplate[<span class="hljs-number">0</span>]&#125;</span>/<span class="hljs-subst">$&#123;entryTemplate[<span class="hljs-number">1</span>]&#125;</span>/<span class="hljs-subst">$&#123;entryTemplate[<span class="hljs-number">1</span>]&#125;</span>.js`</span>,<br>      <span class="hljs-attr">template</span>: <span class="hljs-string">`src/<span class="hljs-subst">$&#123;entryTemplate[<span class="hljs-number">0</span>]&#125;</span>/<span class="hljs-subst">$&#123;entryTemplate[<span class="hljs-number">1</span>]&#125;</span>/<span class="hljs-subst">$&#123;entryTemplate[<span class="hljs-number">2</span>]&#125;</span>`</span>,<br>      <span class="hljs-attr">title</span>: entryTemplate[<span class="hljs-number">2</span>],<br>      <span class="hljs-attr">filename</span>: entryTemplate[<span class="hljs-number">2</span>],<br>    &#125;;<br>  &#125;);<br><br>  <span class="hljs-keyword">return</span> entries;<br>&#125;<br><br><span class="hljs-keyword">const</span> pages = <span class="hljs-title function_">handleEntry</span>(<span class="hljs-string">&quot;./src/pages/**?/*.html&quot;</span>); <span class="hljs-comment">// 调用函数扫描pages文件夹</span><br><br><br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>	pages,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>注意: 用此方法生成页面对象时必须保证pages下文件夹与相应入口js文件同名, 如pages&#x2F;app1&#x2F;app1.js</strong></p>
+<h2 id="隐藏html后缀"><a href="#隐藏html后缀" class="headerlink" title="隐藏html后缀"></a>隐藏html后缀</h2><p>然后我们兴奋地打包文件部署到生产环境<code>Nginx</code>上，然后访问</p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/arf0c_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027183545808"></p>
+<p>一脸问号？？？那我们换个方式….</p>
+<blockquote>
+<p>index.html 是默认网页，在服务器上比如访问’&#x2F;‘时，服务器会指向index.html。故不会发生这种情况</p>
+</blockquote>
+<p><img src="https://img.chanx.tech/i/2022/06/12/as3v1_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027183640128"></p>
+<p>啊这…每次都要加个html后缀才能访问，甲方会不会炸的？</p>
+<blockquote>
+<p><strong>注意：路由模式为History的请往下看,此方法不适用</strong></p>
+</blockquote>
+<p>我们配置一下<code>nginx</code>让他在没有后缀名的情况下也能找到文件，配置文件为<code>XX.conf</code></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs powershell">location / &#123;<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-operator">-f</span> <span class="hljs-variable">$request_filename</span>)&#123;<br>        rewrite (.*)<span class="hljs-variable">$</span> <span class="hljs-variable">$1</span>.html last;<br>        <span class="hljs-keyword">break</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>大功告成</p>
+<p><strong>注意: 在隐藏html后缀的情况下,url不允许”.”的出现; 即参数不能出现点, 同时页面跳转无需加后缀<code>&lt;a href=&quot;./app2&quot;&gt;&lt;/a&gt;</code></strong></p>
+<h2 id="路由使用history"><a href="#路由使用history" class="headerlink" title="路由使用history"></a>路由使用history</h2><p>甲方可能又要说了：你这个网址怎么每次都有一个<code>#</code>呀，去掉去掉</p>
+<p>噢！万能的工具人此时应该想到了路由里面的<code>mode: &quot;history&quot;</code></p>
+<p>我们把路由改成<code>history</code>模式，热情高涨地进行开发</p>
+<h3 id="路由跳转路径有误"><a href="#路由跳转路径有误" class="headerlink" title="路由跳转路径有误"></a>路由跳转路径有误</h3><p>尝试切换路由，不对劲 &#x3D;&gt; <code>/app1</code>应该切换到<code>/app1/about</code>的，但实际上是切成<code>/about</code></p>
+<p>好活！路由加个前缀应该就没问题了</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> router = <span class="hljs-keyword">new</span> <span class="hljs-title class_">VueRouter</span>(&#123;<br>  <span class="hljs-attr">mode</span>: <span class="hljs-string">&quot;history&quot;</span>,<br>  <span class="hljs-attr">base</span>:<span class="hljs-string">&quot;/app1/&quot;</span>,<br>  routes<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="刷新路由丢失"><a href="#刷新路由丢失" class="headerlink" title="刷新路由丢失"></a>刷新路由丢失</h3><p>开发环境中，路由跳转后刷新页面可能会出现404错误。<strong>因为刷新页面时访问的资源找不到，因为<code>vue-router</code>设置的路径不是真实存在的路径。</strong><code>vue.config.js</code>加入以下配置</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-attr">devServer</span>: &#123;<br>  <span class="hljs-attr">open</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">//关闭自动打开浏览器</span><br>  <span class="hljs-attr">historyApiFallback</span>: &#123;<br>    <span class="hljs-attr">verbose</span>: <span class="hljs-literal">true</span>,<br>    <span class="hljs-attr">rewrites</span>: [<br>      &#123; <span class="hljs-attr">from</span>: <span class="hljs-regexp">/^\/app1\/.*$/</span>, <span class="hljs-attr">to</span>: <span class="hljs-string">&quot;/app1.html&quot;</span> &#125;,<br>      &#123; <span class="hljs-attr">from</span>: <span class="hljs-regexp">/^\/app2\/.*$/</span>, <span class="hljs-attr">to</span>: <span class="hljs-string">&quot;/app2.html&quot;</span> &#125;,<br>    ],<br>  &#125;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>既然本地开发的服务端要做配置，那么生产环境的<code>nginx</code>服务器也需配置</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-section">location</span> / &#123;<br>    <span class="hljs-attribute">try_files</span> <span class="hljs-variable">$uri</span> <span class="hljs-variable">$uri</span>/ <span class="hljs-variable">@router</span>;<br>    <span class="hljs-attribute">index</span> index.html;<br>&#125;<br><br><br><span class="hljs-section">location</span> <span class="hljs-variable">@router</span> &#123;<br>    <span class="hljs-comment"># rewrite ^.*$ /index.html  last;</span><br>    <span class="hljs-comment"># 多页面 时刷新配置如下 </span><br>    <span class="hljs-comment"># rewrite ^((?!/(app1|app2)/*).)*$ /index.html last; </span><br>    <span class="hljs-attribute">rewrite</span><span class="hljs-regexp"> ^/app1/*</span>  /app1.html  <span class="hljs-literal">last</span>;<br>    <span class="hljs-attribute">rewrite</span><span class="hljs-regexp"> ^/app2/*</span>  /app2.html  <span class="hljs-literal">last</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="其他错误"><a href="#其他错误" class="headerlink" title="其他错误"></a>其他错误</h2><h3 id="Uncaught-SyntaxError-Unexpected-token"><a href="#Uncaught-SyntaxError-Unexpected-token" class="headerlink" title="Uncaught SyntaxError:Unexpected token"></a>Uncaught SyntaxError:Unexpected token</h3><p><code>vue.config.js</code>配置</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">publicPath</span>: <span class="hljs-string">&quot;/&quot;</span>,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AFfront-end/" class="category-chain-item">前端front-end</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Vue/">#Vue</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>vue多页面应用配置</div>
+      <div>https://www.chanx.tech/vue-pages/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>ischanx</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年10月27日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2023年6月25日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/WindowsTerminal/" title="你可能需要Windows Terminal">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">你可能需要Windows Terminal</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/2758254fdd97/" title="JS重难点梳理">
+                        <span class="hidden-mobile">JS重难点梳理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"ischanx/ischanx.github.io","repo-id":"MDEwOlJlcG9zaXRvcnkyNTkxODA5Njc=","category":"Announcements","category-id":"DIC_kwDOD3LJp84CXbNd","theme-light":"light","theme-dark":"dark","mapping":"title","reactions-enabled":1,"emit-metadata":0,"input-position":"top","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <span style="font-size: 12px;"> © 2019 - 2023 Chanx | Powered by  <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>&nbsp;&amp;&nbsp; <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> </span> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      粤ICP备20036386号
+    </a>
+  </span>
+  
+    
+      <span>
+        <a
+          href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44060602001609"
+          rel="nofollow noopener"
+          class="beian-police"
+          target="_blank"
+        >
+          
+            <span style="visibility: hidden; width: 0">|</span>
+            <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+          
+          <span>粤公网安备44060602001609号</span>
+        </a>
+      </span>
+    
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

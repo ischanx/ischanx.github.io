@@ -1,0 +1,958 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN,en,default" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/avatar.png">
+  <link rel="icon" href="/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="ischanx">
+  <meta name="keywords" content="chanx,chanxblog,前端,后台,tech,blog,hexo">
+  
+    <meta name="description" content="测试工具：  http:&#x2F;&#x2F;webpagetest.org&#x2F; Chrome-devtools-lighthouse …  性能关键词 First Contentful Paint：FCP，首屏渲染时间 Largest Contentful Paint : LCP，最大内容渲染时间 Speed Index：代表页面内容渲染所消耗的时间 Time to Interactive：TTI，用户与页面可交互">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网页性能优化 - 加载速度">
+<meta property="og:url" content="https://www.chanx.tech/2021/304b788fb6bc/">
+<meta property="og:site_name" content="Chanx &#39;s Blog">
+<meta property="og:description" content="测试工具：  http:&#x2F;&#x2F;webpagetest.org&#x2F; Chrome-devtools-lighthouse …  性能关键词 First Contentful Paint：FCP，首屏渲染时间 Largest Contentful Paint : LCP，最大内容渲染时间 Speed Index：代表页面内容渲染所消耗的时间 Time to Interactive：TTI，用户与页面可交互">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/tecgj_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/tea40_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/te9fs_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/teazg_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/vsekn_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/tea1q_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/tei5k_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/teemm_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/tep2m_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/teqcm_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/tef6b_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/v85up_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/teq8z_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/teoje_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/texwq_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/tet47_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/teqza_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/teq7g_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/ter49_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/tev2g_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/tf5yq_0.png">
+<meta property="article:published_time" content="2021-12-09T06:02:15.000Z">
+<meta property="article:modified_time" content="2023-06-25T14:54:51.928Z">
+<meta property="article:author" content="ischanx">
+<meta property="article:tag" content="性能优化">
+<meta property="article:tag" content="前端工程化">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://img.chanx.tech/i/2022/06/12/tecgj_0.png">
+  
+  
+  
+  <title>网页性能优化 - 加载速度 - Chanx &#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.chanx.tech","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#1890ff","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":true}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 30vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Chanx &#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="网页性能优化 - 加载速度"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        ischanx
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-12-09 14:02" pubdate>
+          2021年12月9日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          42 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">网页性能优化 - 加载速度</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <p>测试工具：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="http://webpagetest.org/">http://webpagetest.org/</a></li>
+<li>Chrome-devtools-lighthouse</li>
+<li>…</li>
+</ol>
+<h2 id="性能关键词"><a href="#性能关键词" class="headerlink" title="性能关键词"></a><strong>性能关键词</strong></h2><ol>
+<li>First Contentful Paint：<strong>FCP</strong>，首屏渲染时间</li>
+<li>Largest Contentful Paint : <strong>LCP</strong>，最大内容渲染时间</li>
+<li>Speed Index：代表页面内容渲染所消耗的时间</li>
+<li>Time to Interactive：TTI，用户与页面可交互时间</li>
+<li>Total Blocking Time：TBT，衡量从FCP到TTI之间主线程被阻塞时长的总和</li>
+</ol>
+<blockquote>
+<p>主线程执行的任务分为长任务和短任务。规定持续时间超过50ms的任务为长任务，低于50ms的任务为短任务。长任务中超过50ms的时间被认为是“阻塞”的，因此，TBT是所有长任务中阻塞时间的总和。</p>
+</blockquote>
+<ol start="6">
+<li>Cumulative Layout Shift：累计布局偏移，指网页布局在加载期间的偏移量</li>
+</ol>
+<p><strong>并发可以加快速度？</strong></p>
+<p>一个文件通过一个连接传输快，还是通过多个连接传输快？显然在「多连接传输的收益 &gt; 建立连接的成本」条件成立下，必然是多连接传输快，也就是<strong>并发</strong>。</p>
+<p>浏览器对同源HTTP&#x2F;1.1连接的并发个数有限制，典型值是6，测试表明Chrome和Firefox都是这个值。根据实际情况充分利用最大连接数，可以让速度更快，文件分片上传&#x2F;下载就是常见的情况。</p>
+<blockquote>
+<p>解决最大连接数有常见几种方案</p>
+<ul>
+<li>域名分片（就是多搞些不同的域名，打破同源条件）</li>
+<li>websocket（限制数相对较高）</li>
+<li><a target="_blank" rel="noopener" href="https://sanyuan0704.github.io/my_blog/http/017.html#%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8">HTTP&#x2F;2多路复用</a></li>
+</ul>
+</blockquote>
+<h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><p>下面评测结果均为Chrome浏览器开发者工具内置的<strong>LightHouse</strong>得出</p>
+<p>Q:  不同服务器硬件条件不一，LightHouse如何保证结果的稳定？</p>
+<p>A: 它会模拟出一个尽可能相同的环境，然后自动模拟用户访问。但是受当时的服务器状态和网络条件影响，仍然会有测试误差。</p>
+<h2 id="FCP-优化"><a href="#FCP-优化" class="headerlink" title="FCP 优化"></a>FCP 优化</h2><h3 id="Gzip动态压缩"><a href="#Gzip动态压缩" class="headerlink" title="Gzip动态压缩"></a>Gzip动态压缩</h3><ol>
+<li>这是未开启压缩进行测试的结果截图</li>
+</ol>
+<p><img src="https://img.chanx.tech/i/2022/06/12/tecgj_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/tea40_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>需要加载的各个文件都比较大，首次加载十分缓慢；二次加载时有缓存的支持，表现相对较好。</p>
+<p>一般网页加载使用的文件大小在200kb左右，以便利用<strong>并发请求</strong>加快网页的加载速度（HTTP&#x2F;1.1）。</p>
+<p>查看<code>Network</code>可以看到需要处理的文件<code>Coding.js</code>、<code>student.js</code>、<code>Personal.js</code>；</p>
+<p>查看产物目录下<code>report.html</code>，使用<code>Gzip</code>压缩可以大幅度减少文件的体积</p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/te9fs_0.png" srcset="/img/loading.gif" lazyload alt="img" style="zoom:50%;" /><img src="https://img.chanx.tech/i/2022/06/12/teazg_0.png" srcset="/img/loading.gif" lazyload alt="img" style="zoom:50%;" /></p>
+<ol start="2">
+<li>进行Nginx的配置，开启<code>Gzip</code>压缩</li>
+</ol>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs Nginx"><span class="hljs-section">http</span> &#123;<br>        <span class="hljs-attribute">gzip</span> <span class="hljs-literal">on</span>;<br>        <span class="hljs-attribute">gzip_min_length</span>  <span class="hljs-number">1k</span>;<br>        <span class="hljs-attribute">gzip_buffers</span>     <span class="hljs-number">4</span> <span class="hljs-number">16k</span>;<br>        <span class="hljs-attribute">gzip_http_version</span> <span class="hljs-number">1</span>.<span class="hljs-number">1</span>;<br>        <span class="hljs-attribute">gzip_comp_level</span> <span class="hljs-number">2</span>;<br>        <span class="hljs-attribute">gzip_types</span>     text/plain application/javascript application/x-javascript text/javascript text/css application/xml;<br>        <span class="hljs-attribute">gzip_vary</span> <span class="hljs-literal">on</span>;<br>        <span class="hljs-attribute">gzip_proxied</span>   expired <span class="hljs-literal">no</span>-cache <span class="hljs-literal">no</span>-store private auth;<br>        <span class="hljs-attribute">gzip_disable</span>   <span class="hljs-string">&quot;MSIE [1-6]\.&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>配置后，查看是否生效</li>
+</ol>
+<img src="https://img.chanx.tech/i/2022/06/12/vsekn_0.png" srcset="/img/loading.gif" lazyload alt="image-20220612005339741" style="zoom:50%;" />
+
+<ol start="4">
+<li><code>LightHouse</code>进行测试</li>
+</ol>
+<p><img src="https://img.chanx.tech/i/2022/06/12/tea1q_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/tei5k_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>开启Gzip压缩后测试：文件的体积大幅度减小，首屏加载时间FCP也从<strong>4s变为了1.2s</strong></p>
+<h3 id="Gzip静态压缩"><a href="#Gzip静态压缩" class="headerlink" title="Gzip静态压缩"></a>Gzip静态压缩</h3><p>上面提及了Gzip的动态压缩，在请求到达的时候匹配到相应的压缩规则进行压缩，尽可能的降低文件大小来提高加载速度，实际上就是一个用服务器<strong>计算性能换取网络性能</strong>的操作。</p>
+<p>假设缓存失效，大量访问涌入服务器将会占用大量的计算资源用以压缩；而静态资源文件没有变化，无需每次访问都重新压缩，于是就可以有「一次压缩，多次使用」的方法，即「<strong>静态压缩</strong>」。</p>
+<ol>
+<li>配置Nginx服务器，开启静态压缩</li>
+</ol>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs Nginx"><span class="hljs-section">http</span> &#123;<br>        <span class="hljs-attribute">gzip_static</span> <span class="hljs-literal">on</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>配置webpack，输出经过gzip压缩的产物</li>
+</ol>
+<p>安装<code>compression-webpack-plugin</code>插件<code>yarn add compression-webpack-plugin -D</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-comment">// vue-cli项目配置vue.config.js</span><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">CompressionWebpackPlugin</span> = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;compression-webpack-plugin&quot;</span>);<br><span class="hljs-keyword">const</span> productionGzipExtensions = <span class="hljs-regexp">/\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i</span>;<br><br><span class="hljs-attr">configureWebpack</span>: &#123;<br>  <span class="hljs-attr">plugins</span>: [<br>    <span class="hljs-keyword">new</span> <span class="hljs-title class_">CompressionWebpackPlugin</span>(&#123;<br>      <span class="hljs-attr">filename</span>: <span class="hljs-string">&quot;[path][base].gz&quot;</span>, <span class="hljs-comment">// 输出的文件名称</span><br>      <span class="hljs-attr">algorithm</span>: <span class="hljs-string">&quot;gzip&quot;</span>,    <span class="hljs-comment">// 压缩算法</span><br>      <span class="hljs-attr">test</span>: productionGzipExtensions, <span class="hljs-comment">// 文件名匹配规则</span><br>      <span class="hljs-attr">threshold</span>: <span class="hljs-number">10240</span>,    <span class="hljs-comment">// 压缩的文件最小值</span><br>      <span class="hljs-attr">minRatio</span>: <span class="hljs-number">0.8</span>,    <span class="hljs-comment">// 压缩的最小压缩率，压缩率较低的不压缩</span><br>      <span class="hljs-attr">deleteOriginalAssets</span>: <span class="hljs-literal">false</span>,    <span class="hljs-comment">// 压缩后删除源文件</span><br>    &#125;),<br>  ],<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>注意：出现<code>Cannot read property &#39;tapPromise&#39; of undefined</code>错误提示的请<strong>降低插件的版本</strong></p>
+<ol start="3">
+<li>部署服务器，查看是否生效</li>
+</ol>
+<p><img src="https://img.chanx.tech/i/2022/06/12/teemm_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ol start="4">
+<li>使用<code>LightHouse</code>进行测试</li>
+</ol>
+<p>加载速度没有明显的变化，想想应该是存在并发量才能观察出来差异，这里不再深入</p>
+<h3 id="第三方库按需引入"><a href="#第三方库按需引入" class="headerlink" title="第三方库按需引入"></a>第三方库按需引入</h3><p>使用element-ui、echarts等第三方库时，可以根据相应的文档使用按需引入，减少无用代码打包</p>
+<h3 id="第三方库使用CDN引入"><a href="#第三方库使用CDN引入" class="headerlink" title="第三方库使用CDN引入"></a>第三方库使用CDN引入</h3><p><code>student.js</code>的加载直接影响FCP，而<code>Coding.js</code>和<code>Personal.js</code>通过<code>prefetch</code>进行预加载</p>
+<p>所以想进一步提高首次加载速度，需要考虑优化<code>student.js</code></p>
+<p>vue-cli下自带prefetch和preload的优化，优化时可以<a target="_blank" rel="noopener" href="https://cli.vuejs.org/zh/guide/html-and-static-assets.html#prefetch">关闭相应的优化</a>便于查看首次加载文件</p>
+<p>单页应用时：config.plugins.delete(‘prefetch’)</p>
+<p>多页应用时：config.plugins.delete(‘prefetch-XXX’) 关闭对应页面XXX的prefetch插件</p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/tep2m_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ol>
+<li>查看<code>report.html</code>中<code>student.js</code>的构成</li>
+</ol>
+<p>可以看到<code>element-ui</code>的体积占用较高；结合项目实际使用情况，项目内已使用的组件较多，按需加载优化效果不明显；而组件库作为必要依赖且一般不会变化，可以考虑抽离<strong>使用模板HTML引入（又称CDN引入）</strong>。</p>
+<blockquote>
+<p>有什么作用？使用外部免费CDN，加载速度较快，可以减少服务器的负载；公共依赖，利用缓存可以提高加载速度；但是需要注意的是外部免费CDN存在宕机(见附录)等隐患，可以通过切换备用CDN恢复，若不能接受此类情况，也可以把文件放在自己的服务器上；</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs HTML"><span class="hljs-comment">&lt;!-- 引入多个CDN进行备份 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdn.staticfile.org/vue/2.6.14/vue.min.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdn.staticfile.org/element-ui/2.15.7/index.min.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript"></span><br><span class="language-javascript">  <span class="hljs-variable language_">window</span>.<span class="hljs-property">Vue</span> ||</span><br><span class="language-javascript">    <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">write</span>(</span><br><span class="language-javascript">      <span class="hljs-string">&#x27;&lt;script src=&quot;https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js&quot;&gt;&lt;\/script&gt;&#x27;</span></span><br><span class="language-javascript">    );</span><br><span class="language-javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript"></span><br><span class="language-javascript">  <span class="hljs-variable language_">window</span>.<span class="hljs-property">ELEMENT</span> ||</span><br><span class="language-javascript">    <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">write</span>(</span><br><span class="language-javascript">      <span class="hljs-string">&#x27;&lt;script src=&quot;https://cdn.jsdelivr.net/npm/element-ui@2.15.7/lib/index.min.js&quot;&gt;&lt;\/script&gt;&#x27;</span></span><br><span class="language-javascript">    );</span><br><span class="language-javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>配置webpack，在<code>build</code>的时候不打包<code>element-ui</code></li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-comment">// 入口文件</span><br><span class="hljs-keyword">import</span> <span class="hljs-variable constant_">ELEMENT</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;element-ui&quot;</span>;<br><span class="hljs-title class_">Vue</span>.<span class="hljs-title function_">use</span>(<span class="hljs-variable constant_">ELEMENT</span>);<br><br><span class="hljs-comment">// vue-cli项目下配置vue.config.js文件</span><br><span class="hljs-attr">configureWebpack</span>: &#123;<br>  <span class="hljs-attr">externals</span>: &#123;<br>    <span class="hljs-string">&quot;element-ui&quot;</span>: <span class="hljs-string">&quot;ELEMENT&quot;</span>,<br>  &#125;<br>&#125;<br><br><span class="hljs-comment">// 模板HTMl文件</span><br>&lt;head&gt;<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdn.jsdelivr.net/npm/element-ui@2.15.7/lib/index.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span><br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://cdn.jsdelivr.net/npm/element-ui@2.15.7/lib/theme-chalk/index.css&quot;</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;stylesheet&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/css&quot;</span> /&gt;</span></span><br>&lt;/head&gt;<br></code></pre></td></tr></table></figure>
+
+<p>此时需要注意项目中<strong>非Vue组件</strong>下引入组件库的方式都需要<strong>改为全部引入</strong>，避免webpack识别不了</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-comment">// 某js文件原来</span><br><span class="hljs-keyword">import</span> <span class="hljs-title class_">Message</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;element-ui/packages/message/src/main&quot;</span>;<br><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">MessageBox</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;element-ui&quot;</span>;<br><br><span class="hljs-comment">// 修改后</span><br><span class="hljs-keyword">import</span> <span class="hljs-title class_">ElEMENT</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;element-ui&quot;</span>;<br><span class="hljs-keyword">const</span> &#123; <span class="hljs-title class_">MessageBox</span>, <span class="hljs-title class_">Message</span> &#125; = <span class="hljs-title class_">ElEMENT</span>;<br><br><span class="hljs-comment">// 样式通过</span><br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>再次<code>build</code>，查看<code>report.html</code>文件，组件库成功抽离</li>
+</ol>
+<p><img src="https://img.chanx.tech/i/2022/06/12/teqcm_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ol start="4">
+<li>部署到服务器上，使用<code>LightHouse</code>进行测试</li>
+</ol>
+<p><img src="https://img.chanx.tech/i/2022/06/12/tef6b_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>利用外部CDN加载，首次加载速度FCP又有部分提高</p>
+<blockquote>
+<p>假设不使用外部CDN引入，加载速度会受限于服务器条件</p>
+</blockquote>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3><h3 id="路由懒加载"><a href="#路由懒加载" class="headerlink" title="路由懒加载"></a>路由懒加载</h3><p><code>build</code>时路由的每个组件各自打包，使用**<a target="_blank" rel="noopener" href="https://webpack.js.org/guides/code-splitting/#dynamic-imports">动态导入</a>**</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-comment">// router/index.js</span><br><span class="hljs-keyword">const</span> routes = [<br>&#123;<br>  <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;/login&quot;</span>,<br>  <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Login&quot;</span>,<br>  <span class="hljs-attr">component</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">import</span>(<span class="hljs-comment">/* webpackChunkName: &#x27;Login&#x27; */</span> <span class="hljs-string">&quot;@student/views/HomePage/Login&quot;</span>),<br>&#125;,<br>&#123;<br>  <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;/register&quot;</span>,<br>  <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Register&quot;</span>,<br>  <span class="hljs-attr">component</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">import</span>(<span class="hljs-comment">/* webpackChunkName: &#x27;Register&#x27; */</span> <span class="hljs-string">&quot;@student/views/HomePage/Register&quot;</span>),<br>&#125;,<br>]<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="异步组件"><a href="#异步组件" class="headerlink" title="异步组件"></a>异步组件</h3><p><a target="_blank" rel="noopener" href="https://cn.vuejs.org/v2/guide/components-dynamic-async.html#%E5%BC%82%E6%AD%A5%E7%BB%84%E4%BB%B6">动态组件 &amp; 异步组件 — Vue.js</a> 实际上也是上面提到的动态导入</p>
+<blockquote>
+<p>以Coding页面为例</p>
+</blockquote>
+<img src="https://img.chanx.tech/i/2022/06/12/v85up_0.png" srcset="/img/loading.gif" lazyload alt="image-20220612005244299" style="zoom:50%;" />
+
+<p>![](<a target="_blank" rel="noopener" href="https://img.chanx.tech/i/2022/06/12/tefc3_0.png">https://img.chanx.tech/i/2022/06/12/tefc3_0.png</a></p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/teq8z_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>在使用路由懒加载后，按路由级别对js进行了拆包，每一个路由都是一个新的js，但是仍然存在单个路由过多组件导致的包体积过大问题。像上图<code>Coding.js</code>经过<code>gzip压缩</code>后还有<code>2.9MB</code>，严重影响到页面的首次加载和渲染（进入Coding页需要等待2-3s加载），需要对这个文件进行下一步的优化；</p>
+<p>查看<code>report.html</code>，观察文件内各个内容的占用；</p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/teoje_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>首先看到整个文件可以大致分为四块：<code>sv.js</code>、<code>ace-builds</code>、<code>swiper</code>、<code>splitpanes</code>；分别代表的是可视化面板、编辑器、测试数据面板、分割面板组件。</p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/texwq_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><code>Coding.js</code>中引入可视化面板、堆栈面板、监视面板。它们在调试状态下并不会被使用到，也就是说页面首次加载时加载了部分无用内容。使用<strong>异步组件</strong>将这几个面板拆出来，让它们在进入调试状态下才去加载。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-keyword">const</span> <span class="hljs-title function_">DebugPane</span> = (<span class="hljs-params"></span>) =&gt;<br>  <span class="hljs-title function_">import</span>(<span class="hljs-comment">/* webpackChunkName: &#x27;debug-pane&#x27; */</span> <span class="hljs-string">&quot;@student/components/debug-button-bar.vue&quot;</span>);<br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">VisualPane</span> = (<span class="hljs-params"></span>) =&gt; (&#123;<br>  <span class="hljs-attr">component</span>: <span class="hljs-title function_">import</span>(<br>    <span class="hljs-comment">/* webpackChunkName: &#x27;visual-pane&#x27; */</span> <span class="hljs-string">&quot;@student/components/visual-components/visual-pane.vue&quot;</span><br>  ),<br>  <span class="hljs-attr">loading</span>: <span class="hljs-title class_">LoadingComponent</span>,<br>&#125;);<br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">stackVariateShow</span> = (<span class="hljs-params"></span>) =&gt; (&#123;<br>  <span class="hljs-attr">component</span>: <span class="hljs-title function_">import</span>(<br>    <span class="hljs-comment">/* webpackChunkName: &#x27;stack-pane&#x27; */</span> <span class="hljs-string">&quot;@student/components/stack-variate/data-controller.vue&quot;</span><br>  ),<br>  <span class="hljs-attr">loading</span>: <span class="hljs-title class_">LoadingComponent</span>,<br>&#125;);<br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">WatchPane</span> = (<span class="hljs-params"></span>) =&gt; (&#123;<br>  <span class="hljs-attr">component</span>: <span class="hljs-title function_">import</span>(<span class="hljs-comment">/* webpackChunkName: &#x27;watch-pane&#x27; */</span> <span class="hljs-string">&quot;@student/components/watch-pane.vue&quot;</span>),<br>  <span class="hljs-attr">loading</span>: <span class="hljs-title class_">LoadingComponent</span>,<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://img.chanx.tech/i/2022/06/12/tet47_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>拆完包之后我们打开页面验证一下：</p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/teqza_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/teq7g_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>可以看到在进入页面时多加载了几个js文件，单个文件的体积比较小，没有超过200K</p>
+<p>Coding页面的首次加载优化已经算完成了，继续看看调试状态下的加载</p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/ter49_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>点击调试后开始加载这几个组件，<code>visual-pane</code>因为<code>sv.js</code>的存在所以体积还是相对较大；</p>
+<p>后续还可以对<code>sv.js</code>进行优化：使用CDN引入、在<code>sv.js</code>构建的时候拆成多个包</p>
+<blockquote>
+<p>这里没有对<code>sv.js</code>进行下一步优化的原因是：</p>
+<ul>
+<li><code>sv.js</code>处于快速迭代状态，为了方便该模块开发者测试，所以暂不考虑构建成多个包；</li>
+<li>使用CDN引入，一般适合变化不多的静态资源<br>当然，还是有方案解决的，感兴趣可以了解一下<code>monorepo</code>或者其他，这里不再赘述</li>
+</ul>
+</blockquote>
+<p>拆包时需要注意拆出的模块是否存在代码耦合，比如说加载完成后执行某个函数，这是需要进行处理的：import(“XXX”).then(() &#x3D;&gt; { console.log(“加载完成执行的函数”); })</p>
+<p>部署后使用LighntHouse进行测试</p>
+<p><img src="https://img.chanx.tech/i/2022/06/12/tev2g_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>比较优化前后的测试结果：FCP从1.3s到1.0s，LCP从8s到2.7s</p>
+<h3 id="使用HTTP-x2F-2"><a href="#使用HTTP-x2F-2" class="headerlink" title="使用HTTP&#x2F;2"></a>使用HTTP&#x2F;2</h3><p>HTTP&#x2F;2下二进制和流的特性可以加快网站的访问速度，需要服务器和浏览器的支持</p>
+<p>目前主流浏览器均已支持HTTP&#x2F;2，服务器完成支持即可，需要配置<strong>HTTPS</strong>、<strong>Nginx</strong></p>
+<h3 id="SourceMap"><a href="#SourceMap" class="headerlink" title="SourceMap"></a>SourceMap</h3><p>生产环境把<code>sourcemap</code>关了也能减小部分文件大小</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>全文主要围绕网页加载速度，选定<strong>单页应用</strong>（SPA）常见的<strong>首屏渲染</strong>（FCP）问题作为优化点。</p>
+<p>上面的几个点基本都在围绕「文件大小」进行优化，尽可能的减少单个文件体积，实际上还有隐藏在打包阶段进行的<code>tree shaking(删除无用代码)</code>、<code>uglily（压缩）</code>、内联资源等进行的优化；</p>
+<p>另外就是算法、网络通信上提升传输效率，像上面提到的gzip、http2、cdn，还有dns、缓存等。</p>
+<p>更进一步，网页加载速度不只是资源文件的下载速度，其实还包括下载后资源文件的解析、渲染等，这些牵扯到浏览器的运行机制，优化难度更大更复杂。</p>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><ol>
+<li>CDN利用缓存提高速度，而不同CDN之间的缓存不能共用，有没有什么好的办法？</li>
+</ol>
+<blockquote>
+<p>若浏览器支持类似contenthash形式的缓存，那么所有第三方缓存将会打通，所有引入第三方的网站访问速度都会提升。</p>
+</blockquote>
+<p>路由懒加载和异步组件实际上都是将单文件变为多文件，即「拆包」；</p>
+<ol>
+<li>那是不是首页变快了，后面每次点击都需要等待加载？用户体验不是更差？</li>
+</ol>
+<blockquote>
+<p>这个跟应用实际情况有关系。拆包之后按需加载确实加快了首次访问，后续要等待加载这个却是可以优化的。<a target="_blank" rel="noopener" href="https://cli.vuejs.org/zh/guide/html-and-static-assets.html#prefetch">Vue-cli项目打包默认加载prefetch和preload插件</a>，利用<code>**prefetch**</code>和<code>**preload**</code>属性，浏览器可以在后台进行无感的预加载，后续加载的时候就是使用<code>cache</code>了，反而让用户体验变得更好。当然，不排除某些情况下预加载没完成，这个时候做一个<code>loading</code>状态也不会影响体验。</p>
+</blockquote>
+<ol>
+<li>拆包那么爽，那我全拆了不就行了吗？</li>
+</ol>
+<blockquote>
+<p>拆包前先考虑原来的代码是否已经优化过，删除无用的代码和模块，无必要的拆包会增加文件数量和维护成本。如果拆出的包过小，反而会影响加载速度（HTTP&#x2F;1.1），不然为什么小图片加载会有<strong>雪碧图</strong>方案呢？</p>
+</blockquote>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p>2021-12-20</p>
+<p>jsdelivr挂掉<a target="_blank" rel="noopener" href="https://www.v2ex.com/t/823281">https://www.v2ex.com/t/823281</a></p>
+<img src="https://img.chanx.tech/i/2022/06/12/tf5yq_0.png" srcset="/img/loading.gif" lazyload alt="img" style="zoom: 33%;" />
+
+<p>国内节点挂了至少八小时，影响了BootCDN（笑）、echarts、部分npm包等…很严重</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AFfront-end/" class="category-chain-item">前端front-end</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">#性能优化</a>
+      
+        <a href="/tags/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/">#前端工程化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>网页性能优化 - 加载速度</div>
+      <div>https://www.chanx.tech/2021/304b788fb6bc/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>ischanx</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年12月9日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2023年6月25日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/darkmode/" title="网页DarkMode">
+                        <span class="hidden-mobile">网页DarkMode</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"ischanx/ischanx.github.io","repo-id":"MDEwOlJlcG9zaXRvcnkyNTkxODA5Njc=","category":"Announcements","category-id":"DIC_kwDOD3LJp84CXbNd","theme-light":"light","theme-dark":"dark","mapping":"title","reactions-enabled":1,"emit-metadata":0,"input-position":"top","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <span style="font-size: 12px;"> © 2019 - 2023 Chanx | Powered by  <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>&nbsp;&amp;&nbsp; <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> </span> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      粤ICP备20036386号
+    </a>
+  </span>
+  
+    
+      <span>
+        <a
+          href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44060602001609"
+          rel="nofollow noopener"
+          class="beian-police"
+          target="_blank"
+        >
+          
+            <span style="visibility: hidden; width: 0">|</span>
+            <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+          
+          <span>粤公网安备44060602001609号</span>
+        </a>
+      </span>
+    
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

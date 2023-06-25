@@ -1,0 +1,848 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN,en,default" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/avatar.png">
+  <link rel="icon" href="/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="ischanx">
+  <meta name="keywords" content="chanx,chanxblog,前端,后台,tech,blog,hexo">
+  
+    <meta name="description" content="下文安装通过「war安装包」安装，使用Docker安装方式可忽略本文   安装运行 安装Java环境 下载Jenkins的war包，下载地址 运行war包java -jar jenkins.war --httpPort&#x3D;8080 打开http:&#x2F;&#x2F;localhost:8080，等待Jenkins启动 初次进入页面会要求输入初始密码，初始密码可以启动时在shell看到    跟随提示进行设置。设置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端工程化之Jenkins">
+<meta property="og:url" content="https://www.chanx.tech/2021/7dfe4446384f/">
+<meta property="og:site_name" content="Chanx &#39;s Blog">
+<meta property="og:description" content="下文安装通过「war安装包」安装，使用Docker安装方式可忽略本文   安装运行 安装Java环境 下载Jenkins的war包，下载地址 运行war包java -jar jenkins.war --httpPort&#x3D;8080 打开http:&#x2F;&#x2F;localhost:8080，等待Jenkins启动 初次进入页面会要求输入初始密码，初始密码可以启动时在shell看到    跟随提示进行设置。设置">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nvzng_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nw0j5_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nw3sc_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nw2z6_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nw2rp_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nw3bb_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nvyl8_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nw8qr_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nwa3q_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nwc4b_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nw8ep_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nw6ru_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nwgrz_0.png">
+<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/nwhz9_0.png">
+<meta property="article:published_time" content="2021-11-14T14:50:00.000Z">
+<meta property="article:modified_time" content="2023-06-25T14:54:51.928Z">
+<meta property="article:author" content="ischanx">
+<meta property="article:tag" content="前端工程化">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://img.chanx.tech/i/2022/06/12/nvzng_0.png">
+  
+  
+  
+  <title>前端工程化之Jenkins - Chanx &#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.chanx.tech","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#1890ff","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":true}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 30vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Chanx &#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="前端工程化之Jenkins"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        ischanx
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-11-14 22:50" pubdate>
+          2021年11月14日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          9 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">前端工程化之Jenkins</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>下文安装通过「war安装包」安装，使用Docker安装方式可忽略本文</p>
+</blockquote>
+<p><img src="https://img.chanx.tech/i/2022/06/12/nvzng_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="安装运行"><a href="#安装运行" class="headerlink" title="安装运行"></a>安装运行</h1><ol>
+<li>安装Java环境</li>
+<li>下载Jenkins的war包，<a target="_blank" rel="noopener" href="https://www.jenkins.io/zh/download/">下载地址</a></li>
+<li>运行war包<code>java -jar jenkins.war --httpPort=8080</code></li>
+<li>打开<code>http://localhost:8080</code>，等待Jenkins启动</li>
+<li>初次进入页面会要求输入初始密码，初始密码可以启动时在<code>shell</code>看到</li>
+</ol>
+<p><img src="https://img.chanx.tech/i/2022/06/12/nw0j5_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ol>
+<li>跟随提示进行设置。设置管理员账户和密码、安装插件、设置网址等</li>
+<li>完成</li>
+</ol>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><h3 id="推荐插件"><a href="#推荐插件" class="headerlink" title="推荐插件"></a>推荐插件</h3><table>
+<thead>
+<tr>
+<th><a target="_blank" rel="noopener" href="https://plugins.jenkins.io/envinject">Environment Injector Plugin</a></th>
+<th>用于注入环境变量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://plugins.jenkins.io/git-parameter">Git Parameter Plug-In</a></td>
+<td>构建时选择git参数</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://plugins.jenkins.io/publish-over-ftp">Publish Over FTP</a></td>
+<td>执行FTP相关操作</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://plugins.jenkins.io/publish-over-ssh">Publish Over SSH</a></td>
+<td>执行Shell相关操作</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://plugins.jenkins.io/nodejs">NodeJS Plugin</a></td>
+<td>安装Nodejs环境</td>
+</tr>
+</tbody></table>
+<h1 id=""><a href="#" class="headerlink" title=""></a></h1><h3 id="配置Git"><a href="#配置Git" class="headerlink" title="配置Git"></a>配置Git</h3><ol>
+<li>Jenkins服务器生成Git密钥，<a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v2/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-%E7%94%9F%E6%88%90-SSH-%E5%85%AC%E9%92%A5">Git - 生成 SSH 公钥</a></li>
+<li>将<code>id_dsa</code>私钥配置到Jenkins凭证当中</li>
+</ol>
+<p><img src="https://img.chanx.tech/i/2022/06/12/nw3sc_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ol>
+<li>将<code>id_dsa.pub</code>公钥配置到Git Server中</li>
+</ol>
+<p><img src="https://img.chanx.tech/i/2022/06/12/nw2z6_0.png" srcset="/img/loading.gif" lazyload alt="img"><img src="https://img.chanx.tech/i/2022/06/12/nw2rp_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="配置FTP-Server"><a href="#配置FTP-Server" class="headerlink" title="配置FTP Server"></a>配置FTP Server</h3><p><img src="https://img.chanx.tech/i/2022/06/12/nw3bb_0.png" srcset="/img/loading.gif" lazyload alt="img"><img src="https://img.chanx.tech/i/2022/06/12/nvyl8_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="配置Node环境"><a href="#配置Node环境" class="headerlink" title="配置Node环境"></a>配置Node环境</h3><p><img src="https://img.chanx.tech/i/2022/06/12/nw8qr_0.png" srcset="/img/loading.gif" lazyload alt="img"><img src="https://img.chanx.tech/i/2022/06/12/nwa3q_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h1 id="尝试新建一个构建项目"><a href="#尝试新建一个构建项目" class="headerlink" title="尝试新建一个构建项目"></a>尝试新建一个构建项目</h1><ol>
+<li><p>新建构建项目，并进入配置页面</p>
+</li>
+<li><p>配置「构建前选择代码分支」（需要安装插件）</p>
+</li>
+</ol>
+<p><img src="https://img.chanx.tech/i/2022/06/12/nwc4b_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ol start="3">
+<li>配置Git仓库地址，没有凭证则需要添加</li>
+</ol>
+<p><img src="https://img.chanx.tech/i/2022/06/12/nw8ep_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ol start="4">
+<li>配置构建命令，通过Shell命令执行</li>
+</ol>
+<p><img src="https://img.chanx.tech/i/2022/06/12/nw6ru_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ol start="5">
+<li>构建后进行打包保存和FTP服务器部署</li>
+</ol>
+<p><img src="https://img.chanx.tech/i/2022/06/12/nwgrz_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ol start="6">
+<li>保存配置，执行构建</li>
+</ol>
+<p><img src="https://img.chanx.tech/i/2022/06/12/nwhz9_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ol start="7">
+<li>等待构建完成</li>
+</ol>
+<p>一个简单的前端项目构建流程就是上面这些，除此之外可以通过Shell、插件、Jenkins自带的环境变量等实现更定制化的功能。比如<code>node_modules</code>的缓存提高构建速度、通过构建参数执行不同环境的打包。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs Bash"><span class="hljs-comment"># 通过判断package.json的md5来确认是否需要yarn安装依赖</span><br>   CACHE_FOLDER=<span class="hljs-variable">$&#123;HOME&#125;</span>/md5_cache/md5<br>   <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;EXECUTOR_NUMBER: <span class="hljs-variable">$&#123;EXECUTOR_NUMBER&#125;</span>&quot;</span><br>   MD5_FILE_NAME=package-json_<span class="hljs-variable">$&#123;EXECUTOR_NUMBER&#125;</span>.<span class="hljs-built_in">md5sum</span><br><br>   [ -d <span class="hljs-variable">$&#123;CACHE_FOLDER&#125;</span> ] || <span class="hljs-built_in">mkdir</span> -p <span class="hljs-variable">$&#123;CACHE_FOLDER&#125;</span><br>   <span class="hljs-built_in">ls</span> <span class="hljs-variable">$&#123;CACHE_FOLDER&#125;</span><br><br>   <span class="hljs-keyword">if</span> [ -f <span class="hljs-variable">$&#123;CACHE_FOLDER&#125;</span>/<span class="hljs-variable">$&#123;MD5_FILE_NAME&#125;</span> ];<span class="hljs-keyword">then</span><br>     <span class="hljs-built_in">cp</span> <span class="hljs-variable">$&#123;CACHE_FOLDER&#125;</span>/<span class="hljs-variable">$&#123;MD5_FILE_NAME&#125;</span> <span class="hljs-variable">$&#123;MD5_FILE_NAME&#125;</span><br>     <span class="hljs-built_in">md5sum</span> package.json<br>     <span class="hljs-built_in">cat</span> <span class="hljs-variable">$&#123;MD5_FILE_NAME&#125;</span><br>     <span class="hljs-built_in">md5sum</span> -c <span class="hljs-variable">$&#123;MD5_FILE_NAME&#125;</span> || yarn<br>   <span class="hljs-keyword">else</span><br>     <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;No md5sum backup&quot;</span><br>     yarn<br>   <span class="hljs-keyword">fi</span><br><br>   <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;create new md5sum backup&quot;</span><br>   <span class="hljs-built_in">md5sum</span> package.json<br>   <span class="hljs-built_in">md5sum</span> package.json &gt; <span class="hljs-variable">$&#123;MD5_FILE_NAME&#125;</span><br>   <span class="hljs-built_in">cp</span> <span class="hljs-variable">$&#123;MD5_FILE_NAME&#125;</span> <span class="hljs-variable">$&#123;CACHE_FOLDER&#125;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p><strong>总结：相比于Gitlab，Jenkins在代码管理并不擅长，更多是侧重于构建部署。</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AFfront-end/" class="category-chain-item">前端front-end</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/">#前端工程化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>前端工程化之Jenkins</div>
+      <div>https://www.chanx.tech/2021/7dfe4446384f/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>ischanx</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年11月14日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2023年6月25日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/darkmode/" title="网页DarkMode">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">网页DarkMode</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/linux-minecraft-server/" title="Linux下部署Minecraft服务器">
+                        <span class="hidden-mobile">Linux下部署Minecraft服务器</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"ischanx/ischanx.github.io","repo-id":"MDEwOlJlcG9zaXRvcnkyNTkxODA5Njc=","category":"Announcements","category-id":"DIC_kwDOD3LJp84CXbNd","theme-light":"light","theme-dark":"dark","mapping":"title","reactions-enabled":1,"emit-metadata":0,"input-position":"top","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <span style="font-size: 12px;"> © 2019 - 2023 Chanx | Powered by  <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>&nbsp;&amp;&nbsp; <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> </span> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      粤ICP备20036386号
+    </a>
+  </span>
+  
+    
+      <span>
+        <a
+          href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44060602001609"
+          rel="nofollow noopener"
+          class="beian-police"
+          target="_blank"
+        >
+          
+            <span style="visibility: hidden; width: 0">|</span>
+            <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+          
+          <span>粤公网安备44060602001609号</span>
+        </a>
+      </span>
+    
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

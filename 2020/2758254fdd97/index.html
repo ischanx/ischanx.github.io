@@ -1,0 +1,787 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN,en,default" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/avatar.png">
+  <link rel="icon" href="/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="ischanx">
+  <meta name="keywords" content="chanx,chanxblog,前端,后台,tech,blog,hexo">
+  
+    <meta name="description" content="第6章 面向对象的程序设计理解对象属性类型定义多个属性读取属性的特性创建对象工厂模式构造函数模式原型模式组合使用构造函数模式和原型模式动态原型模式寄生构造函数模式稳妥构造函数模式继承原型链借用构造函数组合继承原型式继承寄生式继承寄生组合式继承第7章 函数表达式递归闭包闭包：函数中有权访问另一个函数作用域中的变量 闭包与变量123456789function createFunctions()&amp;#1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS重难点梳理">
+<meta property="og:url" content="https://www.chanx.tech/2020/2758254fdd97/">
+<meta property="og:site_name" content="Chanx &#39;s Blog">
+<meta property="og:description" content="第6章 面向对象的程序设计理解对象属性类型定义多个属性读取属性的特性创建对象工厂模式构造函数模式原型模式组合使用构造函数模式和原型模式动态原型模式寄生构造函数模式稳妥构造函数模式继承原型链借用构造函数组合继承原型式继承寄生式继承寄生组合式继承第7章 函数表达式递归闭包闭包：函数中有权访问另一个函数作用域中的变量 闭包与变量123456789function createFunctions()&amp;#1">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-22T12:38:32.000Z">
+<meta property="article:modified_time" content="2023-06-25T14:54:51.928Z">
+<meta property="article:author" content="ischanx">
+<meta property="article:tag" content="Javascript">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>JS重难点梳理 - Chanx &#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.chanx.tech","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#1890ff","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":true}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 30vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Chanx &#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="JS重难点梳理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        ischanx
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-10-22 20:38" pubdate>
+          2020年10月22日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          18 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">JS重难点梳理</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="第6章-面向对象的程序设计"><a href="#第6章-面向对象的程序设计" class="headerlink" title="第6章 面向对象的程序设计"></a>第6章 面向对象的程序设计</h2><h3 id="理解对象"><a href="#理解对象" class="headerlink" title="理解对象"></a>理解对象</h3><h4 id="属性类型"><a href="#属性类型" class="headerlink" title="属性类型"></a>属性类型</h4><h4 id="定义多个属性"><a href="#定义多个属性" class="headerlink" title="定义多个属性"></a>定义多个属性</h4><h4 id="读取属性的特性"><a href="#读取属性的特性" class="headerlink" title="读取属性的特性"></a>读取属性的特性</h4><h3 id="创建对象"><a href="#创建对象" class="headerlink" title="创建对象"></a>创建对象</h3><h4 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h4><h4 id="构造函数模式"><a href="#构造函数模式" class="headerlink" title="构造函数模式"></a>构造函数模式</h4><h4 id="原型模式"><a href="#原型模式" class="headerlink" title="原型模式"></a>原型模式</h4><h4 id="组合使用构造函数模式和原型模式"><a href="#组合使用构造函数模式和原型模式" class="headerlink" title="组合使用构造函数模式和原型模式"></a>组合使用构造函数模式和原型模式</h4><h4 id="动态原型模式"><a href="#动态原型模式" class="headerlink" title="动态原型模式"></a>动态原型模式</h4><h4 id="寄生构造函数模式"><a href="#寄生构造函数模式" class="headerlink" title="寄生构造函数模式"></a>寄生构造函数模式</h4><h4 id="稳妥构造函数模式"><a href="#稳妥构造函数模式" class="headerlink" title="稳妥构造函数模式"></a>稳妥构造函数模式</h4><h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><h4 id="原型链"><a href="#原型链" class="headerlink" title="原型链"></a>原型链</h4><h4 id="借用构造函数"><a href="#借用构造函数" class="headerlink" title="借用构造函数"></a>借用构造函数</h4><h4 id="组合继承"><a href="#组合继承" class="headerlink" title="组合继承"></a>组合继承</h4><h4 id="原型式继承"><a href="#原型式继承" class="headerlink" title="原型式继承"></a>原型式继承</h4><h4 id="寄生式继承"><a href="#寄生式继承" class="headerlink" title="寄生式继承"></a>寄生式继承</h4><h4 id="寄生组合式继承"><a href="#寄生组合式继承" class="headerlink" title="寄生组合式继承"></a>寄生组合式继承</h4><h2 id="第7章-函数表达式"><a href="#第7章-函数表达式" class="headerlink" title="第7章 函数表达式"></a>第7章 函数表达式</h2><h3 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h3><h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p><strong>闭包</strong>：函数中有权访问另一个函数作用域中的变量</p>
+<h4 id="闭包与变量"><a href="#闭包与变量" class="headerlink" title="闭包与变量"></a>闭包与变量</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">createFunctions</span>(<span class="hljs-params"></span>)&#123;<br>	<span class="hljs-keyword">var</span> result = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>();<br>	<span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++)&#123;<br>		result[i] = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>			<span class="hljs-keyword">return</span> i;<br>		&#125;;<br>	&#125;<br>	<span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>上述例子每个函数都引用着保存变量i的同一个变量对象，所以每一个函数内部i的值都是10</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">createFunctions</span>(<span class="hljs-params"></span>)&#123;<br>	<span class="hljs-keyword">var</span> result = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>();<br>	<span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++)&#123;<br>		result[i] = (<span class="hljs-keyword">function</span>(<span class="hljs-params">num</span>)&#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>                <span class="hljs-keyword">return</span> num;<br>            &#125;<br>		&#125;)(i);<br>	&#125;<br>	<span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这个例子中我们没有直接把闭包赋值给数组，二十定义一个匿名函数并立即执行。由于函数参数式<strong>按值传递</strong>的，所以就会将变量i的当前值复制给参数num。而在这个匿名函数内部，又创建并返回了一个访问num的闭包。这样一来，result数组中的每个函数都有自己的num变量的一个副本，因此就可以返回各自不同的数值</p>
+<h4 id="关于this对象"><a href="#关于this对象" class="headerlink" title="关于this对象"></a>关于this对象</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> name = <span class="hljs-string">&quot;The Window&quot;</span>;<br><br><span class="hljs-keyword">var</span> object = &#123;<br>	name : <span class="hljs-string">&quot;My Object&quot;</span>,<br>	<span class="hljs-attr">getNameFunc</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>			<span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span>;<br>		&#125;<br>	&#125;<br>&#125;;<br><br><span class="hljs-title function_">alert</span>(object.<span class="hljs-title function_">getNameFunc</span>()());	<span class="hljs-comment">//&quot;The Window&quot;(在非严格模式下)</span><br></code></pre></td></tr></table></figure>
+<p>每个函数在被调用的时候，其活动对象都会自动取得两个特殊变量：this和arguments。内部函数在搜索这两个变量时，只会搜索到其活动对象为止，因此永远不可能直接访问外部函数中的这两个变量</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> name = <span class="hljs-string">&quot;The Window&quot;</span>;<br><br><span class="hljs-keyword">var</span> object = &#123;<br>	name : <span class="hljs-string">&quot;My Object&quot;</span>,<br>	<span class="hljs-attr">getNameFunc</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>        <span class="hljs-keyword">var</span> _this = <span class="hljs-variable language_">this</span>;<br>		<span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>			<span class="hljs-keyword">return</span> _this.<span class="hljs-property">name</span>;<br>		&#125;<br>	&#125;<br>&#125;;<br><br><span class="hljs-title function_">alert</span>(object.<span class="hljs-title function_">getNameFunc</span>()());	<span class="hljs-comment">//&quot;My Object&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>另外，在几种特殊情况下，this的值可能会意外地改变。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> name = <span class="hljs-string">&quot;The Window&quot;</span>;<br><span class="hljs-keyword">var</span> object = &#123;<br>	name : <span class="hljs-string">&quot;My Object&quot;</span>,<br>	<span class="hljs-attr">getName</span>: <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span>;<br>	&#125;<br>&#125;;<br><br><br>object.<span class="hljs-title function_">getName</span>();	<span class="hljs-comment">//&quot;My Object&quot;</span><br>(object.<span class="hljs-property">getName</span>)();	<span class="hljs-comment">//&quot;My Object&quot;</span><br>(object.<span class="hljs-property">getName</span> = object.<span class="hljs-property">getName</span>)();	<span class="hljs-comment">//&quot;The Window&quot;，在非严格模式下</span><br></code></pre></td></tr></table></figure>
+
+<p>第一和第二行代码其实是一样的，第三行代码先执行赋值语句再调用赋值后的结果。因为这个赋值表达式的值是函数本身，所以this的值得不到维持。常见情况下并不会出现二三两种写法，只是为了更好地说明细微的语法变化可能会导致this的值发生改变。</p>
+<h4 id="内存泄漏"><a href="#内存泄漏" class="headerlink" title="内存泄漏"></a>内存泄漏</h4><p><code>IE9</code>之前的版本对<code>JScript</code>对象和<code>COM</code>对象使用不同的垃圾收集例程，因此闭包在IE的这些版本里会导致一些特殊问题。具体来说，如果闭包的作用域链中保存着一个<code>HTML</code>元素，那么就意味着该元素将会无法被销毁</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">assignHandler</span>(<span class="hljs-params"></span>)&#123;<br>	<span class="hljs-keyword">var</span> element = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&quot;someElement&quot;</span>);<br>	element.<span class="hljs-property">onclick</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>		<span class="hljs-title function_">alert</span>(element.<span class="hljs-property">id</span>)<br>	&#125;;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>以上代码创建了一个作为<code>element</code>元素事件处理程序的闭包，而这个闭包则又创建了一个循环引用。由于匿名函数保存了一个对<code>assignHandler()</code>的活动对象的引用，因此就会导致无法减少element的引用数。只要匿名函数存在，<code>element</code>的引用数至少也是1，因此它所占用的内存就永远不会被回收</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">assignHandler</span>(<span class="hljs-params"></span>)&#123;<br>	<span class="hljs-keyword">var</span> element = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&quot;someElement&quot;</span>);<br>    <span class="hljs-keyword">var</span> id = element.<span class="hljs-property">id</span>;<br>	element.<span class="hljs-property">onclick</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>		<span class="hljs-title function_">alert</span>(id)<br>	&#125;;<br>    element = <span class="hljs-literal">null</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在上面的代码中，通过把<code>element.id</code>的一个副本保存在一个变量中，并且在闭包中引用该变量消除了循环引用。但仅仅做到这一步还是不能解决内存泄漏的问题。必须要记住：<strong>闭包会引用包含函数的整个活动对象</strong>，而其中包含着<code>element</code>。即使闭包不直接引用<code>element</code>，包含函数的活动对象中也仍然会保存一个引用。因此，有必要把<code>element</code>设置为<code>null</code>。这样就能接触对<code>DOM</code>对象的引用，顺利减少其因引用数，确保正常回收其占用的内存。</p>
+<h3 id="模仿块级作用域"><a href="#模仿块级作用域" class="headerlink" title="模仿块级作用域"></a>模仿块级作用域</h3><p>在Javascript中没有块级作用域的概念（ES6中出现了<code>let</code>）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript">(<span class="hljs-keyword">function</span> <span class="hljs-title function_">output</span>(<span class="hljs-params"></span>)&#123;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++)&#123;<br>    	<span class="hljs-title function_">alert</span>(i);<br>    &#125;<br>    <span class="hljs-title function_">alert</span>(i);	<span class="hljs-comment">//&quot;5&quot;</span><br>&#125;)();<br></code></pre></td></tr></table></figure>
+
+<p>在Java、C++等语言中，变量i只会在for循环的语句中有定义，循环一旦结束，变量i就被销毁。</p>
+<p>可是在Javascript中变量i是定义在<code>output()</code>的活动对象中的，因此从它有定义开始，就可以在函数内部的任意处访问它</p>
+<p><strong>匿名函数可以用来模仿块级作用域（又称私有作用域）并避免这个问题</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>	<span class="hljs-comment">//这里是块级作用域</span><br>&#125;();	<span class="hljs-comment">//出错</span><br></code></pre></td></tr></table></figure>
+
+<p>Javascript将function关键字当作一个函数声明的开始，而函数声明后面不能跟圆括号。然而，<strong>函数表达式的后面可以跟圆括号</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript">(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>	<span class="hljs-comment">//这里是块级作用域</span><br>&#125;)();<br></code></pre></td></tr></table></figure>
+
+<p>无论在什么地方，要临时使用变量就可以使用私有作用域</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">output</span>(<span class="hljs-params">count</span>)&#123;<br>    (<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; count; i++)&#123;<br>    		<span class="hljs-title function_">alert</span>(i);<br>    	&#125;<br>    &#125;)();<br>    <span class="hljs-title function_">alert</span>(i);	<span class="hljs-comment">//导致一个错误</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在for循环的外部插入了一个私有作用域。在匿名函数中定义的任何变量都会在执行结束时被销毁，因此变量i只能在循环中使用。而在私有作用域中能够访问变量count，是因为这个匿名函数是一个闭包，它能够访问包含作用域内的所有变量</p>
+<h3 id="私有变量"><a href="#私有变量" class="headerlink" title="私有变量"></a>私有变量</h3><h4 id="静态私有变量"><a href="#静态私有变量" class="headerlink" title="静态私有变量"></a>静态私有变量</h4><h4 id="模块模式"><a href="#模块模式" class="headerlink" title="模块模式"></a>模块模式</h4><h4 id="增强的模块模式"><a href="#增强的模块模式" class="headerlink" title="增强的模块模式"></a>增强的模块模式</h4><h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AC%94%E8%AE%B0note/" class="category-chain-item">笔记note</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Javascript/">#Javascript</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>JS重难点梳理</div>
+      <div>https://www.chanx.tech/2020/2758254fdd97/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>ischanx</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2020年10月22日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2023年6月25日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/vue-pages/" title="vue多页面应用配置">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">vue多页面应用配置</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/a030ee3fe414/" title="JS原型链那些事">
+                        <span class="hidden-mobile">JS原型链那些事</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"ischanx/ischanx.github.io","repo-id":"MDEwOlJlcG9zaXRvcnkyNTkxODA5Njc=","category":"Announcements","category-id":"DIC_kwDOD3LJp84CXbNd","theme-light":"light","theme-dark":"dark","mapping":"title","reactions-enabled":1,"emit-metadata":0,"input-position":"top","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <span style="font-size: 12px;"> © 2019 - 2023 Chanx | Powered by  <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>&nbsp;&amp;&nbsp; <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> </span> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      粤ICP备20036386号
+    </a>
+  </span>
+  
+    
+      <span>
+        <a
+          href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44060602001609"
+          rel="nofollow noopener"
+          class="beian-police"
+          target="_blank"
+        >
+          
+            <span style="visibility: hidden; width: 0">|</span>
+            <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+          
+          <span>粤公网安备44060602001609号</span>
+        </a>
+      </span>
+    
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
