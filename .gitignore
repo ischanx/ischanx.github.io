@@ -1,10 +1,8 @@
+.DS_Store
+Thumbs.db
+db.json
+*.log
 node_modules/
-gb-pages/
-docs/.vuepress/dist/
-docs/.vuepress/public/images
-.vscode/
-.temp/
-*.exe
-*.cpp
-.idea
-dist
+public/
+.deploy*/
+_multiconfig.yml
