@@ -339,7 +339,7 @@
     <div id="giscus" class="giscus"></div>
     <script type="text/javascript">
       Fluid.utils.loadComments('#giscus', function() {
-        var options = {"repo":"ischanx/ischanx.github.io","repo-id":"MDEwOlJlcG9zaXRvcnkyNTkxODA5Njc=","category":"Announcements","category-id":"DIC_kwDOD3LJp84CXbNd","theme-light":"light","theme-dark":"dark","mapping":"title","reactions-enabled":1,"emit-metadata":0,"input-position":"top","lang":"zh-CN"};
+        var options = {"repo":"ischanx/ischanx.github.io","repo-id":"${{ secrets.GITCUS_REPO_ID }}","category":"Announcements","category-id":"${{ secrets.GITCUS_CATOGORY_ID }}","theme-light":"light","theme-dark":"dark","mapping":"title","reactions-enabled":1,"emit-metadata":0,"input-position":"top","lang":"zh-CN"};
         var attributes = {};
         for (let option in options) {
           if (!option.startsWith('theme-')) {
