@@ -1,5 +1,5 @@
 ---
-title: '打开新标签页与noopener'
+title: '重新认识 window.open()'
 date: 2021-08-15
 tags:
 - 'Javascript'
