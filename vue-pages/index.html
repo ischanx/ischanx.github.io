@@ -25,18 +25,18 @@
 <meta property="og:site_name" content="Chanx &#39;s Blog">
 <meta property="og:description" content="首先搭建一个脚手架项目，vuecli4 + vue2默认配置 + router + vuex。此时得到一个原始的vue单页面应用项目，去掉组件。 多页面应用结构了解单页面在项目根目录下新建vue.config.js文件，我们先看看默认配置了解一下单页应用  1234567891011121314module.exports &#x3D; &amp;#123;  publicPath: &quot;&#x2F;&quot;,">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/aghmr_0.png">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/apwha_0.png">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/cr4xb_0.png">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/aqb4q_0.png">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/arf0c_0.png">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/as3v1_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/aghmr_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/apwha_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/cr4xb_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/aqb4q_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/arf0c_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/as3v1_0.png">
 <meta property="article:published_time" content="2020-10-27T11:45:41.000Z">
-<meta property="article:modified_time" content="2023-07-27T09:54:33.748Z">
+<meta property="article:modified_time" content="2023-07-27T10:04:54.273Z">
 <meta property="article:author" content="ischanx">
 <meta property="article:tag" content="Vue">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://img.chanx.tech/i/2022/06/12/aghmr_0.png">
+<meta name="twitter:image" content="https://static.chanx.tech/image/aghmr_0.png">
   
   
   
@@ -310,7 +310,7 @@
                 
                 <p>首先搭建一个脚手架项目，<code>vuecli4 + vue2默认配置 + router + vuex</code>。此时得到一个原始的<strong>vue单页面应用</strong>项目，去掉组件。</p>
 <h2 id="多页面应用结构"><a href="#多页面应用结构" class="headerlink" title="多页面应用结构"></a>多页面应用结构</h2><h3 id="了解单页面"><a href="#了解单页面" class="headerlink" title="了解单页面"></a>了解单页面</h3><p>在项目根目录下新建<code>vue.config.js</code>文件，我们先看看默认配置了解一下单页应用</p>
-<p><img src="https://img.chanx.tech/i/2022/06/12/aghmr_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027173459149"></p>
+<p><img src="https://static.chanx.tech/image/aghmr_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027173459149"></p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">publicPath</span>: <span class="hljs-string">&quot;/&quot;</span>,<br>  <span class="hljs-attr">productionSourceMap</span>: <span class="hljs-literal">false</span>,<br>  <span class="hljs-comment">// 页面入口</span><br>  <span class="hljs-attr">pages</span>:&#123;<br>    <span class="hljs-attr">index</span>: &#123;<br>      <span class="hljs-attr">entry</span>: <span class="hljs-string">&quot;src/main.js&quot;</span>,<br>      <span class="hljs-attr">title</span>: <span class="hljs-string">&quot;标题&quot;</span>,<br>    &#125;,<br>  &#125;,<br>  <span class="hljs-attr">devServer</span>: &#123;<br>    <span class="hljs-attr">open</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">//关闭自动打开浏览器</span><br>  &#125;<br> &#125;<br></code></pre></td></tr></table></figure>
 
 <p>此时打包后的<code>index.html</code>会使用<code>main.js</code>作为入口，可以理解为初始化的执行文件</p>
@@ -341,13 +341,13 @@
 <p>网页模板不是必须提供的，但打包时会生成默认的模板</p>
 </blockquote>
 <p>那么每一个页面都是这样子的咯，我们开始改造？</p>
-<p><img src="https://img.chanx.tech/i/2022/06/12/apwha_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027181144590"></p>
+<p><img src="https://static.chanx.tech/image/apwha_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027181144590"></p>
 <p>根据两个页面对象的<code>filename</code>，我们知道打包后是两个页面文件<code>app1.html</code>和<code>app2.html</code></p>
 <p>那<code>index.html</code>是什么？</p>
-<p><img src="https://img.chanx.tech/i/2022/06/12/cr4xb_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027181312761"></p>
+<p><img src="https://static.chanx.tech/image/cr4xb_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027181312761"></p>
 <p>可以看到<code>index.html</code>里面并没有逻辑代码，所以纯粹就是输出了一个默认的网页模板</p>
 <p>打开浏览器，看下我们的成果</p>
-<p><img src="https://img.chanx.tech/i/2022/06/12/aqb4q_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027181619615"></p>
+<p><img src="https://static.chanx.tech/image/aqb4q_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027181619615"></p>
 <p><strong>多页面应用get!!!</strong></p>
 <blockquote>
 <p>多页面应用中各页面是相互独立的, 因为他们各自拥有自己的Vue实例和router实例和vuex实例</p>
@@ -357,12 +357,12 @@
 
 <p><strong>注意: 用此方法生成页面对象时必须保证pages下文件夹与相应入口js文件同名, 如pages&#x2F;app1&#x2F;app1.js</strong></p>
 <h2 id="隐藏html后缀"><a href="#隐藏html后缀" class="headerlink" title="隐藏html后缀"></a>隐藏html后缀</h2><p>然后我们兴奋地打包文件部署到生产环境<code>Nginx</code>上，然后访问</p>
-<p><img src="https://img.chanx.tech/i/2022/06/12/arf0c_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027183545808"></p>
+<p><img src="https://static.chanx.tech/image/arf0c_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027183545808"></p>
 <p>一脸问号？？？那我们换个方式….</p>
 <blockquote>
 <p>index.html 是默认网页，在服务器上比如访问’&#x2F;‘时，服务器会指向index.html。故不会发生这种情况</p>
 </blockquote>
-<p><img src="https://img.chanx.tech/i/2022/06/12/as3v1_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027183640128"></p>
+<p><img src="https://static.chanx.tech/image/as3v1_0.png" srcset="/img/loading.gif" lazyload alt="image-20201027183640128"></p>
 <p>啊这…每次都要加个html后缀才能访问，甲方会不会炸的？</p>
 <blockquote>
 <p><strong>注意：路由模式为History的请往下看,此方法不适用</strong></p>

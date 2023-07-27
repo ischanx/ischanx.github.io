@@ -25,15 +25,15 @@
 <meta property="og:site_name" content="Chanx &#39;s Blog">
 <meta property="og:description" content="一个简单的学校小程序，包含课程表、查看通知两个功能">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/962nv_0.png">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/96jv1_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/962nv_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/96jv1_0.png">
 <meta property="article:published_time" content="2020-09-04T15:04:47.000Z">
-<meta property="article:modified_time" content="2023-07-27T09:54:33.752Z">
+<meta property="article:modified_time" content="2023-07-27T10:04:54.273Z">
 <meta property="article:author" content="ischanx">
 <meta property="article:tag" content="Javascript">
 <meta property="article:tag" content="微信小程序">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://img.chanx.tech/i/2022/06/12/962nv_0.png">
+<meta name="twitter:image" content="https://static.chanx.tech/image/962nv_0.png">
   
   
   
@@ -309,7 +309,7 @@
 <span id="more"></span>
 
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近在学习小程序的开发，因为之前有简单的<code>html + css + js + vue </code>基础，所以直接看了下官方的快速开发模板。就开始上手弄demo，一开始是想做了一个简单的<code>Todolist</code>来练习数据交互。此时问题是没有后端，数据交互只能局限于前端，想用<code>Java</code>写但是觉得码量比较大且本人不太熟悉（课白上了）。用<code>nodejs</code>吧，虽然有js基础感觉学起来不太难，但是毕竟一边查一边学有点麻烦，于是作罢。这个时候我看到了<code>云开发</code>这个东西，js写完前端后端，简单操作数据库还不用学<code>SQL</code>语句，舒服了。查了几下文档就直接上手，另外前后端数据交互使用了<code>axios</code>。做完<code>todolist</code>之后，开始模仿学校两个比较多人使用的小程序进行深入学习。<strong>也发现了两款小程序的设计上的不一样（详细可见”准备工作</strong>“<strong>内容）</strong></p>
-<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="整体分析"><a href="#整体分析" class="headerlink" title="整体分析"></a>整体分析</h3><p><img src="https://img.chanx.tech/i/2022/06/12/962nv_0.png" srcset="/img/loading.gif" lazyload alt="image-20200904231348892"></p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="整体分析"><a href="#整体分析" class="headerlink" title="整体分析"></a>整体分析</h3><p><img src="https://static.chanx.tech/image/962nv_0.png" srcset="/img/loading.gif" lazyload alt="image-20200904231348892"></p>
 <p>我的大概思路如下：</p>
 <p><strong>课程表</strong>：第一次登录时，通过云开发向教务系统进行数据拉取并保存到数据库；随后的小程序访问都直接通过云开发拉取数据库信息，不再主动向源站（教务系统）拉取数据</p>
 <p><strong>校内通知：</strong>访问新闻通知网并拉取数据保存到数据库，随后小程序访问都直接通过云开发拉取数据库信息，不通过源站获取。另外还需注意的是，为了保证校内通知的及时性，需要对这个云函数<code>getNews()</code>设置触发器，实现定时拉取新数据。</p>
@@ -328,7 +328,7 @@
 <p>保存到自己的数据库一个好处也就是能实现更多花里胡哨的功能，比如说点赞？浏览记录？评论？甚至可以基于这些信息再整个推荐算法哈哈哈（别想了，你不会写</p>
 <h3 id="课程表"><a href="#课程表" class="headerlink" title="课程表"></a>课程表</h3><p>课程表就是拉数据处理数据啦，跟校内通知差不多</p>
 <p><strong>我的实现是</strong>：拉取课程数据，然后将课程数据按周排列，每一周再按星期排列。至于课程表这个展示，就是利用<code>position:absolute</code>定位来实现的</p>
-<p><img src="https://img.chanx.tech/i/2022/06/12/96jv1_0.png" srcset="/img/loading.gif" lazyload alt="image-20201121192149448"></p>
+<p><img src="https://static.chanx.tech/image/96jv1_0.png" srcset="/img/loading.gif" lazyload alt="image-20201121192149448"></p>
 
                 
               </div>

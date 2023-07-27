@@ -25,19 +25,19 @@
 <meta property="og:site_name" content="Chanx &#39;s Blog">
 <meta property="og:description" content="安装插件如果使用 npm： 1npm install --save vuepress-plugin-comment  如果使用 yarn: 1yarn add vuepress-plugin-comment -D  配置插件vuepress项目引用将 vuepress-plugin-comment 添加到vuepress项目的插件配置中： 12345678910111213141516module">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/atlyz_0.jpeg">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/atxsc_0.jpeg">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/avokr_0.png">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/avz41_0.png">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/avvcm_0.png">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/12/awllk_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/atlyz_0.jpeg">
+<meta property="og:image" content="https://static.chanx.tech/image/atxsc_0.jpeg">
+<meta property="og:image" content="https://static.chanx.tech/image/avokr_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/avz41_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/avvcm_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/awllk_0.png">
 <meta property="article:published_time" content="2020-06-08T15:31:22.000Z">
-<meta property="article:modified_time" content="2023-07-27T09:54:33.748Z">
+<meta property="article:modified_time" content="2023-07-27T10:04:54.273Z">
 <meta property="article:author" content="ischanx">
 <meta property="article:tag" content="教程">
 <meta property="article:tag" content="Vuepress">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://img.chanx.tech/i/2022/06/12/atlyz_0.jpeg">
+<meta name="twitter:image" content="https://static.chanx.tech/image/atlyz_0.jpeg">
   
   
   
@@ -319,9 +319,9 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">plugins</span>: [<br>    [<br>      <span class="hljs-string">&#x27;vuepress-plugin-comment&#x27;</span>,<br>      &#123;<br>        <span class="hljs-attr">choosen</span>: <span class="hljs-string">&#x27;valine&#x27;</span>, <br>        <span class="hljs-comment">// options选项中的所有参数，会传给Valine的配置</span><br>        <span class="hljs-attr">options</span>: &#123;<br>          <span class="hljs-attr">el</span>: <span class="hljs-string">&#x27;#valine-vuepress-comment&#x27;</span>,<br>          <span class="hljs-attr">appId</span>: <span class="hljs-string">&#x27;Your own appId&#x27;</span>,<br>          <span class="hljs-attr">appKey</span>: <span class="hljs-string">&#x27;Your own appKey&#x27;</span><br>        &#125;<br>      &#125;<br>    ]<br>  ]<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h3 id="获取appId和appKey"><a href="#获取appId和appKey" class="headerlink" title="获取appId和appKey"></a>获取appId和appKey</h3><p>请先<a target="_blank" rel="noopener" href="https://leancloud.cn/dashboard/login.html#/signin">登录</a>或<a target="_blank" rel="noopener" href="https://leancloud.cn/dashboard/login.html#/signup">注册</a> <code>LeanCloud</code>, 进入<a target="_blank" rel="noopener" href="https://leancloud.cn/dashboard/applist.html#/apps">控制台</a>后点击左下角<a target="_blank" rel="noopener" href="https://leancloud.cn/dashboard/applist.html#/newapp">创建应用</a>：</p>
-<p><img src="https://img.chanx.tech/i/2022/06/12/atlyz_0.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://static.chanx.tech/image/atlyz_0.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>应用创建好以后，进入刚刚创建的应用，选择左下角的<code>设置</code>&gt;<code>应用Key</code>，然后就能看到你的<code>APP ID</code>和<code>APP Key</code>了：</p>
-<p><img src="https://img.chanx.tech/i/2022/06/12/atxsc_0.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://static.chanx.tech/image/atxsc_0.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>把获取到的appId和appKey填入vuepress的插件配置当中，就可以使用评论功能了。</p>
 <h3 id="更多配置项"><a href="#更多配置项" class="headerlink" title="更多配置项"></a>更多配置项</h3><h4 id="el"><a href="#el" class="headerlink" title="el"></a>el</h4><ul>
 <li>类型:<code>String</code></li>
@@ -506,10 +506,10 @@
 </blockquote>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">explorer.exe open=你的评论后台地址<br>Ping -n 30 127.1&gt;nul<br>Taskkill /f /im <span class="hljs-string">&quot;iexplore.exe&quot;</span><br></code></pre></td></tr></table></figure>
 
-<p><img src="https://img.chanx.tech/i/2022/06/12/avokr_0.png" srcset="/img/loading.gif" lazyload alt="image-20200613101522289"></p>
-<p><img src="https://img.chanx.tech/i/2022/06/12/avz41_0.png" srcset="/img/loading.gif" lazyload alt="image-20200613101209202"></p>
-<p><img src="https://img.chanx.tech/i/2022/06/12/avvcm_0.png" srcset="/img/loading.gif" lazyload alt="image-20200613101238985"></p>
-<p><img src="https://img.chanx.tech/i/2022/06/12/awllk_0.png" srcset="/img/loading.gif" lazyload alt="image-20200613101304356"></p>
+<p><img src="https://static.chanx.tech/image/avokr_0.png" srcset="/img/loading.gif" lazyload alt="image-20200613101522289"></p>
+<p><img src="https://static.chanx.tech/image/avz41_0.png" srcset="/img/loading.gif" lazyload alt="image-20200613101209202"></p>
+<p><img src="https://static.chanx.tech/image/avvcm_0.png" srcset="/img/loading.gif" lazyload alt="image-20200613101238985"></p>
+<p><img src="https://static.chanx.tech/image/awllk_0.png" srcset="/img/loading.gif" lazyload alt="image-20200613101304356"></p>
 </li>
 <li><p><strong>Valine的管理员账户（部署后&#x2F;sign-up页面出现Not Found）</strong></p>
 <figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs lsl">LeanCloud结构化数据里_User表添加一行<br>必备三个字段<span class="hljs-section">email</span>（此 <span class="hljs-section">email</span> 必须为配置中的 SMTP_USER 或 TO_EMAIL）、username、password<br>然后进入到评论管理后台<br>账号为<span class="hljs-section">email</span>字段输入的信息<br>密码为password字段输入的信息<br></code></pre></td></tr></table></figure></li>

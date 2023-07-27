@@ -25,16 +25,16 @@
 <meta property="og:site_name" content="Chanx &#39;s Blog">
 <meta property="og:description" content="window.open的返回值重新认识一下这个函数window.open(url, &#96;&#96;*windowName, windowFeatures)* 执行window.open函数，我们可以打开一个新的标签页 其实，它是有返回值的，它返回新窗口的引用**WindowProxy** 通过返回值这个新窗口的引用，我们可以做一些符合同源策略的操作  If the window couldn’t be op">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/15/12osuh7_0.png">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/15/12ot31t_0.png">
-<meta property="og:image" content="https://img.chanx.tech/i/2022/06/15/12ot89f_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/12osuh7_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/12ot31t_0.png">
+<meta property="og:image" content="https://static.chanx.tech/image/12ot89f_0.png">
 <meta property="article:published_time" content="2021-08-14T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-07-27T09:54:33.752Z">
+<meta property="article:modified_time" content="2023-07-27T10:04:54.273Z">
 <meta property="article:author" content="ischanx">
 <meta property="article:tag" content="Javascript">
 <meta property="article:tag" content="HTML">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://img.chanx.tech/i/2022/06/15/12osuh7_0.png">
+<meta name="twitter:image" content="https://static.chanx.tech/image/12osuh7_0.png">
   
   
   
@@ -317,14 +317,14 @@
 <ul>
 <li>A和B标签页同源的情况下，在A标签页通过<strong>新窗口引用</strong>操作B的<code>localStorage</code></li>
 </ul>
-<p><img src="https://img.chanx.tech/i/2022/06/15/12osuh7_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://static.chanx.tech/image/12osuh7_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <ul>
 <li>A和B标签页不同源的情况下，在A标签页通过<strong>新窗口引用</strong>操作B的<code>localStorage</code></li>
 </ul>
-<p><img src="https://img.chanx.tech/i/2022/06/15/12ot31t_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://static.chanx.tech/image/12ot31t_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>学到了学到了，但是好像并没有什么用…</p>
 <p>尝试一下改变<code>location</code>？<strong>你会发现标签页进行了跳转。</strong></p>
-<p><img src="https://img.chanx.tech/i/2022/06/15/12ot89f_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://static.chanx.tech/image/12ot89f_0.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <h1 id="window-opener"><a href="#window-opener" class="headerlink" title="window.opener"></a>window.opener</h1><p>上面讲的是「父标签页」操作「子标签页」，这里讲的就是相反的。</p>
 <p>标签页在打开的时候会在<code>window.opener</code>存着对父标签页的引用</p>
 <p>跟前面所讲到的一样，通过引用可以执行一些操作，比如修改父标签页的<code>location</code>达到重定向的效果</p>
