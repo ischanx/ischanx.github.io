@@ -1,0 +1,941 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN,en,default" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/avatar.png">
+  <link rel="icon" href="/avatar.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="ischanx">
+  <meta name="keywords" content="chanx,chanxblog,前端,后台,tech,blog,hexo">
+  
+    <meta name="description" content="Git安装访问下载地址，下载独立安装程序，默认配置点点点就好  基本配置打开 Git Bash，执行以下命令进行全局配置  Git Bash 不能使用快捷键粘贴，请使用右键菜单进行复制粘贴   git config --global core.autocrlf input（统一换行符为 LF） git config --global --replace core.editor &quot;code">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端开发环境手册（Windows 篇）">
+<meta property="og:url" content="https://www.chanx.tech/fe-landing-log-windows/">
+<meta property="og:site_name" content="Chanx &#39;s Blog">
+<meta property="og:description" content="Git安装访问下载地址，下载独立安装程序，默认配置点点点就好  基本配置打开 Git Bash，执行以下命令进行全局配置  Git Bash 不能使用快捷键粘贴，请使用右键菜单进行复制粘贴   git config --global core.autocrlf input（统一换行符为 LF） git config --global --replace core.editor &quot;code">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://static.chanx.tech/image/FzzrbWQv1oK29vxsmsTcltK6nPH.png">
+<meta property="og:image" content="https://static.chanx.tech/image/SUJFbKxDfoBpkBx2h4OcDyLvncB.png">
+<meta property="og:image" content="https://static.chanx.tech/image/TvkFb6k18ot4N9xEms8ccWY2naf.png">
+<meta property="og:image" content="https://static.chanx.tech/image/NkosbmGFhoGkaGx3zelcdXy9nsC.png">
+<meta property="og:image" content="https://static.chanx.tech/image/CForbTHAwotIXyxgn3PcTRPzn5d.png">
+<meta property="og:image" content="https://static.chanx.tech/image/ULZMblvT5oKlZkx3zGQcYssznzf.png">
+<meta property="og:image" content="https://static.chanx.tech/image/Sa9FbCphgoDuCExMyfOcWc8Hn2f.gif">
+<meta property="og:image" content="https://static.chanx.tech/image/RLtWbNMUUoPvEwx3jwpcLu3gnAc.gif">
+<meta property="article:published_time" content="2023-07-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-27T09:50:20.006Z">
+<meta property="article:author" content="ischanx">
+<meta property="article:tag" content="chanx,chanxblog,前端,后台,tech,blog,hexo">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://static.chanx.tech/image/FzzrbWQv1oK29vxsmsTcltK6nPH.png">
+  
+  
+  
+  <title>前端开发环境手册（Windows 篇） - Chanx &#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.chanx.tech","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#1890ff","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":2},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":true}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 30vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Chanx &#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="前端开发环境手册（Windows 篇）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        ischanx
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-07-08 00:00" pubdate>
+          2023年7月8日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">前端开发环境手册（Windows 篇）</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：几秒前
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>访问<a target="_blank" rel="noopener" href="https://git-scm.com/download/win">下载地址</a>，下载独立安装程序，默认配置点点点就好</p>
+<p><img src="https://static.chanx.tech/image/FzzrbWQv1oK29vxsmsTcltK6nPH.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h2><p>打开 <code>Git Bash</code>，执行以下命令进行全局配置</p>
+<blockquote>
+<p>Git Bash 不能使用快捷键粘贴，请使用<strong>右键菜单</strong>进行复制粘贴</p>
+</blockquote>
+<ul>
+<li><code>git config --global core.autocrlf input</code>（统一换行符为 LF）</li>
+<li><code>git config --global --replace core.editor &quot;code --wait&quot;</code>（用 VSCode 编辑，默认是 Vim）</li>
+<li><code>git config --global user.name &quot;``此处填用户名``&quot;</code></li>
+<li><code>git config --global user.email &quot;``此处填邮箱``&quot;</code>（邮箱是和 GitHub&#x2F;Gitea&#x2F;Gitlab 账号一致的邮箱）</li>
+<li><code>git config --global --list</code>（查看上述配置结果）</li>
+</ul>
+<h2 id="配置-SSH"><a href="#配置-SSH" class="headerlink" title="配置 SSH"></a>配置 SSH</h2><blockquote>
+<p>git clone 支持 https 和 ssh 两种方式克隆代码，当使用 ssh 方式时如果没有配置过 ssh key，会有如下错误提示：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">```<br><br><span class="hljs-symbol">git@</span>github.com：Permission denied(publickey).<br>fatal: Could <span class="hljs-keyword">not</span> read <span class="hljs-keyword">from</span> remote repository.<br><br></code></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="生成公钥和私钥"><a href="#生成公钥和私钥" class="headerlink" title="生成公钥和私钥"></a>生成公钥和私钥</h3><ol>
+<li>打开<code>Git Bash</code>并执行以下命令，邮箱使用上一步配置的</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript">ssh-keygen -t rsa -C <span class="hljs-string">&quot;此处填邮箱&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>执行上面命令后需要进行几次确认，<strong>一般直接回车就行，可能需要输入 Y 进行覆盖</strong></p>
+<ul>
+<li>确认秘钥的保存路径（如果不需要改路径则直接回车）</li>
+<li>如果上一步保存路径下已经有秘钥文件，则需要确认是否覆盖（输入 Y 进行覆盖）</li>
+<li>创建密码（如果不需要密码则直接回车）</li>
+<li>确认密码（如果不需要密码则直接回车）</li>
+</ul>
+<p>命令执行完会在** 。ssh 文件夹路径（这个后面有用）**下会生成 2 个文件：（如图为 <code>c/Users/chanx/.ssh</code>）</p>
+<ul>
+<li><code>id_rsa</code> 私钥文件</li>
+<li><code>id_rsa.pub</code> 公钥文件</li>
+</ul>
+<ol>
+<li>打开 <code>Git Bash</code> 继续执行命令</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> ~/.ssh/id_rsa.pub<br></code></pre></td></tr></table></figure>
+
+<p>执行命令后输出的 ssh-rsa 开头文本即为公钥</p>
+<p><img src="https://static.chanx.tech/image/SUJFbKxDfoBpkBx2h4OcDyLvncB.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="远程仓库配置公钥（Github-为例）"><a href="#远程仓库配置公钥（Github-为例）" class="headerlink" title="远程仓库配置公钥（Github 为例）"></a>远程仓库配置公钥（Github 为例）</h3><p>打开 GitHub，进入到个人账号设置页配置公钥： Settings -&gt; SSH and GPG keys -&gt; New SSH key</p>
+<p>将上一步骤生成的公钥复制到 Key 下面的文本框，Title 根据实际情况命名，然后点保存即可</p>
+<p><img src="https://static.chanx.tech/image/TvkFb6k18ot4N9xEms8ccWY2naf.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>一般其他远程<strong><strong>仓库</strong></strong>到这已经配置完成了</strong></p>
+<p>但是 Github 还需要另外配置：</p>
+<p>打开上一步提到的 。ssh 文件夹路径 <code>/c/Users/chanx/.ssh</code>（因人而异）</p>
+<p>给其中名字为 config 文件添加以下内容并保存</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title class_">Host</span> github.<span class="hljs-property">com</span><br>  <span class="hljs-title class_">Hostname</span> ssh.<span class="hljs-property">github</span>.<span class="hljs-property">com</span><br>  <span class="hljs-title class_">Port</span> <span class="hljs-number">443</span><br>  <span class="hljs-title class_">User</span> git<br></code></pre></td></tr></table></figure>
+
+<p><code>Git Bash</code> 执行以下命令，中间过程输入 <code>yes</code> 进行二次确认，看见如图提示即为配置完成</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ssh -T git@github.com<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://static.chanx.tech/image/NkosbmGFhoGkaGx3zelcdXy9nsC.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h1><h2 id="为什么不直接安装某个版本的-Node-js？"><a href="#为什么不直接安装某个版本的-Node-js？" class="headerlink" title="为什么不直接安装某个版本的 Node.js？"></a>为什么不直接安装某个版本的 Node.js？</h2><p>nvm 可以控制管理 Node.js 版本，<strong>快速切换版本以支持不同的场景</strong>，比如：</p>
+<ul>
+<li>开发时需要使用稳定的 LTS 版本，不同项目需要使用不同的 Node.js 版本</li>
+<li>其他场景可以使用最新的 latest 版本，体验 Node.js 新特性</li>
+</ul>
+<h2 id="安装-nvm-windows"><a href="#安装-nvm-windows" class="headerlink" title="安装 nvm-windows"></a>安装 nvm-windows</h2><p>访问<a target="_blank" rel="noopener" href="https://github.com/coreybutler/nvm-windows/releases">下载地址</a>，下载最新版本的 <strong>nvm-setup.exe</strong>，下载完成直接运行安装即可</p>
+<h3 id="配置镜像地址"><a href="#配置镜像地址" class="headerlink" title="配置镜像地址"></a>配置镜像地址</h3><p>nvm 默认的下载地址是 <a target="_blank" rel="noopener" href="http://nodejs.org/dist/">http://nodejs.org/dist/ </a>，这是国外的服务器，在国内下载速度很慢</p>
+<p>但是来自阿里的国内镜像站拯救了我们，感谢阿里（笑</p>
+<p><strong>方法一（推荐）：</strong></p>
+<p>打开任意控制台终端（比如 CMD），执行以下命令</p>
+<ul>
+<li><code>nvm node_mirror ``https://npmmirror.com/mirrors/node/</code></li>
+<li><code>nvm npm_mirror ``https://registry.npmmirror.com</code></li>
+</ul>
+<p><strong>方法二：</strong><br>在 nvm 的安装路径下，找到 settings.txt** **打开，加上</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">node_mirror:  https:<span class="hljs-regexp">//</span>npmmirror.com<span class="hljs-regexp">/mirrors/</span>node/<br>npm_mirror:  https:<span class="hljs-regexp">//</span>registry.npmmirror.com<br></code></pre></td></tr></table></figure>
+
+<h2 id="安装-Node-js"><a href="#安装-Node-js" class="headerlink" title="安装 Node.js"></a>安装 Node.js</h2><p>上一步已经安装 nvm，下面执行 nvm 的命令完成 Node.js 的安装</p>
+<ol>
+<li><code>nvm list available</code> 获取当前可用的 node 版本</li>
+<li><code>nvm install 版本号</code> 就可以安装指定版本的 node（根据项目安装对应的版本</li>
+<li><code>nvm use 版本号</code> 就可以切换到该版本的 node 环境</li>
+<li><code>nvm list</code> 获取当前已安装的 node 版本列表</li>
+<li><code>nvm -v</code> 获取当前 nvm 的版本</li>
+</ol>
+<p>这里有个小技巧快速安装某个大版本的 node（比如 node18）</p>
+<ul>
+<li><code>nvm install v18</code></li>
+<li><code>nvm use v18</code></li>
+</ul>
+<p><img src="https://static.chanx.tech/image/CForbTHAwotIXyxgn3PcTRPzn5d.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="npm-包管理器"><a href="#npm-包管理器" class="headerlink" title="npm 包管理器"></a>npm 包管理器</h2><p>Nodejs 安装时默认会附带安装 npm，此时镜像源是国外的</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 更换国内源</span><br>npm config <span class="hljs-built_in">set</span> registry https://registry.npmmirror.com<br><span class="hljs-comment"># 查询配置是否成功</span><br>npm config get registry<br></code></pre></td></tr></table></figure>
+
+<p>目前实际使用中，更多会使用到 <code>yarn</code> 和 <code>pnpm</code> 两个包管理器，也需要安装和配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装yarn</span><br>npm i -g yarn<br><span class="hljs-comment"># 查看 yarn 版本</span><br>yarn -v<br><span class="hljs-comment"># 更换国内源</span><br>yarn config <span class="hljs-built_in">set</span> registry https://registry.npmmirror.com<br><span class="hljs-comment"># 查询配置是否成功</span><br>yarn config get registry<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装 pnpm</span><br>npm i -g pnpm<br><span class="hljs-comment"># 查看 pnpm 版本</span><br>pnpm -v<br><span class="hljs-comment"># 更换国内源</span><br>pnpm config <span class="hljs-built_in">set</span> registry https://registry.npmmirror.com<br><span class="hljs-comment"># 查询配置是否成功</span><br>pnpm config get registry<br></code></pre></td></tr></table></figure>
+
+<h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><ol>
+<li>遇到如图报错“禁止运行脚本”，执行以下指令更改策略，<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.3">详情可见</a></li>
+</ol>
+<p><img src="https://static.chanx.tech/image/ULZMblvT5oKlZkx3zGQcYssznzf.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li><code>npm i</code> 安装长时间卡在 idealTree buildDeps 这一步不动</li>
+</ol>
+<p>按一下顺序尝试：<code>npm cache clean</code> 清除 npm 缓存、nvm 重新安装 node、nvm 更换 node 版本</p>
+<h1 id="VS-Code"><a href="#VS-Code" class="headerlink" title="VS Code"></a>VS Code</h1><p>访问<a target="_blank" rel="noopener" href="https://code.visualstudio.com/"> VSCode 官网</a>，下载安装包，正常运行安装即可</p>
+<h2 id="推荐安装字体"><a href="#推荐安装字体" class="headerlink" title="推荐安装字体"></a>推荐安装字体</h2><p>JetBrains Mono: <a target="_blank" rel="noopener" href="https://www.jetbrains.com/lp/mono/">https://www.jetbrains.com/lp/mono/</a></p>
+<ol>
+<li>下载解压后，双击 **ttf **文件内任一打开，点击左上角安装按钮即可</li>
+</ol>
+<p>区别是文字的粗细和斜体，我目前使用的是 **JetBrainsMono-Regular.ttf **</p>
+<p><img src="https://static.chanx.tech/image/Sa9FbCphgoDuCExMyfOcWc8Hn2f.gif" srcset="/img/loading.gif" lazyload></p>
+<ol>
+<li>安装后打开 VSCode -&gt; 设置 -&gt; Editor: Font Family，在前面加入 <code>JetBrains Mono,</code> 或直接使用以下内容覆盖</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">JetBrains Mono, Consolas, <span class="hljs-string">&#x27;Courier New&#x27;</span>, monospace<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://static.chanx.tech/image/RLtWbNMUUoPvEwx3jwpcLu3gnAc.gif" srcset="/img/loading.gif" lazyload></p>
+<h2 id="推荐安装插件"><a href="#推荐安装插件" class="headerlink" title="推荐安装插件"></a>推荐安装插件</h2><table>
+<thead>
+<tr>
+<th>序号</th>
+<th>插件名</th>
+<th>描述</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=MS-CEINTL.vscode-language-pack-zh-hans">Chinese （Simplified） （简体中文） Language Pack for Visual Studio Code</a></td>
+<td>官方的汉化包，老玩家直接默认英文</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=bierner.color-info">Color Info</a></td>
+<td>代码显示色值信息</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=vscode-icons-team.vscode-icons">vscode-icons</a></td>
+<td>更多图标</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint">ESLint</a></td>
+<td>代码静态检查和修复工具</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=mkxml.vscode-filesize">filesize</a></td>
+<td>显示当前文件的体积</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens">GitLens</a></td>
+<td>显示 git 相关的信息，常用的是显示当前行的提交记录</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=christian-kohler.npm-intellisense">npm Intellisense</a></td>
+<td>import 语句中自动补充 npm 模块名</td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=ionutvmi.path-autocomplete">Path Autocomplete</a></td>
+<td>提供代码路径自动补全</td>
+<td></td>
+</tr>
+<tr>
+<td>9</td>
+<td><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=Vue.volar">Vue Language Features (Volar)</a></td>
+<td>Vue、Vitepress 和 petite-vue 构建的语言支持扩展</td>
+<td></td>
+</tr>
+<tr>
+<td>10</td>
+<td><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin">TypeScript Vue Plugin (Volar)</a></td>
+<td>为。vue 文件提供 ts 检查</td>
+<td></td>
+</tr>
+<tr>
+<td>11</td>
+<td><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker">Code Spell Checker</a></td>
+<td>检查代码的命名错误</td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="WebStorm"><a href="#WebStorm" class="headerlink" title="WebStorm"></a>WebStorm</h1><p><a target="_blank" rel="noopener" href="https://www.jetbrains.com/webstorm/">https://www.jetbrains.com/webstorm/</a></p>
+<p>WebStorm 也是较为常见的前端开发工具，相比于 VSCode 来说会更加智能</p>
+<p>因常用编辑为 VSCode，这里不赘述。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AFfront-end/" class="category-chain-item">前端front-end</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>前端开发环境手册（Windows 篇）</div>
+      <div>https://www.chanx.tech/fe-landing-log-windows/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>ischanx</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年7月8日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2023年7月27日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/9865f7dac7c8/" title="如何入门开源文档翻译">
+                        <span class="hidden-mobile">如何入门开源文档翻译</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"ischanx/ischanx.github.io","repo-id":"${{ secrets.GITCUS_REPO_ID }}","category":"Announcements","category-id":"${{ secrets.GITCUS_CATOGORY_ID }}","theme-light":"light","theme-dark":"dark","mapping":"title","reactions-enabled":1,"emit-metadata":0,"input-position":"top","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <span style="font-size: 12px;"> © 2019 - 2023 Chanx | Powered by  <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>&nbsp;&amp;&nbsp; <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> </span> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      粤ICP备20036386号
+    </a>
+  </span>
+  
+    
+      <span>
+        <a
+          href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44060602001609"
+          rel="nofollow noopener"
+          class="beian-police"
+          target="_blank"
+        >
+          
+            <span style="visibility: hidden; width: 0">|</span>
+            <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+          
+          <span>粤公网安备44060602001609号</span>
+        </a>
+      </span>
+    
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
