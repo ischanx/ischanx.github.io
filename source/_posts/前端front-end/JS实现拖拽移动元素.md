@@ -23,7 +23,7 @@ categories:
 
 **实现的效果如图**
 
-<img src="https://img.chanx.tech/i/2022/06/12/a7gx3_0.gif" alt="录制_2020_11_23_20_10_35_670" style="zoom:50%;" />
+<img src="https://static.chanx.tech/image/a7gx3_0.gif" alt="录制_2020_11_23_20_10_35_670" style="zoom:50%;" />
 
 **实现步骤：**
 
@@ -31,7 +31,7 @@ categories:
 - 鼠标移动时，如果是拖拽状态，则元素跟随移动`onmousemove`
 - 鼠标弹起或鼠标离开元素范围时退出拖拽状态`onmouseup`和`onmouseleave`
 
-<img src="https://img.chanx.tech/i/2022/06/12/a7f7o_0.png" style="zoom:50%;" />
+<img src="https://static.chanx.tech/image/a7f7o_0.png" style="zoom:50%;" />
 
 **如何跟随移动？计算两个鼠标指针的距离差，然后应用到目标元素上**
 

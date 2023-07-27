@@ -23,7 +23,7 @@ categories:
 
 
 
-![](https://img.chanx.tech/i/2022/06/12/6oau0_0.gif)
+![](https://static.chanx.tech/image/6oau0_0.gif)
 
 一个字总结：**丑**。
 

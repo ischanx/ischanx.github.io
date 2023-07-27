@@ -64,11 +64,11 @@ module.exports = {
 
 请先[登录](https://leancloud.cn/dashboard/login.html#/signin)或[注册](https://leancloud.cn/dashboard/login.html#/signup) `LeanCloud`, 进入[控制台](https://leancloud.cn/dashboard/applist.html#/apps)后点击左下角[创建应用](https://leancloud.cn/dashboard/applist.html#/newapp)：
 
-![img](https://img.chanx.tech/i/2022/06/12/atlyz_0.jpeg)
+![img](https://static.chanx.tech/image/atlyz_0.jpeg)
 
 应用创建好以后，进入刚刚创建的应用，选择左下角的`设置`>`应用Key`，然后就能看到你的`APP ID`和`APP Key`了：
 
-![img](https://img.chanx.tech/i/2022/06/12/atxsc_0.jpeg)
+![img](https://static.chanx.tech/image/atxsc_0.jpeg)
 
 
 
@@ -309,13 +309,13 @@ Valine 的初始化挂载器。可以是一个`CSS 选择器`，也可以是一�
    Taskkill /f /im "iexplore.exe"
    ```
 
-   ![image-20200613101522289](https://img.chanx.tech/i/2022/06/12/avokr_0.png)
+   ![image-20200613101522289](https://static.chanx.tech/image/avokr_0.png)
 
-   ![image-20200613101209202](https://img.chanx.tech/i/2022/06/12/avz41_0.png)
+   ![image-20200613101209202](https://static.chanx.tech/image/avz41_0.png)
 
-   ![image-20200613101238985](https://img.chanx.tech/i/2022/06/12/avvcm_0.png)
+   ![image-20200613101238985](https://static.chanx.tech/image/avvcm_0.png)
 
-   ![image-20200613101304356](https://img.chanx.tech/i/2022/06/12/awllk_0.png)
+   ![image-20200613101304356](https://static.chanx.tech/image/awllk_0.png)
 
 3. **Valine的管理员账户（部署后/sign-up页面出现Not Found）**
 

@@ -32,17 +32,17 @@ categories:
 
 - A和B标签页同源的情况下，在A标签页通过**新窗口引用**操作B的`localStorage`
 
-![img](https://img.chanx.tech/i/2022/06/15/12osuh7_0.png)
+![img](https://static.chanx.tech/image/12osuh7_0.png)
 
 - A和B标签页不同源的情况下，在A标签页通过**新窗口引用**操作B的`localStorage`
 
-![img](https://img.chanx.tech/i/2022/06/15/12ot31t_0.png)
+![img](https://static.chanx.tech/image/12ot31t_0.png)
 
 学到了学到了，但是好像并没有什么用...
 
 尝试一下改变`location`？**你会发现标签页进行了跳转。**
 
-![img](https://img.chanx.tech/i/2022/06/15/12ot89f_0.png)
+![img](https://static.chanx.tech/image/12ot89f_0.png)
 
 # window.opener
 

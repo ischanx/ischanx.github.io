@@ -23,7 +23,7 @@ categories:
 
 具体效果：
 
-<img src="https://img.chanx.tech/i/2022/06/12/a5otc_0.png" alt="Snipaste_2020-09-13_16-48-03" style="zoom:50%;" />
+<img src="https://static.chanx.tech/image/a5otc_0.png" alt="Snipaste_2020-09-13_16-48-03" style="zoom:50%;" />
 
 
 

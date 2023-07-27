@@ -27,7 +27,7 @@ categories:
 
 > 下文安装通过「war安装包」安装，使用Docker安装方式可忽略本文
 
-![img](https://img.chanx.tech/i/2022/06/12/nvzng_0.png)
+![img](https://static.chanx.tech/image/nvzng_0.png)
 
 # 安装运行
 
@@ -37,7 +37,7 @@ categories:
 4. 打开`http://localhost:8080`，等待Jenkins启动
 5. 初次进入页面会要求输入初始密码，初始密码可以启动时在`shell`看到
 
-![img](https://img.chanx.tech/i/2022/06/12/nw0j5_0.png)
+![img](https://static.chanx.tech/image/nw0j5_0.png)
 
 1. 跟随提示进行设置。设置管理员账户和密码、安装插件、设置网址等
 2. 完成
@@ -60,21 +60,21 @@ categories:
 1. Jenkins服务器生成Git密钥，[Git - 生成 SSH 公钥](https://git-scm.com/book/zh/v2/服务器上的-Git-生成-SSH-公钥)
 2. 将`id_dsa`私钥配置到Jenkins凭证当中
 
-![img](https://img.chanx.tech/i/2022/06/12/nw3sc_0.png)
+![img](https://static.chanx.tech/image/nw3sc_0.png)
 
 1. 将`id_dsa.pub`公钥配置到Git Server中
 
-![img](https://img.chanx.tech/i/2022/06/12/nw2z6_0.png)![img](https://img.chanx.tech/i/2022/06/12/nw2rp_0.png)
+![img](https://static.chanx.tech/image/nw2z6_0.png)![img](https://static.chanx.tech/image/nw2rp_0.png)
 
 ### 配置FTP Server
 
-![img](https://img.chanx.tech/i/2022/06/12/nw3bb_0.png)![img](https://img.chanx.tech/i/2022/06/12/nvyl8_0.png)
+![img](https://static.chanx.tech/image/nw3bb_0.png)![img](https://static.chanx.tech/image/nvyl8_0.png)
 
 
 
 ### 配置Node环境
 
-![img](https://img.chanx.tech/i/2022/06/12/nw8qr_0.png)![img](https://img.chanx.tech/i/2022/06/12/nwa3q_0.png)
+![img](https://static.chanx.tech/image/nw8qr_0.png)![img](https://static.chanx.tech/image/nwa3q_0.png)
 
 
 
@@ -92,23 +92,23 @@ categories:
 
 2. 配置「构建前选择代码分支」（需要安装插件）
 
-![img](https://img.chanx.tech/i/2022/06/12/nwc4b_0.png)
+![img](https://static.chanx.tech/image/nwc4b_0.png)
 
 3. 配置Git仓库地址，没有凭证则需要添加
 
-![img](https://img.chanx.tech/i/2022/06/12/nw8ep_0.png)
+![img](https://static.chanx.tech/image/nw8ep_0.png)
 
 4. 配置构建命令，通过Shell命令执行
 
-![img](https://img.chanx.tech/i/2022/06/12/nw6ru_0.png)
+![img](https://static.chanx.tech/image/nw6ru_0.png)
 
 5. 构建后进行打包保存和FTP服务器部署
 
-![img](https://img.chanx.tech/i/2022/06/12/nwgrz_0.png)
+![img](https://static.chanx.tech/image/nwgrz_0.png)
 
 6. 保存配置，执行构建
 
-![img](https://img.chanx.tech/i/2022/06/12/nwhz9_0.png)
+![img](https://static.chanx.tech/image/nwhz9_0.png)
 
 7. 等待构建完成
 

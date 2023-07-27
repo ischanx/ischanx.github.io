@@ -152,11 +152,11 @@ Function instanceof Object //true
 Object instanceof Function //true
 ```
 
-![image-20200922205901071](https://img.chanx.tech/i/2022/06/12/aa0xz_0.png)
+![image-20200922205901071](https://static.chanx.tech/image/aa0xz_0.png)
 
 ### 梳理
 
-![proto](https://img.chanx.tech/i/2022/06/12/aa9xs_0.png)
+![proto](https://static.chanx.tech/image/aa9xs_0.png)
 
 1. 函数`prototype`属性指向原型对象
 2. 所有的原型对象都是由`Object`创建出来的

@@ -26,7 +26,7 @@ categories:
 
 Vue中使用Swiper，但是父组件会有状态切换，切换后Swiper出现异常（卡着其中一组不能滑动切换）
 
-![image-20200806133320474](https://img.chanx.tech/i/2022/06/12/acoq3_0.png)
+![image-20200806133320474](https://static.chanx.tech/image/acoq3_0.png)
 
 查资料找到解决办法，原因为**swiper在初始化的时候会扫描swiper-wrapper下面的swiper-slide的个数，从而完成初始化，但是由于动态加载是在初始化之后的动作，所以导致无法滑动**
 

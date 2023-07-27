@@ -22,9 +22,9 @@ categories:
 
 不说废话，先上图
 
-![image-20201027195830982](https://img.chanx.tech/i/2022/06/12/8jfb5_0.png)
+![image-20201027195830982](https://static.chanx.tech/image/8jfb5_0.png)
 
-![image-20201027195415759](https://img.chanx.tech/i/2022/06/12/8k1vk_0.png)
+![image-20201027195415759](https://static.chanx.tech/image/8k1vk_0.png)
 
 经常使用vscode跑服务，终端不想看的时候需要进行拖拉，不然遮挡代码
 
@@ -44,7 +44,7 @@ https://www.microsoft.com/zh-cn/p/windows-terminal-preview/9n0dx20hk701?activeta
 
 你可能还想更方便地打开，如
 
-<img src="https://img.chanx.tech/i/2022/06/12/8ksri_0.png" alt="image-20201027200001700" style="zoom: 50%;" />
+<img src="https://static.chanx.tech/image/8ksri_0.png" alt="image-20201027200001700" style="zoom: 50%;" />
 
 - `win + R`打开运行窗口，输入`regedit`
 
@@ -66,8 +66,8 @@ https://www.microsoft.com/zh-cn/p/windows-terminal-preview/9n0dx20hk701?activeta
 
 目的是从目录右键打开时终端路径在你当前的目录下
 
-![image-20201031111710347](https://img.chanx.tech/i/2022/06/12/8ly7m_0.png)
+![image-20201031111710347](https://static.chanx.tech/image/8ly7m_0.png)
 
-![image-20201031111732159](https://img.chanx.tech/i/2022/06/12/8mjgl_0.png)
+![image-20201031111732159](https://static.chanx.tech/image/8mjgl_0.png)
 
 其他配置文件可以查看[官方文档](https://aka.ms/terminal-profile-settings)
