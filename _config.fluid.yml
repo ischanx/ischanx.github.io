@@ -869,9 +869,9 @@ cusdis:
 # See: https://giscus.app/
 giscus:
   repo: ischanx/ischanx.github.io
-  repo-id: ${{ secrets.GITCUS_REPO_ID }}
+  repo-id: MDEwOlJlcG9zaXRvcnkyNTkxODA5Njc=
   category: Announcements
-  category-id: ${{ secrets.GITCUS_CATOGORY_ID }}
+  category-id: DIC_kwDOD3LJp84CXbNd
   theme-light: light
   theme-dark: dark
   mapping: title
