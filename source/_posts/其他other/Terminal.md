@@ -14,7 +14,7 @@ permalink: /WindowsTerminal/
 # isTimeLine: false
 # hideComments: false
 categories:
-- '其他other'
+- '其他'
 ---
 
 一款新的windows终端程序

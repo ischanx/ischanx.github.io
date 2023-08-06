@@ -17,7 +17,7 @@ tags:
 - 'Javascript'
 - ''
 categories:
-- '笔记note'
+- '笔记'
 ---
 
 

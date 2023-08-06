@@ -5,8 +5,7 @@ sidebarDepth: 2
 tags:
 - "Javascript"
 categories:
-- "front-end"
-- "笔记note"
+- "笔记"
 ---
 阅读《Javascript高级程序设计》红宝书的笔记记录，参杂一些个人的思考和想法。
 <!-- more -->

@@ -16,7 +16,7 @@ hideComments: false
 tags:
 - 'Vuepress'
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 在Vuepress使用Vue组件

@@ -69,7 +69,13 @@ index_generator:
 # Category & Tag
 default_category: uncategorized
 category_map:
+  '前端' : front-end
+  '后端' : back-end
+  '其他' : other
+  '笔记' : note
+  '随笔' : essay
 tag_map:
+  '性能优化': optimize
 
 # Metadata elements
 ## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta

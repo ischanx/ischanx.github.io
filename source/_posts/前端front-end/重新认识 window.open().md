@@ -5,7 +5,7 @@ tags:
 - 'Javascript'
 - 'HTML'
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 

@@ -14,7 +14,7 @@ date: 2020-09-13 16:26:01
 # isTimeLine: false
 # hideComments: false
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 不使用Javascript，如何实现选项卡效果呢？

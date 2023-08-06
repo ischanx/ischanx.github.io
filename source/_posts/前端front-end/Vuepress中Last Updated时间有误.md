@@ -17,7 +17,7 @@ author: "ty-peng"
 tags:
 - 'Vuepress'
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 原文出处：[ty-peng - VuePress Last Updated 时间有误的解决](https://ty-peng.gitee.io/views/note/ops/202004141352-vuepress-last-updated.html)

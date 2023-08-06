@@ -4,7 +4,7 @@ date: 2020-07-23 00:41:15
 tags:
 - '教程'
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 ## CDN和COS是什么

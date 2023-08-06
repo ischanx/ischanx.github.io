@@ -5,7 +5,7 @@ tags:
 - 'Javascript'
 - 'ace-editor'
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 ## 禁止首行编辑

@@ -4,7 +4,7 @@ date: 2020-02-05
 tags:
 - "Maven"
 categories:
-- "后端back-end"
+- "后端"
 ---
 **Maven-tomcat插件好像跑不了9...  直接部署tomcat9启动即可**
 

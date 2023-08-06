@@ -17,7 +17,7 @@ tags:
 - 'Swiper'
 - 'Vue'
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 

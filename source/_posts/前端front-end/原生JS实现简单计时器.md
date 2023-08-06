@@ -13,7 +13,7 @@ tags:
 - 'Javascript'
 - 'Demo'
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 在线预览: **[点我查看demo](http://demo.chanx.tech/timer.html)**

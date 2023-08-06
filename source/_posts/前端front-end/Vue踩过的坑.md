@@ -16,7 +16,7 @@ date: 2020-08-15 23:48:30
 tags:
 - 'Vue'
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 ## vue-router的beforeEach第一次打开页面不执行

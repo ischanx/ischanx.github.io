@@ -15,7 +15,7 @@ permalink: '/fe-landing-log-windows/'
 # hideComments: false
 
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 

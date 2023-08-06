@@ -6,7 +6,7 @@ tags:
 - "Taro"
 - "H5"
 categories:
-- "前端front-end"
+- "前端"
 ---
 
 记录使用[Taro-UI](https://taro-ui.jd.com/#/docs/introduction)开发的一些问题

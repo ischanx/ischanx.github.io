@@ -14,7 +14,7 @@ permalink: /cron/
 # isTimeLine: false
 # hideComments: false
 categories:
-- '其他other'
+- '其他'
 ---
 
 

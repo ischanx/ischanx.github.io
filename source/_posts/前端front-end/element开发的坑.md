@@ -6,7 +6,7 @@ tags:
 - "Element"
 - "Vue"
 categories:
-- "前端front-end"
+- "前端"
 ---
 记录一些常见不正确使用导致的错误
 <!-- more -->

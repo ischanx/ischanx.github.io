@@ -4,7 +4,7 @@ date: 2021-10-24 14:19:56
 # 永久链接
 permalink: /linux-minecraft-server/
 categories:
-- '其他other'
+- '其他'
 ---
 
 

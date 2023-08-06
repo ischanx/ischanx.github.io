@@ -14,7 +14,7 @@ tags:
 - 'Vuepress'
 - '教程'
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 

@@ -6,7 +6,7 @@ tags:
 - 'Javascript'
 - 'CSS'
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 

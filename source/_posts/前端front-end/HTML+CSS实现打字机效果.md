@@ -14,7 +14,7 @@ date: 2020-11-21 17:30:38
 # isTimeLine: false
 # hideComments: false
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 看到了一些Hexo博客首页用到了打字机效果。于是思考不使用Javascript，如何实现打字机效果呢？

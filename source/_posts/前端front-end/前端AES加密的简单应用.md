@@ -15,7 +15,7 @@ sidebarDepth: 4
 # hideComments: false
 
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 

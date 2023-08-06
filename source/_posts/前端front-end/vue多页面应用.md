@@ -16,7 +16,7 @@ permalink: /vue-pages/
 tags:
 - 'Vue'
 categories:
-- '前端front-end'
+- '前端'
 ---
 
 
