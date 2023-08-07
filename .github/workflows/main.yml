@@ -38,13 +38,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
       - name: FTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@3.0.0
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          # Deployment destination server & path. Formatted as protocol://domain.com:port/full/destination/path/
-          ftp-server: ${{ secrets.FTP_SERVER }}
-          # FTP account username
-          ftp-username: ${{ secrets.FTP_USERNAME }}
-          # FTP account password
-          ftp-password: ${{ secrets.FTP_PASSWORD }}
-          # The local folder to copy, defaults to root project folder
-          local-dir: ./public
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./public/
