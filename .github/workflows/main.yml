@@ -44,5 +44,6 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./public/
+          server-dir: ${{ secrets.FTP_DIR }}
           protocol: ftps
           timeout: 60000
