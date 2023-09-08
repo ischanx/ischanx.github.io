@@ -38,13 +38,11 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
       - name: FTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./public/
-          server-dir: ${{ secrets.FTP_DIR }}
-          protocol: ftps
-          port: 22
-          timeout: 60000
+          local_path: ./public/
+          remote_path: ${{ secrets.FTP_DIR }}
+          sftp_only: true
