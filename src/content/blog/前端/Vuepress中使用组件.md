@@ -1,0 +1,38 @@
+---
+title: Vuepress中使用Vue组件
+description: Vuepress中使用组件
+createDate: 2020-07-11T00:00:00.000Z
+updateDate: 2020-07-11T00:00:00.000Z
+image: ''
+tags:
+  - Vuepress
+category: 前端
+draft: false
+sticky: false
+permalink: components-in-vuepress
+---
+
+在Vuepress使用Vue组件
+
+<!-- more -->
+
+所有在`.vuepress/components`中找到的`*.vue`文件将会自动地被注册为全局的异步组件，如：
+
+```
+.
+└─ .vuepress
+   └─ components
+      ├─ demo-1.vue
+      ├─ OtherComponent.vue
+      └─ Foo
+         └─ Bar.vue
+```
+现在我们有一个组件是`Example.vue`
+
+## 页面组件
+我们现在有一个页面是`Readme.md`，然后在Front Matter里填写字段`Layout: Example`，此时整个页面会被组件代替
+
+## 功能组件
+有时候我们只是想在页面里引入一个小组件，而不是想引入一个页面。那么可以直接在Markdown文件里写下`<Example/>`（markdown文件里支持vue的语法，而组件被全局注册，所以直接写就行，另外还有一些表达式什么的都可以）
+
+详细介绍文档可以见：[Vuepress官方文档](https://www.vuepress.cn/guide/using-vue.html)

@@ -1,0 +1,352 @@
+---
+interface Props {
+  class?: string;
+  viewportClass?: string;
+  contentClass?: string;
+  orientation?: 'vertical' | 'horizontal';
+}
+
+const {
+  class: className = '',
+  viewportClass = '',
+  contentClass = '',
+  orientation = 'vertical',
+} = Astro.props;
+---
+
+<div class:list={['scroll-area', className]} data-scroll-area data-scroll-area-orientation={orientation}>
+  <div class:list={['scroll-area__viewport', viewportClass]} data-scroll-area-viewport>
+    <div class:list={['scroll-area__content', contentClass]} data-scroll-area-content>
+      <slot />
+    </div>
+  </div>
+  <div class="scroll-area__scrollbar" data-scroll-area-track aria-hidden="true">
+    <div class="scroll-area__thumb" data-scroll-area-thumb></div>
+  </div>
+</div>
+
+<script>
+  interface ScrollAreaWindow extends Window {
+    initScrollAreas?: () => void;
+  }
+
+  const scrollAreaWindow = window as ScrollAreaWindow;
+
+  scrollAreaWindow.initScrollAreas = () => {
+    document.querySelectorAll<HTMLElement>('[data-scroll-area]').forEach(area => {
+      if (area.dataset.scrollAreaReady === 'true') return;
+
+      const viewport = area.querySelector<HTMLElement>(
+        '[data-scroll-area-viewport]'
+      );
+      const content = area.querySelector<HTMLElement>('[data-scroll-area-content]');
+      const track = area.querySelector<HTMLElement>('[data-scroll-area-track]');
+      const thumb = area.querySelector<HTMLElement>('[data-scroll-area-thumb]');
+
+      if (!viewport || !content || !track || !thumb) return;
+
+      area.dataset.scrollAreaReady = 'true';
+
+      const updateScrollbar = () => {
+        const isHorizontal = area.dataset.scrollAreaOrientation === 'horizontal';
+        const maxScrollOffset = isHorizontal
+          ? viewport.scrollWidth - viewport.clientWidth
+          : viewport.scrollHeight - viewport.clientHeight;
+        const trackSize = isHorizontal ? track.clientWidth : track.clientHeight;
+        const isScrollable = maxScrollOffset > 1 && trackSize > 0;
+
+        area.classList.toggle('scroll-area--scrollable', isScrollable);
+
+        if (!isScrollable) {
+          thumb.style.width = '';
+          thumb.style.height = '';
+          thumb.style.transform = 'translate3d(0, 0, 0)';
+          return;
+        }
+
+        const thumbSize = Math.max(
+          32,
+          ((isHorizontal ? viewport.clientWidth : viewport.clientHeight) /
+            (isHorizontal ? viewport.scrollWidth : viewport.scrollHeight)) *
+            trackSize
+        );
+        const thumbOffset =
+          ((isHorizontal ? viewport.scrollLeft : viewport.scrollTop) /
+            maxScrollOffset) *
+          (trackSize - thumbSize);
+
+        if (isHorizontal) {
+          thumb.style.width = `${thumbSize}px`;
+          thumb.style.height = '';
+          thumb.style.transform = `translate3d(${thumbOffset}px, 0, 0)`;
+        } else {
+          thumb.style.width = '';
+          thumb.style.height = `${thumbSize}px`;
+          thumb.style.transform = `translate3d(0, ${thumbOffset}px, 0)`;
+        }
+      };
+
+      let isDragging = false;
+      let dragStartPosition = 0;
+      let dragStartScrollOffset = 0;
+
+      const scrollToTrackPosition = (clientPosition: number) => {
+        const isHorizontal = area.dataset.scrollAreaOrientation === 'horizontal';
+        const trackRect = track.getBoundingClientRect();
+        const thumbSize = isHorizontal ? thumb.offsetWidth : thumb.offsetHeight;
+        const trackStart = isHorizontal ? trackRect.left : trackRect.top;
+        const trackSize = isHorizontal ? trackRect.width : trackRect.height;
+        const maxThumbOffset = trackSize - thumbSize;
+        const maxScrollOffset = isHorizontal
+          ? viewport.scrollWidth - viewport.clientWidth
+          : viewport.scrollHeight - viewport.clientHeight;
+        const nextThumbOffset = Math.min(
+          Math.max(clientPosition - trackStart - thumbSize / 2, 0),
+          maxThumbOffset
+        );
+        const nextScrollOffset =
+          maxThumbOffset <= 0
+            ? 0
+            : (nextThumbOffset / maxThumbOffset) * maxScrollOffset;
+
+        if (isHorizontal) {
+          viewport.scrollLeft = nextScrollOffset;
+        } else {
+          viewport.scrollTop = nextScrollOffset;
+        }
+      };
+
+      viewport.addEventListener('scroll', updateScrollbar, { passive: true });
+
+      track.addEventListener('pointerdown', event => {
+        if (!area.classList.contains('scroll-area--scrollable')) return;
+
+        if (event.target === thumb) {
+          isDragging = true;
+          const isHorizontal =
+            area.dataset.scrollAreaOrientation === 'horizontal';
+
+          dragStartPosition = isHorizontal ? event.clientX : event.clientY;
+          dragStartScrollOffset = isHorizontal
+            ? viewport.scrollLeft
+            : viewport.scrollTop;
+          thumb.setPointerCapture(event.pointerId);
+          area.classList.add('scroll-area--dragging');
+          event.preventDefault();
+          return;
+        }
+
+        scrollToTrackPosition(
+          area.dataset.scrollAreaOrientation === 'horizontal'
+            ? event.clientX
+            : event.clientY
+        );
+      });
+
+      thumb.addEventListener('pointermove', event => {
+        if (!isDragging) return;
+
+        const isHorizontal = area.dataset.scrollAreaOrientation === 'horizontal';
+        const maxThumbOffset = isHorizontal
+          ? track.clientWidth - thumb.offsetWidth
+          : track.clientHeight - thumb.offsetHeight;
+        const maxScrollOffset = isHorizontal
+          ? viewport.scrollWidth - viewport.clientWidth
+          : viewport.scrollHeight - viewport.clientHeight;
+        const scrollDelta =
+          maxThumbOffset <= 0
+            ? 0
+            : (((isHorizontal ? event.clientX : event.clientY) -
+                dragStartPosition) /
+                maxThumbOffset) *
+              maxScrollOffset;
+
+        if (isHorizontal) {
+          viewport.scrollLeft = dragStartScrollOffset + scrollDelta;
+        } else {
+          viewport.scrollTop = dragStartScrollOffset + scrollDelta;
+        }
+      });
+
+      const stopDragging = (event?: PointerEvent) => {
+        if (!isDragging) return;
+
+        isDragging = false;
+        if (event && thumb.hasPointerCapture(event.pointerId)) {
+          thumb.releasePointerCapture(event.pointerId);
+        }
+        area.classList.remove('scroll-area--dragging');
+      };
+
+      thumb.addEventListener('pointerup', stopDragging);
+      thumb.addEventListener('pointercancel', stopDragging);
+
+      const resizeObserver = new ResizeObserver(updateScrollbar);
+      resizeObserver.observe(viewport);
+      resizeObserver.observe(content);
+
+      const mutationObserver = new MutationObserver(updateScrollbar);
+      mutationObserver.observe(content, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+      });
+
+      window.addEventListener('resize', updateScrollbar, { passive: true });
+      requestAnimationFrame(updateScrollbar);
+    });
+  };
+
+  document.addEventListener('DOMContentLoaded', scrollAreaWindow.initScrollAreas);
+  document.addEventListener('astro:page-load', scrollAreaWindow.initScrollAreas);
+  document.addEventListener('astro:after-swap', scrollAreaWindow.initScrollAreas);
+</script>
+
+<style>
+  .scroll-area {
+    position: relative;
+    min-height: 0;
+  }
+
+  .scroll-area__viewport {
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .scroll-area__viewport::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  .scroll-area__content {
+    min-height: 100%;
+  }
+
+  .scroll-area[data-scroll-area-orientation='horizontal']
+    > .scroll-area__viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    overscroll-behavior-y: auto;
+  }
+
+  .scroll-area[data-scroll-area-orientation='horizontal']
+    .scroll-area__content {
+    min-height: 0;
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .scroll-area__scrollbar {
+    position: absolute;
+    top: var(--scroll-area-track-inset-top, 0.25rem);
+    right: var(--scroll-area-track-inset-right, 0.125rem);
+    bottom: var(--scroll-area-track-inset-bottom, 0.25rem);
+    width: var(--scroll-area-track-width, 0.375rem);
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.14);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 180ms ease,
+      background-color 180ms ease;
+  }
+
+  .scroll-area__thumb {
+    width: 100%;
+    min-height: 2rem;
+    border-radius: 999px;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(96, 165, 250, 0.9),
+        rgba(37, 99, 235, 0.82)
+      );
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.22);
+    transition:
+      background-color 180ms ease,
+      box-shadow 180ms ease,
+      transform 80ms linear;
+  }
+
+  .scroll-area[data-scroll-area-orientation='horizontal']
+    > .scroll-area__scrollbar {
+    top: auto;
+    right: var(--scroll-area-track-inset-right, 0.25rem);
+    bottom: var(--scroll-area-track-inset-bottom, 0.125rem);
+    left: var(--scroll-area-track-inset-left, 0.25rem);
+    width: auto;
+    height: var(--scroll-area-track-height, 0.375rem);
+  }
+
+  .scroll-area[data-scroll-area-orientation='horizontal']
+    .scroll-area__thumb {
+    width: 0;
+    height: 100%;
+    min-width: 2rem;
+    min-height: 0;
+  }
+
+  .scroll-area--scrollable .scroll-area__scrollbar {
+    pointer-events: auto;
+  }
+
+  .scroll-area:hover .scroll-area__scrollbar,
+  .scroll-area:focus-within .scroll-area__scrollbar,
+  .scroll-area--dragging .scroll-area__scrollbar {
+    opacity: 1;
+  }
+
+  .scroll-area__scrollbar:hover,
+  .scroll-area--dragging .scroll-area__scrollbar {
+    background: rgba(148, 163, 184, 0.22);
+  }
+
+  .scroll-area__scrollbar:hover .scroll-area__thumb,
+  .scroll-area--dragging .scroll-area__thumb {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(59, 130, 246, 0.98),
+        rgba(29, 78, 216, 0.92)
+      );
+    box-shadow: 0 2px 10px rgba(37, 99, 235, 0.32);
+  }
+
+  :global(.dark) .scroll-area__scrollbar {
+    background: rgba(71, 85, 105, 0.22);
+  }
+
+  :global(.dark) .scroll-area__thumb {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(148, 163, 184, 0.46),
+        rgba(100, 116, 139, 0.42)
+      );
+    box-shadow: 0 2px 8px rgba(2, 6, 23, 0.26);
+  }
+
+  :global(.dark) .scroll-area__scrollbar:hover,
+  :global(.dark) .scroll-area--dragging .scroll-area__scrollbar {
+    background: rgba(100, 116, 139, 0.3);
+  }
+
+  :global(.dark) .scroll-area__scrollbar:hover .scroll-area__thumb,
+  :global(.dark) .scroll-area--dragging .scroll-area__thumb {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(203, 213, 225, 0.62),
+        rgba(148, 163, 184, 0.54)
+      );
+    box-shadow: 0 2px 10px rgba(2, 6, 23, 0.34);
+  }
+</style>

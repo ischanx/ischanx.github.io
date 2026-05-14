@@ -1,0 +1,476 @@
+---
+/**
+ * 文章目录(TOC)组件
+ * 显示文章中的标题并支持滚动高亮
+ * 支持多级标题显示，可根据配置决定显示的标题层级
+ */
+
+import ScrollArea from './ScrollArea.astro';
+
+interface Props {
+  /**
+   * 最大显示的标题层级，默认为3
+   * 例如：maxLevel=3 表示显示 h1, h2, h3
+   */
+  maxLevel?: number;
+}
+
+const { maxLevel = 3 } = Astro.props;
+---
+
+<div
+  id="toc-container"
+  class="z-50 hidden h-[calc(100vh-20rem)] overflow-hidden lg:sticky lg:top-32 lg:block lg:w-40 lg:self-start xl:w-52 2xl:w-64"
+  data-max-level={maxLevel}
+>
+  <ScrollArea
+    class="h-full [--scroll-area-track-inset-bottom:2rem]"
+    viewportClass="toc-content h-full pl-4 pr-4 pb-8"
+    contentClass="toc-scroll-content"
+  >
+    <nav id="toc" class="toc-list text-[13px] leading-5">
+      <div class="toc-placeholder text-gray-400 dark:text-gray-500">
+        加载中...
+      </div>
+    </nav>
+  </ScrollArea>
+</div>
+
+<script>
+  // 存储滚动定时器的引用，以便清除
+  let scrollTimeoutId: number | null = null;
+
+  function handleTOC() {
+    // 获取文章内容区域和TOC容器
+    const articleContent = document.querySelector('.prose');
+    const tocContainer = document.getElementById('toc-container');
+    const tocList = document.getElementById('toc');
+    const initScrollAreas = (
+      window as Window & { initScrollAreas?: () => void }
+    ).initScrollAreas;
+
+    if (!articleContent || !tocContainer || !tocList) return;
+
+    // 获取配置参数
+    const maxLevel = parseInt(tocContainer.dataset.maxLevel || '3');
+
+    // 构建标题选择器
+    const headingSelectors = [];
+    for (let i = 1; i <= maxLevel; i++) {
+      headingSelectors.push(`h${i}`);
+    }
+    const headingSelector = headingSelectors.join(', ');
+
+    // 获取文章中的所有标题元素
+    const headings = articleContent.querySelectorAll(headingSelector);
+    if (headings.length === 0) {
+      tocContainer.classList.add('hidden');
+      return;
+    }
+
+    // 清空占位内容
+    tocList.innerHTML = '';
+
+    // 创建目录项
+    const tocItems: Record<string, HTMLAnchorElement> = {};
+    const headingGroups: Record<
+      string,
+      { container: HTMLElement; items: HTMLElement[] }
+    > = {};
+    let currentParentIds: (string | null)[] = new Array(maxLevel).fill(null);
+
+    // 创建标题树结构
+    headings.forEach(heading => {
+      const id = heading.id;
+      if (!id) return;
+
+      const level = parseInt(heading.tagName.substring(1));
+      if (level > maxLevel) return;
+
+      // 去除标题中可能包含的锚点图标
+      let text = heading.textContent || '';
+      const anchorElement = heading.querySelector('.heading-anchor');
+      if (anchorElement) {
+        text = text.replace(anchorElement.textContent || '', '').trim();
+      } else {
+        text = text.replace(/§$/, '').trim();
+      }
+
+      if (!text) return;
+
+      // 创建目录项
+      const listItem = document.createElement('a');
+      listItem.href = `#${id}`;
+      listItem.classList.add(
+        'toc-item',
+        `toc-level-${level}`,
+        'block',
+        'py-1.5',
+        'text-gray-600',
+        'dark:text-gray-300',
+        'hover:text-primary-600',
+        'dark:hover:text-primary-400',
+        'transition-all',
+        'duration-200',
+        'truncate'
+      );
+
+      // 根据标题层级添加缩进和字体大小
+      if (level === 1) {
+        listItem.style.paddingLeft = '0.5rem';
+        listItem.classList.add('font-bold');
+      } else {
+        const indentSize = (level - 1) * 0.75;
+        listItem.style.paddingLeft = `${indentSize}rem`;
+      }
+      listItem.textContent = text;
+      listItem.title = text;
+
+      // 记录当前层级的ID
+      currentParentIds[level - 1] = id;
+
+      // 清除当前层级之后的所有父ID
+      for (let i = level; i < maxLevel; i++) {
+        currentParentIds[i] = null;
+      }
+
+      // 确定父标题ID
+      const parentLevel = level - 1;
+      const parentId = parentLevel >= 0 ? currentParentIds[parentLevel] : null;
+
+      if (level === 1) {
+        // 一级标题直接添加到目录
+        tocList.appendChild(listItem);
+        tocItems[id] = listItem;
+
+        // 为一级标题创建子标题容器
+        const subHeadingsContainer = document.createElement('div');
+        subHeadingsContainer.classList.add('sub-headings');
+        subHeadingsContainer.dataset.parentId = id;
+        tocList.appendChild(subHeadingsContainer);
+        headingGroups[id] = { container: subHeadingsContainer, items: [] };
+      } else if (parentId) {
+        // 如果有父标题，将当前标题添加到父标题的子标题组
+        if (!headingGroups[parentId]) {
+          // 如果父标题的子标题容器不存在，创建一个
+          const parentElement = tocItems[parentId];
+          const parentContainer = document.createElement('div');
+          parentContainer.classList.add('sub-headings');
+          parentContainer.dataset.parentId = parentId;
+
+          // 找到父元素在DOM中的位置并插入子标题容器
+          const parentIndex = Array.from(tocList.children).indexOf(
+            parentElement
+          );
+          if (parentIndex !== -1 && parentIndex + 1 < tocList.children.length) {
+            tocList.insertBefore(
+              parentContainer,
+              tocList.children[parentIndex + 1]
+            );
+          } else {
+            tocList.appendChild(parentContainer);
+          }
+
+          headingGroups[parentId] = { container: parentContainer, items: [] };
+        }
+
+        // 将当前标题添加到父标题的子标题组
+        headingGroups[parentId].items.push(listItem);
+        headingGroups[parentId].container.appendChild(listItem);
+        tocItems[id] = listItem;
+
+        // 如果当前标题不是最后一级，为它创建子标题容器
+        if (level < maxLevel) {
+          const subHeadingsContainer = document.createElement('div');
+          subHeadingsContainer.classList.add(
+            'sub-headings',
+            'nested-sub-headings'
+          );
+          subHeadingsContainer.dataset.parentId = id;
+          headingGroups[parentId].container.appendChild(subHeadingsContainer);
+          headingGroups[id] = { container: subHeadingsContainer, items: [] };
+        }
+      } else {
+        // 如果没有父标题（可能是因为文档结构不规范），直接添加到目录
+        tocList.appendChild(listItem);
+        tocItems[id] = listItem;
+      }
+    });
+
+    // 如果没有有效的目录项或者是移动设备，隐藏TOC
+    if (Object.keys(tocItems).length === 0 || window.innerWidth < 768) {
+      tocContainer.classList.add('hidden');
+      return;
+    }
+
+    requestAnimationFrame(() => initScrollAreas?.());
+
+    // 监听滚动，高亮当前可视区域的标题
+    const observerOptions = {
+      rootMargin: '-80px 0px -70% 0px',
+      threshold: 0,
+    };
+
+    // 为window添加类型声明
+    interface WindowWithObserver extends Window {
+      tocHeadingObserver?: IntersectionObserver;
+    }
+
+    const windowWithObserver = window as WindowWithObserver;
+
+    // 如果已存在旧的观察者，断开连接
+    if (windowWithObserver.tocHeadingObserver) {
+      windowWithObserver.tocHeadingObserver.disconnect();
+    }
+
+    let activeHeadingIds: string[] = [];
+    // 标记是否是由用户点击目录项触发的滚动
+    let isUserScrolling = false;
+
+    // 检查URL中是否有锚点，如果有则高亮对应的目录项
+    const checkUrlHash = () => {
+      const hash = window.location.hash;
+      if (hash && hash.length > 1) {
+        const id = hash.substring(1);
+        const tocItem = tocItems[id];
+        if (tocItem) {
+          // 移除所有活动类
+          document.querySelectorAll('.toc-item').forEach(item => {
+            item.classList.remove('active');
+            item.classList.remove('text-primary-600');
+            item.classList.remove('dark:text-primary-400');
+            item.classList.remove('font-medium');
+            item.classList.remove('border-l-2');
+            item.classList.remove('border-primary-500');
+            item.classList.remove('bg-primary-50');
+            item.classList.remove('dark:bg-primary-900/20');
+          });
+
+          // 添加活动类
+          tocItem.classList.add('active');
+          tocItem.classList.add('text-primary-600');
+          tocItem.classList.add('dark:text-primary-400');
+          tocItem.classList.add('font-medium');
+          tocItem.classList.add('border-l-2');
+          tocItem.classList.add('border-primary-500');
+          tocItem.classList.add('bg-primary-50');
+          tocItem.classList.add('dark:bg-primary-900/20');
+
+          // 将当前活动标题滚动到目录视图中
+          const tocContainer = document.querySelector('.toc-content');
+          if (tocContainer) {
+            tocItem.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+            requestAnimationFrame(() => initScrollAreas?.());
+          }
+        }
+      }
+    };
+
+    // 页面加载时检查URL锚点
+    checkUrlHash();
+
+    // 监听URL hash变化
+    window.addEventListener('hashchange', checkUrlHash);
+
+    windowWithObserver.tocHeadingObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          const id = entry.target.id;
+          const tocItem = tocItems[id];
+          if (!tocItem) return;
+
+          if (entry.isIntersecting) {
+            // 移除所有活动类
+            document.querySelectorAll('.toc-item').forEach(item => {
+              item.classList.remove('active');
+              item.classList.remove('text-primary-600');
+              item.classList.remove('dark:text-primary-400');
+              item.classList.remove('font-medium');
+              item.classList.remove('border-l-2');
+              item.classList.remove('border-primary-500');
+              item.classList.remove('bg-primary-50');
+              item.classList.remove('dark:bg-primary-900/20');
+            });
+
+            // 添加活动类
+            tocItem.classList.add('active');
+            tocItem.classList.add('text-primary-600');
+            tocItem.classList.add('dark:text-primary-400');
+            tocItem.classList.add('font-medium');
+            tocItem.classList.add('border-l-2');
+            tocItem.classList.add('border-primary-500');
+            tocItem.classList.add('bg-primary-50');
+            tocItem.classList.add('dark:bg-primary-900/20');
+
+            // 更新活动标题ID列表
+            activeHeadingIds = [id];
+
+            // 查找当前标题的所有父标题
+            let currentElement = entry.target;
+            let level = parseInt(currentElement.tagName.substring(1));
+
+            while (level > 1) {
+              // 查找上一级标题
+              let prevLevel = level - 1;
+              let prevHeading: Element | null = null;
+
+              // 向前查找上一级标题
+              let tempElement: Element | null = currentElement;
+              while (tempElement && !prevHeading) {
+                tempElement = tempElement.previousElementSibling;
+                while (tempElement) {
+                  const tagName = tempElement.tagName;
+                  if (tagName && tagName.match(/^H[1-6]$/)) {
+                    const headingLevel = parseInt(tagName.substring(1));
+                    if (headingLevel === prevLevel) {
+                      prevHeading = tempElement;
+                      break;
+                    } else if (headingLevel < prevLevel) {
+                      // 如果找到更高级的标题，说明文档结构中缺少了某一级标题
+                      break;
+                    }
+                  }
+                  tempElement = tempElement.previousElementSibling;
+                }
+
+                if (!prevHeading && tempElement && tempElement.parentElement) {
+                  tempElement = tempElement.parentElement;
+                } else {
+                  break;
+                }
+              }
+
+              if (prevHeading && prevHeading.id) {
+                activeHeadingIds.push(prevHeading.id);
+                level = prevLevel;
+              } else {
+                break;
+              }
+            }
+
+            // 将当前活动标题滚动到目录视图中，但不触发正文滚动
+            if (tocItem) {
+              // 获取目录容器
+              const tocContainer = document.querySelector('.toc-content');
+              if (tocContainer) {
+                // 判断元素是否在视口内
+                const rect = tocItem.getBoundingClientRect();
+                const containerRect = tocContainer.getBoundingClientRect();
+
+                // 检查元素是否在容器视口外
+                const isOutOfView =
+                  rect.top < containerRect.top ||
+                  rect.bottom > containerRect.bottom;
+
+                // 只有当元素不在视口内时才滚动
+                if (isOutOfView) {
+                  tocItem.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                  });
+                  requestAnimationFrame(() => initScrollAreas?.());
+                }
+              }
+            }
+          }
+        });
+      },
+      observerOptions
+    );
+
+    // 为每个标题添加观察者
+    headings.forEach(heading => {
+      if (heading.id && windowWithObserver.tocHeadingObserver) {
+        windowWithObserver.tocHeadingObserver.observe(heading);
+      }
+    });
+
+    // 点击TOC项时平滑滚动
+    tocList.querySelectorAll('.toc-item').forEach(item => {
+      item.addEventListener('click', e => {
+        e.preventDefault();
+        const id = item.getAttribute('href')?.substring(1);
+        if (!id) return;
+
+        const targetHeading = document.getElementById(id);
+        if (!targetHeading) return;
+
+        // 标记为用户点击触发的滚动
+        isUserScrolling = true;
+
+        window.scrollTo({
+          top: targetHeading.offsetTop + 100,
+          behavior: 'smooth',
+        });
+
+        // 更新URL，但不跳转
+        history.pushState(null, '', `#${id}`);
+
+        // 清除之前的定时器（如果存在）
+        if (scrollTimeoutId !== null) {
+          clearTimeout(scrollTimeoutId);
+        }
+
+        // 滚动完成后重置标记
+        scrollTimeoutId = setTimeout(() => {
+          isUserScrolling = false;
+          scrollTimeoutId = null;
+        }, 3000) as unknown as number; // 设置一个合理的延迟，确保滚动动画完成
+      });
+    });
+  }
+
+  // 页面加载完成后初始化TOC
+  document.addEventListener('DOMContentLoaded', handleTOC);
+
+  // 在内容可能变化时重新初始化TOC
+  document.addEventListener('astro:page-load', handleTOC);
+  document.addEventListener('astro:after-swap', handleTOC);
+</script>
+
+<style>
+  .toc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .dark .toc-list {
+    border-left-color: rgba(75, 85, 99, 0.3);
+  }
+
+  .toc-item {
+    padding-left: 0.5rem;
+    position: relative;
+    margin-left: -1px;
+    max-width: 230px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-radius: 0 0.25rem 0.25rem 0;
+  }
+
+  .toc-item.active {
+    margin-left: -3px;
+    padding-right: 0.5rem;
+  }
+
+  .sub-headings {
+    transition: all 0.3s ease;
+    margin-top: -0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .nested-sub-headings {
+    margin-left: 0.5rem;
+  }
+
+  @media (max-width: 1023px) {
+    .toc {
+      display: none;
+    }
+  }
+</style>

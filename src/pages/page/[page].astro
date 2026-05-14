@@ -1,0 +1,98 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { site } from '../../config';
+import { sortPosts, paginatePosts, type BlogPost } from '../../utils/posts';
+
+export async function getStaticPaths() {
+  const postsPerPage = site.indexSettings.perPage;
+  const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+  const sortedPosts = sortPosts(allPosts);
+  const totalPages = Math.ceil(sortedPosts.length / postsPerPage);
+
+  // 只生成第2页及以后的页面（第1页是首页 index.astro）
+  const pages = [];
+
+  for (let i = 2; i <= totalPages; i++) {
+    const pageData = paginatePosts(sortedPosts, i, postsPerPage);
+    pages.push({
+      params: { page: String(i) },
+      props: pageData,
+    });
+  }
+
+  return pages;
+}
+
+// 解构获取页面相关的数据
+const { posts, currentPage, totalPages, prevPage, nextPage, pageLinks } =
+  Astro.props;
+---
+
+<Layout title={`博客 - 第${currentPage}页`}>
+  <div class="max-w-4xl mx-auto px-4">
+    <header class="text-center my-8">
+      <h1 class="text-3xl font-bold mb-2">博客文章</h1>
+    </header>
+
+    <div class="grid gap-5 md:gap-6 py-6 md:py-10">
+      {
+        posts.map((post, index) => (
+          <div
+            style={`animation-delay: ${index * 80}ms`}
+            class="animate-slide-up w-full"
+          >
+            <PostCard post={post} />
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- 分页导航 -->
+    <div class="flex flex-col items-center py-6 md:py-8">
+      <!-- 页码导航 -->
+      <div class="flex items-center gap-2">
+        {
+          prevPage && (
+            <a
+              href={prevPage}
+              class="min-w-[36px] md:min-w-[40px] h-9 md:h-10 flex items-center justify-center rounded-lg text-sm md:text-base font-medium bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-sm transition-all duration-300"
+              aria-label="上一页"
+            >
+              ←
+            </a>
+          )
+        }
+
+        {
+          pageLinks.map(link => (
+            <a
+              href={link.url}
+              class={`min-w-[36px] md:min-w-[40px] h-9 md:h-10 flex items-center justify-center rounded-lg text-sm md:text-base font-medium transition-all duration-300 ${
+                link.isCurrent
+                  ? 'bg-blue-600 text-blue-50 shadow-md hover:bg-blue-700'
+                  : 'bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-sm'
+              }`}
+              aria-current={link.isCurrent ? 'page' : undefined}
+            >
+              {link.page}
+            </a>
+          ))
+        }
+
+        {
+          nextPage && (
+            <a
+              href={nextPage}
+              class="min-w-[36px] md:min-w-[40px] h-9 md:h-10 flex items-center justify-center rounded-lg text-sm md:text-base font-medium bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-sm transition-all duration-300"
+              aria-label="下一页"
+            >
+              →
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,18 @@
+---
+import { site } from '../config.ts';
+const { analytics } = site || {};
+---
+
+{
+  analytics?.umami?.enable && (
+    <script
+      async
+      defer
+      data-website-id={analytics?.umami?.websiteId}
+      src={analytics?.umami?.scriptUrl}
+      data-domains={analytics?.umami?.domains}
+      data-auto-track={analytics?.umami?.autoTrack}
+      data-respect-dnt={analytics?.umami?.respectDoNotTrack}
+    />
+  )
+}

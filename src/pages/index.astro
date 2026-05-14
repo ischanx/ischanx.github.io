@@ -1,0 +1,102 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PostCard from '../components/PostCard.astro';
+import TypewriterSlogan from '../components/TypewriterSlogan';
+import { getCollection } from 'astro:content';
+import { site } from '../config';
+import { sortPosts, paginatePosts } from '../utils/posts';
+
+// 获取文章
+const posts = await getCollection('blog', ({ data }) => {
+  return !data.draft;
+});
+
+// 使用工具函数对文章进行排序
+const sortedPosts = sortPosts(posts);
+
+// 从配置文件获取每页显示的文章数量
+const postsPerPage = site.indexSettings.perPage;
+
+// 当前页为第1页
+const currentPage = 1;
+
+// 使用工具函数处理分页
+const {
+  posts: firstPagePosts,
+  totalPages,
+  nextPage,
+  pageLinks
+} = paginatePosts(sortedPosts, currentPage, postsPerPage);
+---
+
+<Layout>
+  <div class="max-w-4xl mx-auto px-4">
+    <div class="text-center mt-8 md:mt-10 mb-4 md:mb-10 animate-slide-down">
+      <!-- 使用配置中的 sloganArray -->
+      <TypewriterSlogan client:load />
+    </div>
+
+    <div class="grid gap-5 md:gap-6 py-6 md:py-10">
+      {
+        firstPagePosts.map((post, index) => (
+          <div
+            style={`animation-delay: ${index * 80}ms`}
+            class="animate-slide-up w-full"
+          >
+            <PostCard post={post} />
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- 分页导航 -->
+    {totalPages > 1 && (
+      <div class="flex flex-col items-center py-6 md:py-8">
+        <!-- 页码导航 -->
+        <div class="flex items-center gap-2">
+          {pageLinks.map(link => (
+            <a
+              href={link.url}
+              class={`min-w-[36px] md:min-w-[40px] h-9 md:h-10 flex items-center justify-center rounded-lg text-sm md:text-base font-medium transition-all duration-300 ${
+                link.isCurrent
+                  ? 'bg-blue-600 text-blue-50 shadow-md hover:bg-blue-700'
+                  : 'bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-sm'
+              }`}
+              aria-current={link.isCurrent ? 'page' : undefined}
+            >
+              {link.page}
+            </a>
+          ))}
+
+          {nextPage && (
+            <a
+              href={nextPage}
+              class="min-w-[36px] md:min-w-[40px] h-9 md:h-10 flex items-center justify-center rounded-lg text-sm md:text-base font-medium bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-sm transition-all duration-300"
+              aria-label="下一页"
+            >
+              →
+            </a>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
+</Layout>
+
+<style>
+  @keyframes floatAnimation {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  h1 {
+    animation: floatAnimation 6s ease-in-out infinite;
+  }
+</style>

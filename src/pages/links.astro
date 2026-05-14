@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { links, site } from '../config';
+import Giscus from '../components/Giscus.astro';
+---
+
+<Layout title="友链">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      {
+        links.items.map(link => (
+          <div class="bg-white/60 dark:bg-neutral-900/20 rounded-lg shadow-sm p-6 border border-gray-100 dark:border-gray-800 hover:border-primary-400 dark:hover:border-primary-500 hover:bg-white/80 dark:hover:bg-neutral-900/35 transition-all duration-300 relative group">
+            <a
+              href={link.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="absolute inset-0 z-10"
+              aria-label={`访问 ${link.title} 的博客`}
+            />
+            <div class="flex items-center">
+              <img
+                src={link.avatar}
+                alt={link.title}
+                class="w-16 h-16 rounded-full mr-4 object-cover border-2 border-gray-200 dark:border-gray-700 group-hover:border-primary-400 dark:group-hover:border-primary-500 transition-colors duration-300 transform group-hover:scale-105"
+                onerror={`this.src='/img/avatar-fail.png'`}
+                loading="lazy"
+              />
+              <div class="flex-1 min-w-0">
+                <h2 class="text-xl font-bold mb-1 truncate">
+                  <span class="text-gray-900 dark:text-gray-200 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors duration-300">
+                    {link.title}
+                  </span>
+                </h2>
+                <p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-2">
+                  {link.intro}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    {
+      links.custom.enable && (
+        <div
+          class="prose dark:prose-invert max-w-none bg-transparent p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-800 mb-8"
+          set:html={links.custom.content}
+        />
+      )
+    }
+
+    {
+      site.features.comments.enable &&
+        site.features.comments.type === 'giscus' && <Giscus />
+    }
+  </div>
+</Layout>
+
+<style>
+  .group:hover {
+    cursor: pointer;
+  }
+</style>

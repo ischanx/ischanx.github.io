@@ -1,0 +1,122 @@
+/* Rehype Pretty Code 样式 */
+@reference "./global.css";
+
+/* 代码块容器样式 */
+pre {
+  @apply relative overflow-hidden border border-gray-200 rounded-lg;
+  --code-block-bg: var(--shiki-light-bg, #ffffff);
+  --code-block-border: rgb(229 231 235);
+  --code-line-highlight-bg: rgb(243 244 246);
+  --code-line-highlight-border: rgb(59 130 246);
+  --code-word-bg: rgb(254 249 195);
+  border-color: rgb(229 231 235);
+  background-color: var(--code-block-bg);
+  border-color: var(--code-block-border);
+  --code-gutter-bg: var(--code-block-bg);
+  --code-gutter-border: rgb(226 232 240);
+  --code-gutter-highlight-bg: var(--code-line-highlight-bg);
+  --code-gutter-text: rgb(148 163 184);
+}
+
+.article-prose .mermaid-code-view pre {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  --code-block-border: transparent;
+}
+
+.article-prose .mermaid-code-view pre > code {
+  min-width: max-content;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* 深色模式下的代码块背景 */
+.dark pre {
+  --code-block-bg: #111111;
+  --code-block-border: #2a2a2a;
+  --code-line-highlight-bg: rgb(31 41 55);
+  --code-line-highlight-border: rgb(96 165 250);
+  --code-word-bg: rgb(113 63 18);
+  background-color: var(--code-block-bg);
+  border-color: var(--code-block-border);
+  --code-gutter-bg: var(--code-block-bg);
+  --code-gutter-border: #242424;
+  --code-gutter-highlight-bg: var(--code-line-highlight-bg);
+  --code-gutter-text: rgb(115 115 115);
+}
+
+/* 代码元素样式 */
+pre > code {
+  @apply grid overflow-visible py-4 font-mono text-[11px] md:text-xs;
+  counter-reset: line;
+}
+
+pre > code > [data-line] {
+  @apply min-h-[1.6em] pr-3;
+}
+
+/* 行号显示 */
+code[data-line-numbers] {
+  counter-reset: line;
+}
+
+code[data-line-numbers] > [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+
+  /* 行号样式 */
+  @apply sticky left-0 mr-3 inline-block w-5 select-none border-r px-2 text-right;
+  background-color: var(--code-gutter-bg);
+  border-color: var(--code-gutter-border);
+  box-sizing: content-box;
+  color: var(--code-gutter-text);
+}
+
+.highlighted::before {
+  background-color: var(--code-gutter-highlight-bg);
+}
+
+/* 行号列宽度根据最大位数自动调整 */
+code[data-line-numbers-max-digits="2"] > [data-line]::before {
+  width: 1.25rem;
+}
+
+code[data-line-numbers-max-digits="3"] > [data-line]::before {
+  width: 1.75rem;
+}
+
+code[data-line-numbers-max-digits="4"] > [data-line]::before {
+  width: 2.5rem;
+}
+
+/* 高亮的代码行 */
+.highlighted {
+  border-left: 2px solid var(--code-line-highlight-border);
+  background-color: var(--code-line-highlight-bg);
+}
+
+/* 高亮的单词 */
+.word {
+  @apply rounded px-1;
+  background-color: var(--code-word-bg);
+}
+
+/* 支持深色/浅色主题切换 */
+code[data-theme*=" "],
+code[data-theme*=" "] span {
+  color: var(--shiki-light);
+  background-color: var(--code-block-bg);
+}
+
+/* 深色模式主动切换 */
+.dark code[data-theme*=" "],
+.dark code[data-theme*=" "] span {
+  color: var(--shiki-dark);
+  background-color: var(--code-block-bg);
+} 

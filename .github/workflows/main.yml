@@ -17,10 +17,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           # If your repository depends on submodule, please see: https://github.com/actions/checkout
           submodules: recursive
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v2
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '22'
       - name: Cache NPM dependencies
         uses: actions/cache@v2
         with:
@@ -29,7 +29,7 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache
       - name: Install Dependencies
-        run: npm i -g pnpm && pnpm install
+        run: npm i -g pnpm@10.33.4 && pnpm install
       - name: Build
         run: pnpm build
       - name: Deploy

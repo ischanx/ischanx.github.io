@@ -1,0 +1,424 @@
+---
+import Icon from './Icon.astro';
+import { getPostUrl } from '../utils/route';
+---
+
+<div
+  id="global-search"
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden"
+>
+  <div
+    class="bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full max-w-2xl overflow-hidden transform transition-all"
+  >
+    <!-- 搜索头部 -->
+    <div
+      class="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center"
+    >
+      <Icon name="search" class="text-gray-500 dark:text-gray-400 mr-2" />
+      <input
+        type="text"
+        id="global-search-input"
+        placeholder="搜索文章..."
+        class="flex-1 bg-transparent border-0 focus:ring-0 focus:outline-none text-gray-800 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400"
+        autocomplete="off"
+      />
+      <button
+        type="button"
+        id="global-search-close"
+        class="ml-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+      >
+        <span class="sr-only">关闭</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- 搜索结果 -->
+    <div class="max-h-[60vh] overflow-y-auto">
+      <div
+        id="global-search-loading"
+        class="py-6 px-4 text-center text-gray-500 dark:text-gray-400 hidden"
+      >
+        <div class="inline-block animate-spin mr-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+          </svg>
+        </div>
+        正在搜索...
+      </div>
+
+      <div id="global-search-results" class="py-2"></div>
+
+      <div
+        id="global-search-empty"
+        class="py-6 px-4 text-center text-gray-500 dark:text-gray-400 hidden"
+      >
+        没有找到匹配的结果
+      </div>
+    </div>
+
+    <!-- 搜索提示 -->
+    <div
+      class="p-3 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400 flex flex-col sm:flex-row justify-between gap-2"
+    >
+      <div class="hidden sm:block">
+        <span
+          class="inline-flex items-center px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mr-2"
+        >
+          <kbd class="font-sans">↑</kbd><kbd class="font-sans">↓</kbd>
+        </span>
+        <span>导航</span>
+
+        <span
+          class="inline-flex items-center px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mx-2"
+        >
+          <kbd class="font-sans">Enter</kbd>
+        </span>
+        <span>选择</span>
+
+        <span
+          class="inline-flex items-center px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mx-2"
+        >
+          <kbd class="font-sans">Esc</kbd>
+        </span>
+        <span>关闭</span>
+      </div>
+
+      <a href="/search" class="hover:text-primary text-center sm:text-left">查看所有搜索结果</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  import Fuse from 'fuse.js';
+  import { getPostUrl } from '../utils/route';
+
+  // 定义搜索结果项的接口
+  interface SearchItem {
+    title: string;
+    description: string;
+    slug: string;
+    createDate: string;
+    category?: string;
+    tags?: string[];
+    body?: string;
+    permalink?: string;
+  }
+
+  // 定义搜索结果的接口
+  interface SearchResult {
+    item: SearchItem;
+    score?: number;
+    refIndex?: number;
+  }
+
+  // 全局搜索状态
+  let searchIndex: SearchItem[] | null = null;
+  let fuseInstance: Fuse<SearchItem> | null = null;
+  let currentResults: SearchResult[] = [];
+  let selectedIndex = -1;
+
+  // DOM元素
+  const globalSearchModal = document.getElementById('global-search');
+  const searchInput = document.getElementById(
+    'global-search-input'
+  ) as HTMLInputElement;
+  const closeButton = document.getElementById('global-search-close');
+  const searchResults = document.getElementById('global-search-results');
+  const searchLoading = document.getElementById('global-search-loading');
+  const searchEmpty = document.getElementById('global-search-empty');
+
+  // 初始化搜索索引
+  async function initSearchIndex(): Promise<void> {
+    try {
+      // 显示加载状态
+      if (searchLoading) searchLoading.classList.remove('hidden');
+
+      // 从静态生成的JSON文件加载搜索索引
+      const response = await fetch('/search-index.json');
+      searchIndex = await response.json();
+      // 创建Fuse实例
+      fuseInstance = new Fuse(searchIndex || [], {
+        keys: [
+          { name: 'title', weight: 3 },
+          { name: 'description', weight: 2 },
+          { name: 'tags', weight: 2 },
+          { name: 'category', weight: 2 },
+          { name: 'body', weight: 1 },
+        ],
+        includeScore: true,
+        threshold: 0.4,
+        ignoreLocation: true,
+        useExtendedSearch: true,
+      });
+    } catch (error) {
+      console.error('加载搜索索引失败:', error);
+    } finally {
+      // 隐藏加载状态
+      if (searchLoading) searchLoading.classList.add('hidden');
+    }
+  }
+
+  // 执行搜索
+  function performSearch(query: string): void {
+    if (!fuseInstance || !query.trim()) {
+      currentResults = [];
+      renderResults();
+      return;
+    }
+
+    // 搜索并限制结果数量
+    currentResults = fuseInstance.search(query).slice(0, 10);
+    renderResults();
+  }
+
+  // 渲染搜索结果
+  function renderResults(): void {
+    if (!searchResults) return;
+
+    // 清空结果容器
+    searchResults.innerHTML = '';
+
+    // 更新选中索引
+    selectedIndex = currentResults.length > 0 ? 0 : -1;
+
+    // 显示空结果提示
+    if (searchEmpty) {
+      if (searchInput?.value.trim() && currentResults.length === 0) {
+        searchEmpty.classList.remove('hidden');
+      } else {
+        searchEmpty.classList.add('hidden');
+      }
+    }
+
+    // 渲染结果列表
+    currentResults.forEach((result, index) => {
+      const item = result.item;
+      const score = result.score || 0;
+      const matchQuality = 1 - score; // 将分数转换为匹配质量 (0-1)
+
+      const resultElement = document.createElement('a');
+      resultElement.href = getPostUrl({
+        id: item.slug,
+        data: {
+          permalink: item.permalink,
+        },
+      });
+      resultElement.className = `block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 ${index === selectedIndex ? 'bg-gray-100 dark:bg-gray-800' : ''}`;
+      resultElement.dataset.index = index.toString();
+
+      // 高亮标记
+      const highlight = `<mark class="bg-yellow-200 dark:bg-yellow-900 px-1 rounded">`;
+      const highlightEnd = `</mark>`;
+
+      // 创建标题，并在搜索词出现的地方添加高亮
+      let title = item.title;
+      if (searchInput?.value.trim()) {
+        const searchTerms = searchInput.value.trim().split(/\s+/);
+        searchTerms.forEach(term => {
+          if (term.length > 1) {
+            // 简单的替换，实际应用中可能需要更复杂的正则表达式
+            title = title.replace(
+              new RegExp(term, 'gi'),
+              (match: string) => `${highlight}${match}${highlightEnd}`
+            );
+          }
+        });
+      }
+
+      resultElement.innerHTML = `
+        <div class="font-medium text-gray-900 dark:text-gray-200">${title}</div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">${item.description}</div>
+        <div class="mt-2 flex items-center text-xs">
+          <div class="flex items-center text-gray-500 dark:text-gray-400 mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            ${new Date(item.createDate).toLocaleDateString()}
+          </div>
+          ${
+            item.category
+              ? `
+          <div class="flex items-center text-gray-500 dark:text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+            ${item.category}
+          </div>
+          `
+              : ''
+          }
+        </div>
+        <div class="mt-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
+          <div class="bg-primary h-1 rounded-full" style="width: ${Math.round(matchQuality * 100)}%"></div>
+        </div>
+      `;
+
+      searchResults.appendChild(resultElement);
+    });
+  }
+
+  // 打开搜索模态框
+  function openSearchModal(): void {
+    if (!globalSearchModal) return;
+
+    globalSearchModal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+
+    // 聚焦搜索输入框
+    if (searchInput) {
+      setTimeout(() => {
+        searchInput.focus();
+      }, 100);
+    }
+
+    // 如果还没有初始化搜索索引，则初始化
+    if (!searchIndex) {
+      initSearchIndex();
+    }
+  }
+
+  // 关闭搜索模态框
+  function closeSearchModal(): void {
+    if (!globalSearchModal) return;
+
+    globalSearchModal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+
+    // 清空搜索框和结果
+    if (searchInput) {
+      searchInput.value = '';
+    }
+    currentResults = [];
+    renderResults();
+  }
+
+  // 移动选择的结果项
+  function moveSelection(direction: 'up' | 'down'): void {
+    if (currentResults.length === 0) return;
+
+    const resultItems = searchResults?.querySelectorAll('a') || [];
+    if (resultItems.length === 0) return;
+
+    // 移除当前选中项的高亮
+    if (selectedIndex >= 0 && selectedIndex < resultItems.length) {
+      resultItems[selectedIndex].classList.remove(
+        'bg-gray-100',
+        'dark:bg-gray-800'
+      );
+    }
+
+    // 计算新的选中索引
+    if (direction === 'up') {
+      selectedIndex =
+        selectedIndex <= 0 ? resultItems.length - 1 : selectedIndex - 1;
+    } else {
+      selectedIndex =
+        selectedIndex >= resultItems.length - 1 ? 0 : selectedIndex + 1;
+    }
+
+    // 添加新选中项的高亮
+    if (selectedIndex >= 0 && selectedIndex < resultItems.length) {
+      resultItems[selectedIndex].classList.add(
+        'bg-gray-100',
+        'dark:bg-gray-800'
+      );
+
+      // 滚动到视图中
+      resultItems[selectedIndex].scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
+  }
+
+  // 选择当前高亮的结果
+  function selectHighlightedResult(): void {
+    const resultItems = searchResults?.querySelectorAll('a') || [];
+    if (selectedIndex >= 0 && selectedIndex < resultItems.length) {
+      window.location.href =
+        resultItems[selectedIndex].getAttribute('href') || '';
+    }
+  }
+
+  // 事件监听器
+  document.addEventListener('DOMContentLoaded', () => {
+    // 搜索框输入事件
+    searchInput?.addEventListener('input', () => {
+      const query = searchInput.value.trim();
+      performSearch(query);
+    });
+
+    // 关闭按钮点击事件
+    closeButton?.addEventListener('click', closeSearchModal);
+
+    // 点击背景关闭模态框
+    globalSearchModal?.addEventListener('click', e => {
+      if (e.target === globalSearchModal) {
+        closeSearchModal();
+      }
+    });
+
+    // 键盘快捷键
+    document.addEventListener('keydown', e => {
+      // 如果模态框已打开
+      if (!globalSearchModal?.classList.contains('hidden')) {
+        if (e.key === 'Escape') {
+          closeSearchModal();
+          e.preventDefault();
+        } else if (e.key === 'ArrowUp') {
+          moveSelection('up');
+          e.preventDefault();
+        } else if (e.key === 'ArrowDown') {
+          moveSelection('down');
+          e.preventDefault();
+        } else if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey) {
+          selectHighlightedResult();
+          e.preventDefault();
+        }
+      }
+      // Ctrl+K 或 Meta+K (Mac) 打开搜索模态框
+      else if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        openSearchModal();
+        e.preventDefault();
+      }
+    });
+  });
+
+  // 为window对象添加类型定义
+  declare global {
+    interface Window {
+      openGlobalSearch?: () => void;
+    }
+  }
+
+  // 导出方法，以便其他组件可以调用
+  window.openGlobalSearch = openSearchModal;
+</script>

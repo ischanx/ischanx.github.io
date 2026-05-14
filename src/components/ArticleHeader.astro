@@ -1,0 +1,112 @@
+---
+import Icon from './Icon.astro';
+import { formatDate } from '../utils/date';
+import { createCategoryUrl } from '../utils/navigation';
+
+interface Props {
+  title: string;
+  createDate: Date;
+  updateDate?: Date;
+  author?: string;
+  category?: string;
+  wordCount: number;
+  readTime: number;
+}
+
+const { title, createDate, updateDate, author, category, wordCount, readTime } =
+  Astro.props;
+---
+
+<header class="mb-3 md:mb-4 animate-slide-down">
+  {
+    category && (
+      <nav class="article-breadcrumb" aria-label="文章分类">
+        <a href="/archives" class="article-breadcrumb-link">
+          文章
+        </a>
+        <span class="article-breadcrumb-separator">/</span>
+        <a href={createCategoryUrl(category)} class="article-breadcrumb-current">
+          {category}
+        </a>
+      </nav>
+    )
+  }
+
+  <h1
+    class="text-2xl md:text-3xl font-bold mt-4 md:mt-5 mb-4 md:mb-5 text-black dark:text-gray-300 leading-tight"
+  >
+    {title}
+  </h1>
+
+  <div class="article-meta">
+    <time datetime={createDate.toISOString()} class="article-meta-item">
+      <Icon name="calendar" fontSize="13px" class="article-meta-icon" />
+      {formatDate(createDate)}
+    </time>
+
+    {
+      updateDate && updateDate > createDate && (
+        <span class="article-meta-item">
+          <Icon name="edit" fontSize="13px" class="article-meta-icon" />
+          更新于 {formatDate(updateDate)}
+        </span>
+      )
+    }
+
+    {
+      author && (
+        <span class="article-meta-item">
+          <Icon name="user" fontSize="13px" class="article-meta-icon" />
+          {author}
+        </span>
+      )
+    }
+
+    <span class="article-meta-item">
+      <Icon name="file-text" fontSize="13px" class="article-meta-icon" />
+      {wordCount} 字
+    </span>
+
+    <span class="article-meta-item">
+      <Icon name="clock" fontSize="13px" class="article-meta-icon" />
+      {readTime} 分钟阅读
+    </span>
+  </div>
+</header>
+
+<style>
+  @reference "../styles/global.css";
+
+  .article-breadcrumb {
+    @apply mt-6 md:mt-8 flex items-center gap-2 text-xs leading-5 text-gray-400 dark:text-gray-500;
+  }
+
+  .article-breadcrumb-link {
+    @apply hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200;
+  }
+
+  .article-breadcrumb-separator {
+    @apply text-gray-300 dark:text-gray-700;
+  }
+
+  .article-breadcrumb-current {
+    @apply font-medium text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 transition-colors duration-200;
+  }
+
+  .article-meta {
+    @apply flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] leading-6 text-gray-500 dark:text-gray-400;
+  }
+
+  .article-meta-item {
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap;
+  }
+
+  .article-meta-item:not(:first-child)::before {
+    @apply mr-1 hidden h-1 w-1 rounded-full bg-gray-300 dark:bg-gray-600 sm:inline-block;
+    content: '';
+  }
+
+  .article-meta-icon {
+    @apply shrink-0 opacity-70;
+  }
+</style>

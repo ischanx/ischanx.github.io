@@ -1,0 +1,237 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PostList from '../../components/PostList.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+type BlogPost = CollectionEntry<'blog'>;
+
+const posts: BlogPost[] = await getCollection(
+  'blog',
+  ({ data }: { data: { draft?: boolean } }) => {
+    return !data.draft;
+  }
+);
+
+// 获取所有标签和每个标签的文章数量
+const tags: string[] = [
+  ...new Set(posts.flatMap(post => post.data.tags || [])),
+];
+
+// 按标签分组文章，并按时间从新到旧排序
+const postsByTag: Record<string, BlogPost[]> = {};
+const tagCounts: Record<string, number> = {};
+
+tags.forEach(tag => {
+  const tagPosts = posts
+    .filter(post => post.data.tags?.includes(tag))
+    .sort((a, b) => {
+      // 从新到旧排序：b 的日期减去 a 的日期
+      return b.data.createDate.getTime() - a.data.createDate.getTime();
+    });
+  postsByTag[tag] = tagPosts;
+  tagCounts[tag] = tagPosts.length;
+});
+
+// 按文章数量从高到低排序标签
+const sortedTags = [...tags].sort((a, b) => tagCounts[b] - tagCounts[a]);
+const initialTag = sortedTags[0] || '';
+---
+
+<Layout title="Blog Tags">
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex flex-col md:flex-row gap-8">
+      <!-- 左侧标签列表 -->
+      <div class="md:w-1/4 md:sticky md:top-24 md:self-start">
+        <div
+          class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden md:max-h-[calc(100vh-16rem)]"
+        >
+          <h2
+            class="text-xl font-semibold p-4 border-b border-gray-200 dark:border-gray-700"
+          >
+            标签
+          </h2>
+          <div class="relative">
+            <div class="flex flex-col overflow-y-auto md:max-h-[calc(100vh-21rem)] scroll-list overscroll-contain">
+            {
+              sortedTags.map(tag => (
+                <button
+                  data-tag={tag}
+                  class={`tag-button flex justify-between items-center px-3 py-2 text-sm border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition-colors ${
+                    tag === initialTag
+                      ? 'bg-blue-600 text-blue-50 dark:bg-blue-700'
+                      : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <span>{tag}</span>
+                  <span
+                    class={`rounded-full px-1.5 py-0.5 text-xs ${
+                      tag === initialTag
+                        ? 'bg-blue-50 text-blue-700 dark:bg-blue-100'
+                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
+                    }`}
+                  >
+                    {tagCounts[tag]}
+                  </span>
+                </button>
+              ))
+            }
+            </div>
+            <!-- 渐变阴影 -->
+            <div class="pointer-events-none absolute top-0 left-0 right-0 h-12 opacity-0 transition-opacity duration-300 scroll-shadow-top" style="background: linear-gradient(to bottom, rgba(0,0,0,0.06), transparent);"></div>
+            <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-12 transition-opacity duration-300 scroll-shadow-bottom" style="background: linear-gradient(to top, rgba(0,0,0,0.06), transparent);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧文章列表 -->
+      <div class="md:w-3/4">
+        {
+          sortedTags.map((tag, index) => (
+            <div
+              id={`tag-${tag}`}
+              class={`tag-content ${index === 0 ? 'block' : 'hidden'}`}
+            >
+              <PostList
+                posts={postsByTag[tag]}
+                title={tag}
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import { getTagFromUrl, updateUrlTag } from '../../utils/navigation';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const tagButtons = document.querySelectorAll('.tag-button');
+      const tagContents = document.querySelectorAll('.tag-content');
+      const tagLinks = document.querySelectorAll('[data-target-tag]');
+
+      // 处理滚动阴影
+      const scrollList = document.querySelector<HTMLElement>('.scroll-list');
+      const shadowTop = document.querySelector<HTMLElement>('.scroll-shadow-top');
+      const shadowBottom = document.querySelector<HTMLElement>('.scroll-shadow-bottom');
+
+      function updateScrollShadows() {
+        if (!scrollList || !shadowTop || !shadowBottom) return;
+
+        const { scrollTop, scrollHeight, clientHeight } = scrollList;
+        const isAtTop = scrollTop === 0;
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+
+        // 顶部阴影：不在顶部时显示
+        shadowTop.style.opacity = isAtTop ? '0' : '1';
+        // 底部阴影：不在底部时显示
+        shadowBottom.style.opacity = isAtBottom ? '0' : '1';
+      }
+
+      if (scrollList) {
+        scrollList.addEventListener('scroll', updateScrollShadows);
+        // 初始化阴影状态
+        updateScrollShadows();
+      }
+
+      // 处理标签按钮点击
+      function showTag(tag: string | null) {
+        if (!tag) return;
+
+        // 更新URL
+        updateUrlTag(tag);
+
+        // 更新按钮样式
+        tagButtons.forEach(btn => {
+          const btnTag = btn.getAttribute('data-tag');
+          if (btnTag === tag) {
+            btn.classList.add('bg-blue-600', 'text-blue-50', 'dark:bg-blue-700');
+            btn.classList.remove('hover:bg-gray-100', 'dark:hover:bg-gray-800');
+            const countSpan = btn.querySelector('span:last-child');
+            if (countSpan) {
+              countSpan.classList.add('bg-blue-50', 'text-blue-700', 'dark:bg-blue-100');
+              countSpan.classList.remove(
+                'bg-gray-200',
+                'dark:bg-gray-600',
+                'text-gray-700',
+                'dark:text-gray-300'
+              );
+            }
+          } else {
+            btn.classList.remove(
+              'bg-blue-600',
+              'text-blue-50',
+              'dark:bg-blue-700'
+            );
+            btn.classList.add('hover:bg-gray-100', 'dark:hover:bg-gray-800');
+            const countSpan = btn.querySelector('span:last-child');
+            if (countSpan) {
+              countSpan.classList.remove('bg-blue-50', 'text-blue-700', 'dark:bg-blue-100');
+              countSpan.classList.add(
+                'bg-gray-200',
+                'dark:bg-gray-600',
+                'text-gray-700',
+                'dark:text-gray-300'
+              );
+            }
+          }
+        });
+
+        // 显示对应内容，隐藏其他内容
+        tagContents.forEach(content => {
+          if (content.id === `tag-${tag}`) {
+            content.classList.remove('hidden');
+            content.classList.add('block');
+          } else {
+            content.classList.remove('block');
+            content.classList.add('hidden');
+          }
+        });
+
+        // 滚动到页面顶部
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      tagButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const tag = button.getAttribute('data-tag');
+          showTag(tag);
+        });
+      });
+
+      // 处理文章内标签链接点击
+      tagLinks.forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const tag = link.getAttribute('data-target-tag');
+          showTag(tag);
+
+          // 如果在移动设备上，滚动到页面顶部
+          if (window.innerWidth < 768) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
+      });
+
+      // 页面加载时从URL读取初始标签
+      const tagFromUrl = getTagFromUrl();
+      if (tagFromUrl) {
+        // 检查标签是否存在
+        const tagExists = Array.from(tagButtons).some(
+          btn => btn.getAttribute('data-tag') === tagFromUrl
+        );
+
+        if (tagExists) {
+          showTag(tagFromUrl);
+        } else {
+          // 如果URL中的标签不存在，则显示默认标签（第一个标签）
+          const firstTag = tagButtons[0]?.getAttribute('data-tag');
+          if (firstTag) {
+            showTag(firstTag);
+          }
+        }
+      }
+    });
+  </script>
+</Layout>
