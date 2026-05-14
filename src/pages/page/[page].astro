@@ -1,0 +1,98 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { site } from '../../config';
+import { sortPosts, paginatePosts, type BlogPost } from '../../utils/posts';
+
+export async function getStaticPaths() {
+  const postsPerPage = site.indexSettings.perPage;
+  const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+  const sortedPosts = sortPosts(allPosts);
+  const totalPages = Math.ceil(sortedPosts.length / postsPerPage);
+
+  // 只生成第2页及以后的页面（第1页是首页 index.astro）
+  const pages = [];
+
+  for (let i = 2; i <= totalPages; i++) {
+    const pageData = paginatePosts(sortedPosts, i, postsPerPage);
+    pages.push({
+      params: { page: String(i) },
+      props: pageData,
+    });
+  }
+
+  return pages;
+}
+
+// 解构获取页面相关的数据
+const { posts, currentPage, totalPages, prevPage, nextPage, pageLinks } =
+  Astro.props;
+---
+
+<Layout title={`博客 - 第${currentPage}页`}>
+  <div class="max-w-4xl mx-auto px-4">
+    <header class="text-center my-8">
+      <h1 class="text-3xl font-bold mb-2">博客文章</h1>
+    </header>
+
+    <div class="grid gap-5 md:gap-6 py-6 md:py-10">
+      {
+        posts.map((post, index) => (
+          <div
+            style={`animation-delay: ${index * 80}ms`}
+            class="animate-slide-up w-full"
+          >
+            <PostCard post={post} />
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- 分页导航 -->
+    <div class="flex flex-col items-center py-6 md:py-8">
+      <!-- 页码导航 -->
+      <div class="flex items-center gap-2">
+        {
+          prevPage && (
+            <a
+              href={prevPage}
+              class="min-w-[36px] md:min-w-[40px] h-9 md:h-10 flex items-center justify-center rounded-lg border border-neutral-300 bg-neutral-50 text-sm font-medium text-neutral-700 transition-all duration-300 hover:border-neutral-400 hover:bg-neutral-100 hover:text-neutral-900 md:text-base dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+              aria-label="上一页"
+            >
+              ←
+            </a>
+          )
+        }
+
+        {
+          pageLinks.map(link => (
+            <a
+              href={link.url}
+              class={`min-w-[36px] md:min-w-[40px] h-9 md:h-10 flex items-center justify-center rounded-lg text-sm md:text-base font-medium transition-all duration-300 ${
+                link.isCurrent
+                  ? 'border border-neutral-900 bg-neutral-900 text-neutral-50 dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900'
+                  : 'border border-neutral-300 bg-neutral-50 text-neutral-700 hover:border-neutral-400 hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-800 dark:hover:text-neutral-100'
+              }`}
+              aria-current={link.isCurrent ? 'page' : undefined}
+            >
+              {link.page}
+            </a>
+          ))
+        }
+
+        {
+          nextPage && (
+            <a
+              href={nextPage}
+              class="min-w-[36px] md:min-w-[40px] h-9 md:h-10 flex items-center justify-center rounded-lg border border-neutral-300 bg-neutral-50 text-sm font-medium text-neutral-700 transition-all duration-300 hover:border-neutral-400 hover:bg-neutral-100 hover:text-neutral-900 md:text-base dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+              aria-label="下一页"
+            >
+              →
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</Layout>

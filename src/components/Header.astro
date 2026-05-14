@@ -1,0 +1,279 @@
+---
+import { site } from '../config';
+import Icon from './Icon.astro';
+
+const { nav, socialLinks } = site;
+---
+
+<header
+  class="sticky top-0 z-50 h-16 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm transition-all duration-300"
+>
+  <nav class="container mx-auto px-4 sm:px-4 h-full">
+    <div class="flex items-center justify-between h-full">
+      <div class="flex items-center overflow-hidden relative">
+        <a
+          href="/"
+          class="flex items-center gap-2 sm:gap-3 text-lg font-bold text-foreground dark:text-foreground transition-colors duration-300 blog-title"
+          aria-label={`${site.title} 首页`}
+        >
+          <img
+            src={site.avatar}
+            alt={`${site.author} 的头像`}
+            class="h-8 w-8 sm:h-9 sm:w-9 shrink-0 rounded-full object-cover ring-1 ring-gray-300/80 dark:ring-neutral-700/90"
+            loading="eager"
+            decoding="async"
+          />
+          <span>{site.title}</span>
+        </a>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <!-- 桌面端菜单 -->
+        <div class="hidden md:flex items-center">
+          {
+            nav.map((item, index) => (
+              <a
+                href={item.link}
+                class="text-sm text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary transition-all duration-300 px-3 py-2 rounded-md flex items-center gap-1.5 relative after:absolute after:bottom-1 after:left-3 after:right-3 after:h-0.5 after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
+                style={`animation-delay: ${index * 100}ms`}
+                target={item.target}
+              >
+                {item.icon && <Icon name={item.icon} class="text-sm" />}
+                <span>{item.text}</span>
+              </a>
+            ))
+          }
+
+          <!-- 搜索按钮 -->
+          <button
+            id="search-button"
+            class="text-sm text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary transition-all duration-300 px-3 py-2 rounded-md flex items-center gap-1.5"
+            aria-label="搜索"
+          >
+            <Icon name="search" class="text-sm" />
+            <span>搜索</span>
+            <span
+              class="hidden xl:inline-flex items-center ml-1 text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-800 rounded px-1.5 py-0.5"
+            >
+              <kbd class="font-sans">⌘K</kbd>
+            </span>
+          </button>
+        </div>
+
+        <!-- 移动端菜单按钮 -->
+        <div class="md:hidden flex items-center">
+          <!-- 移动端搜索按钮 -->
+          <button
+            id="mobile-search-button"
+            class="text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary p-2 rounded-md"
+            aria-label="搜索"
+          >
+            <Icon name="search" fontSize="20px" />
+          </button>
+
+          <button
+            id="mobile-menu-button"
+            class="text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary p-2 rounded-md"
+            aria-label="菜单"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div class="flex items-center">
+          <button
+            id="theme-toggle"
+            class="text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary transition-all duration-300 transform hover:rotate-12 ms-1"
+            aria-label="切换主题"
+          >
+            <span class="sr-only">切换主题</span>
+            <Icon name="sun" fontSize="20px" class="dark:hidden" />
+            <Icon name="moon" fontSize="20px" class="hidden dark:inline" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 移动端下拉菜单 -->
+  <div
+    id="mobile-menu"
+    class="md:hidden absolute left-0 top-16 z-50 w-full invisible -translate-y-full opacity-0 border-b border-white/55 bg-gray-100/96 shadow-lg shadow-black/5 backdrop-blur-lg backdrop-saturate-125 transition-all duration-300 dark:border-white/14 dark:bg-neutral-900/96 dark:shadow-black/20"
+  >
+    <div class="container mx-auto px-4 sm:px-4 py-2">
+      {
+        nav.map(item => (
+          <a
+            href={item.link}
+            class="block text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary py-2 px-4 my-1 rounded flex items-center justify-center gap-2 relative after:absolute after:bottom-1 after:left-1/4 after:right-1/4 after:h-0.5 after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left text-center"
+            target={item.target}
+          >
+            {item.icon && <Icon name={item.icon} />}
+            <span>{item.text}</span>
+          </a>
+        ))
+      }
+
+      <!-- 移动端搜索菜单项 -->
+      <button
+        id="mobile-menu-search"
+        class="w-full block text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary py-2 px-4 my-1 rounded flex items-center justify-center gap-2 relative after:absolute after:bottom-1 after:left-1/4 after:right-1/4 after:h-0.5 after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left text-center"
+      >
+        <Icon name="search" />
+        <span>搜索</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  const themeToggle = document.getElementById('theme-toggle');
+  const html = document.documentElement;
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  // 搜索按钮
+  const searchButton = document.getElementById('search-button');
+  const mobileSearchButton = document.getElementById('mobile-search-button');
+  const mobileMenuSearch = document.getElementById('mobile-menu-search');
+
+  // 处理搜索按钮点击
+  function handleSearchClick() {
+    // 如果全局搜索函数存在
+    if (typeof window.openGlobalSearch === 'function') {
+      window.openGlobalSearch();
+    } else {
+      // 否则导航到搜索页面
+      window.location.href = '/search';
+    }
+  }
+
+  // 添加搜索按钮事件监听
+  searchButton?.addEventListener('click', handleSearchClick);
+  mobileSearchButton?.addEventListener('click', handleSearchClick);
+
+  function isMobileMenuOpen() {
+    return mobileMenu?.classList.contains('translate-y-0') ?? false;
+  }
+
+  function closeMobileMenu() {
+    mobileMenu?.classList.add('invisible', '-translate-y-full', 'opacity-0');
+    mobileMenu?.classList.remove('translate-y-0', 'opacity-100');
+  }
+
+  function openMobileMenu() {
+    mobileMenu?.classList.remove('invisible', '-translate-y-full', 'opacity-0');
+    mobileMenu?.classList.add('translate-y-0', 'opacity-100');
+  }
+
+  function toggleMobileMenu() {
+    if (isMobileMenuOpen()) {
+      closeMobileMenu();
+    } else {
+      openMobileMenu();
+    }
+  }
+
+  mobileMenuSearch?.addEventListener('click', () => {
+    // 先关闭菜单，再打开搜索
+    closeMobileMenu();
+
+    // 延迟一下再打开搜索，避免动画冲突
+    setTimeout(handleSearchClick, 300);
+  });
+
+  // 移动端菜单切换
+  mobileMenuButton?.addEventListener('click', event => {
+    event.stopPropagation();
+    toggleMobileMenu();
+  });
+
+  document.addEventListener('click', event => {
+    if (!isMobileMenuOpen() || !mobileMenuButton || !mobileMenu) return;
+
+    const target = event.target;
+    if (!(target instanceof Node)) return;
+
+    if (
+      mobileMenu.contains(target) ||
+      mobileMenuButton.contains(target)
+    ) {
+      return;
+    }
+
+    closeMobileMenu();
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      closeMobileMenu();
+    }
+  });
+
+  themeToggle?.addEventListener('click', () => {
+    html.classList.toggle('dark');
+    html.style.colorScheme = html.classList.contains('dark')
+      ? 'dark'
+      : 'light';
+    localStorage.setItem(
+      'theme',
+      html.classList.contains('dark') ? 'dark' : 'light'
+    );
+  });
+
+  const header = document.querySelector('header');
+
+  // 滚动效果 - 导航栏阴影变化
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!header) return;
+
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > 60) {
+        header.classList.add('shadow-md');
+      } else {
+        header.classList.remove('shadow-md');
+      }
+    },
+    { passive: true }
+  );
+</script>
+
+<style>
+  header {
+    height: 64px;
+    min-height: 64px;
+    max-height: 64px;
+    transition:
+      background-color 0.3s,
+      box-shadow 0.3s;
+  }
+
+  /* 移动端菜单样式 */
+  #mobile-menu {
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+
+  .blog-title {
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
+    transform-origin: left;
+  }
+</style>

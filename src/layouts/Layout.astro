@@ -1,0 +1,156 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEO from '../components/SEO.astro';
+import GlobalSearch from '../components/GlobalSearch.astro';
+import Analytics from '../components/Analytics.astro';
+import { site } from '../config';
+import '../styles/global.css';
+import '../styles/rehype-pretty-code.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  canonical?: string;
+  publishDate?: Date;
+  modifiedDate?: Date;
+  author?: string;
+  section?: string;
+  breadcrumbs?: { name: string; url: string }[];
+}
+
+const {
+  title = site.title,
+  description = site.description,
+  keywords = site.keywords,
+  image = site.avatar,
+  type = 'website',
+  canonical,
+  publishDate,
+  modifiedDate,
+  author = site.author,
+  section,
+  breadcrumbs,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={site.language}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <script is:inline>
+      (() => {
+        try {
+          const savedTheme = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia(
+            '(prefers-color-scheme: dark)'
+          ).matches;
+          const isDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+
+          document.documentElement.classList.toggle('dark', isDark);
+          document.documentElement.style.colorScheme = isDark
+            ? 'dark'
+            : 'light';
+        } catch {
+          document.documentElement.style.colorScheme = 'light dark';
+        }
+      })();
+    </script>
+    <link rel="apple-touch-icon" sizes="76x76" href={site.avatar} />
+    <link rel="icon" href={site.avatar} />
+    <meta name="generator" content={Astro.generator} />
+    <Analytics />
+    <SEO
+      title={title}
+      description={description}
+      keywords={keywords}
+      image={image}
+      type={type}
+      canonical={canonical}
+      publishDate={publishDate}
+      modifiedDate={modifiedDate}
+      author={author}
+      section={section}
+      breadcrumbs={breadcrumbs}
+    />
+  </head>
+  <body
+    class="min-h-screen flex flex-col bg-white dark:bg-neutral-900 text-black/90 dark:text-gray-400"
+  >
+    <Header title={title !== site.title ? title : undefined} />
+    <main class="container mx-auto px-2 sm:px-4 pt-6 md:pt-10 pb-24 md:pb-32 flex-grow">
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- 全局搜索 -->
+    <GlobalSearch />
+
+    <!-- 搜索快捷键提示 -->
+    <div
+      id="search-shortcut-hint"
+      class="fixed bottom-6 right-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg rounded-full py-2 px-4 text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2 opacity-0 transition-opacity duration-300"
+    >
+      <span>按下</span>
+      <span
+        class="inline-flex items-center px-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded"
+      >
+        <kbd class="font-sans">⌘</kbd>
+        <kbd class="font-sans ml-0.5">K</kbd>
+      </span>
+      <span>进行搜索</span>
+    </div>
+  </body>
+</html>
+
+<style is:global>
+  html {
+    font-family: var(--font-ui);
+    line-height: 1.6;
+  }
+</style>
+
+<script>
+  // 显示搜索快捷键提示
+  let hasShownHint = localStorage.getItem('search-hint-shown');
+
+  if (!hasShownHint) {
+    const hintElement = document.getElementById('search-shortcut-hint');
+
+    // 3秒后显示提示
+    setTimeout(() => {
+      if (hintElement) {
+        hintElement.classList.add('opacity-100');
+
+        // 5秒后隐藏提示
+        setTimeout(() => {
+          hintElement.classList.remove('opacity-100');
+        }, 5000);
+
+        // 记住已经显示过提示
+        localStorage.setItem('search-hint-shown', 'true');
+      }
+    }, 3000);
+  }
+
+  // 支持 Ctrl+K 快捷键
+  document.addEventListener('keydown', e => {
+    // 如果按下 Ctrl+K 或 Command+K (Mac)
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+
+      // 如果全局搜索函数可用
+      if (typeof window.openGlobalSearch === 'function') {
+        window.openGlobalSearch();
+      } else {
+        // 否则导航到搜索页面
+        window.location.href = '/search';
+      }
+    }
+  });
+</script>

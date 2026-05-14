@@ -1,0 +1,69 @@
+<div
+  id="reading-progress-container"
+  class="fixed top-0 left-0 w-full h-1 bg-gray-200 dark:bg-gray-800 z-50"
+>
+  <div
+    id="reading-progress"
+    class="h-full bg-primary-600 dark:bg-primary-400 w-0 transition-all duration-100"
+  >
+  </div>
+</div>
+
+<script>
+  // 阅读进度条功能
+  const updateReadingProgress = () => {
+    const content = document.getElementById('article-content');
+    if (!content) return;
+
+    const progressBar = document.getElementById('reading-progress');
+    if (!progressBar) return;
+
+    // 计算阅读进度
+    const windowHeight = window.innerHeight;
+    const contentHeight = content.offsetHeight;
+    const scrollTop = window.scrollY;
+    const contentTop = content.offsetTop;
+    const contentBottom = contentTop + contentHeight;
+
+    // 计算已阅读的百分比
+    let readingPercentage = 0;
+    if (scrollTop > contentTop) {
+      const totalReadableHeight = contentHeight;
+      const currentPosition = scrollTop - contentTop;
+      readingPercentage = Math.min(
+        (currentPosition / totalReadableHeight) * 100,
+        100
+      );
+    }
+
+    // 更新进度条宽度
+    progressBar.style.width = `${readingPercentage}%`;
+  };
+
+  // 监听滚动事件
+  window.addEventListener('scroll', updateReadingProgress);
+  // 初始化进度条
+  updateReadingProgress();
+</script>
+
+<style>
+  #reading-progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    z-index: 1000;
+    background-color: rgba(229, 231, 235, 0.5);
+  }
+
+  .dark #reading-progress-container {
+    background-color: rgba(31, 41, 55, 0.5);
+  }
+
+  #reading-progress {
+    height: 100%;
+    width: 0;
+    transition: width 0.1s ease;
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getPostUrl } from '../utils/route';
+import { createTagUrl } from '../utils/navigation';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+---
+
+<div class="overflow-hidden">
+  <table class="w-full">
+    <thead>
+      <tr class="border-b border-gray-200 dark:border-gray-700">
+        <th
+          class="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300"
+          >标题</th
+        >
+        <th
+          class="text-right py-3 px-4 font-semibold text-gray-700 dark:text-gray-300"
+          >标签</th
+        >
+      </tr>
+    </thead>
+    <tbody>
+      {
+        posts.map(post => (
+          <tr
+            class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          >
+            <td class="py-3 px-4">
+              <a
+                href={getPostUrl(post)}
+                class="text-gray-900 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+              >
+                {post.data.title}
+              </a>
+            </td>
+            <td class="py-3 px-4 text-right">
+              <div class="flex gap-2 justify-end flex-wrap">
+                {post.data.tags && post.data.tags.length > 0 ? (
+                  post.data.tags.map((tag: string) => (
+                    <a
+                      href={createTagUrl(tag)}
+                      class="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                      onclick="event.stopPropagation()"
+                    >
+                      #{tag}
+                    </a>
+                  ))
+                ) : (
+                  <span class="text-sm text-gray-400 dark:text-gray-500">-</span>
+                )}
+              </div>
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

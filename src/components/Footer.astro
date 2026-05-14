@@ -1,0 +1,146 @@
+---
+import { site } from '../config';
+
+const { footer } = site;
+const currentYear = new Date().getFullYear();
+const footerContent = String(footer.content).replace(
+  '{currentYear}',
+  String(currentYear)
+);
+
+// 预先计算网站运行天数
+let runningDays = '';
+if (footer.showRunningTime && footer.startTime) {
+  try {
+    const startDate = new Date(footer.startTime);
+    const now = new Date();
+    const diffTime = now.getTime() - startDate.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    runningDays = `${diffDays} 天`;
+  } catch (e) {
+    runningDays = '计算中...';
+  }
+}
+---
+
+<footer
+  class="relative flex justify-center border-t border-neutral-200/80 bg-neutral-100/95 py-6 backdrop-blur-sm dark:border-neutral-800 dark:bg-neutral-900/95"
+>
+  <div class="container mx-auto px-4 py-3 sm:px-6">
+    <div class="text-center text-neutral-600 dark:text-neutral-400">
+      <div
+        class="mb-3 text-sm font-medium leading-6 text-neutral-700 transition-all duration-300 dark:text-neutral-300"
+        set:html={footerContent}
+      />
+
+      {
+        footer.showRunningTime && (
+          <div class="mb-3 text-xs leading-5 text-neutral-500 dark:text-neutral-500">
+            <span id="runtime-container">
+              本站已稳定运行{' '}
+              <span id="runtime" class="font-medium text-neutral-700 dark:text-neutral-300">
+                {runningDays}
+              </span>
+            </span>
+          </div>
+        )
+      }
+
+      {
+        footer.beian.enable && (
+          <div class="text-xs leading-5 text-neutral-500 dark:text-neutral-500">
+            <a
+              href="https://beian.miit.gov.cn/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="transition-colors duration-300 hover:text-neutral-900 dark:hover:text-neutral-100"
+            >
+              {footer.beian.icp}
+            </a>
+            {footer.beian.police && (
+              <>
+                <span class="mx-1.5 text-neutral-400 dark:text-neutral-600">|</span>
+                <a
+                  href={`http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=${footer.beian.policeCode}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center transition-colors duration-300 hover:text-neutral-900 dark:hover:text-neutral-100"
+                >
+                  <img
+                    src={footer.beian.policeIcon}
+                    alt="公安备案图标"
+                    class="mr-1 inline-block h-3 opacity-80 transition duration-300 hover:scale-110 hover:opacity-100"
+                  />
+                  {footer.beian.police}
+                </a>
+              </>
+            )}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</footer>
+
+<!-- 添加到顶部按钮：不要放进带 backdrop-filter 的 footer 内，否则 fixed 会相对 footer 定位 -->
+<button
+  id="back-to-top"
+  class="fixed bottom-5 right-5 z-[60] rounded-full bg-primary/90 p-2.5 text-primary-foreground shadow-lg opacity-0 invisible transition-all duration-300 hover:scale-110 hover:bg-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-100 dark:focus-visible:ring-offset-neutral-950 sm:bottom-6 sm:right-6"
+  aria-label="返回顶部"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="h-5 w-5"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2.5"
+    aria-hidden="true"
+  >
+    <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"
+    ></path>
+  </svg>
+</button>
+
+<script>
+  // 返回顶部按钮逻辑
+  const backToTopButton = document.getElementById('back-to-top');
+
+  if (backToTopButton) {
+    // 使用防抖函数优化滚动事件
+    const debounce = (func: Function, wait: number) => {
+      let timeout: ReturnType<typeof setTimeout> | null = null;
+      return function (this: any, ...args: any[]) {
+        if (timeout !== null) {
+          clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    };
+
+    const toggleBackToTopButton = () => {
+      if (window.scrollY > 200) {
+        backToTopButton.classList.remove('opacity-0', 'invisible');
+        backToTopButton.classList.add('opacity-100', 'visible');
+      } else {
+        backToTopButton.classList.add('opacity-0', 'invisible');
+        backToTopButton.classList.remove('opacity-100', 'visible');
+      }
+    };
+
+    // 初始检查
+    toggleBackToTopButton();
+
+    // 使用防抖优化滚动事件
+    window.addEventListener('scroll', debounce(toggleBackToTopButton, 100), {
+      passive: true,
+    });
+
+    backToTopButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    });
+  }
+</script>

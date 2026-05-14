@@ -1,0 +1,71 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import { getPostUrl } from '../utils/route';
+
+interface Props {
+  prevPost: CollectionEntry<'blog'> | null;
+  nextPost: CollectionEntry<'blog'> | null;
+}
+
+const { prevPost, nextPost } = Astro.props;
+---
+
+<nav
+  class="mt-6 md:mt-8 flex flex-col sm:flex-row justify-between gap-3 md:gap-4 animate-fade-in"
+  style="animation-delay: 500ms;"
+>
+  {
+    prevPost ? (
+      <a
+        href={getPostUrl(prevPost)}
+        class="flex-1 p-3 md:p-4 bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-700 flex flex-col hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-500 hover:shadow-md transition-all duration-300 group cursor-pointer"
+      >
+        <span class="text-xs md:text-sm text-neutral-500 dark:text-neutral-400 flex items-center mb-1 group-hover:text-neutral-700 dark:group-hover:text-neutral-300 transition-colors">
+          <Icon name="arrow-left" fontSize="14px" class="mr-1" />
+          上一篇
+        </span>
+        <span class="font-medium text-sm md:text-base text-neutral-900 dark:text-neutral-200 group-hover:text-neutral-700 dark:group-hover:text-neutral-300 line-clamp-2 transition-colors">
+          {prevPost.data.title}
+        </span>
+      </a>
+    ) : (
+      <div class="flex-1 p-3 md:p-4 bg-neutral-50 dark:bg-neutral-900/50 rounded-xl border border-neutral-200 dark:border-neutral-800 flex flex-col opacity-40 cursor-not-allowed">
+        <span class="text-xs md:text-sm text-neutral-400 dark:text-neutral-500 flex items-center mb-1">
+          <Icon name="arrow-left" fontSize="14px" class="mr-1" />
+          上一篇
+        </span>
+        <span class="font-medium text-sm md:text-base line-clamp-2 text-neutral-400 dark:text-neutral-600">
+          没有更多文章
+        </span>
+      </div>
+    )
+  }
+
+  {
+    nextPost ? (
+      <a
+        href={getPostUrl(nextPost)}
+        class="flex-1 p-3 md:p-4 bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-700 flex flex-col text-right hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-500 hover:shadow-md transition-all duration-300 group cursor-pointer"
+      >
+        <span class="text-xs md:text-sm text-neutral-500 dark:text-neutral-400 flex items-center justify-end mb-1 group-hover:text-neutral-700 dark:group-hover:text-neutral-300 transition-colors">
+          下一篇
+          <Icon name="arrow-right" fontSize="14px" class="ml-1" />
+        </span>
+        <span class="font-medium text-sm md:text-base text-neutral-900 dark:text-neutral-200 group-hover:text-neutral-700 dark:group-hover:text-neutral-300 line-clamp-2 transition-colors">
+          {nextPost.data.title}
+        </span>
+      </a>
+    ) : (
+      <div class="flex-1 p-3 md:p-4 bg-neutral-50 dark:bg-neutral-900/50 rounded-xl border border-neutral-200 dark:border-neutral-800 flex flex-col text-right opacity-40 cursor-not-allowed">
+        <span class="text-xs md:text-sm text-neutral-400 dark:text-neutral-500 flex items-center justify-end mb-1">
+          下一篇
+          <Icon name="arrow-right" fontSize="14px" class="ml-1" />
+        </span>
+        <span class="font-medium text-sm md:text-base line-clamp-2 text-neutral-400 dark:text-neutral-600">
+          没有更多文章
+        </span>
+      </div>
+    )
+  }
+</nav>

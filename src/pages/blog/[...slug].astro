@@ -1,0 +1,118 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import PostNavigation from '../../components/PostNavigation.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+import ReadingProgress from '../../components/ReadingProgress.astro';
+import ArticleHeader from '../../components/ArticleHeader.astro';
+import ArticleTags from '../../components/ArticleTags.astro';
+import ArticleContent from '../../components/ArticleContent.astro';
+import { site } from '../../config';
+import { countWords, readingTime } from '../../utils/content';
+import { getLastModifiedDateFromGit } from '../../utils/git';
+import { getPostPath } from '../../utils/route';
+import '../../styles/global.css';
+import Giscus from '../../components/Giscus.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection(
+    'blog',
+    ({ data }: CollectionEntry<'blog'>) => {
+      return !data.draft;
+    }
+  );
+
+  // 按创建日期排序
+  const sortedPosts = [...posts].sort((a, b) => {
+    return b.data.createDate.getTime() - a.data.createDate.getTime();
+  });
+
+  return sortedPosts.map((post: CollectionEntry<'blog'>, index) => {
+    const prevPost =
+      index < sortedPosts.length - 1 ? sortedPosts[index + 1] : null;
+    const nextPost = index > 0 ? sortedPosts[index - 1] : null;
+
+    // 使用公共工具函数获取文章路径
+    const urlPath = getPostPath(post);
+
+    return {
+      params: { slug: urlPath },
+      props: { post, prevPost, nextPost },
+    };
+  });
+}
+
+const { post, prevPost, nextPost } = Astro.props as {
+  post: CollectionEntry<'blog'>;
+  prevPost: CollectionEntry<'blog'> | null;
+  nextPost: CollectionEntry<'blog'> | null;
+};
+const { Content } = await render(post);
+const {
+  title,
+  description,
+  createDate,
+  updateDate,
+  author = site.author,
+  tags,
+  category,
+} = post.data;
+
+// 获取原始Markdown内容
+const rawContent = post.body ?? '';
+// 计算字数
+const wordCount = countWords(rawContent);
+// 计算阅读时间
+const readTime = readingTime(rawContent);
+
+// 如果没有设置 updateDate，尝试从 git 获取最后修改时间
+let lastUpdateDate = updateDate;
+if (!lastUpdateDate) {
+  const contentFilePath = post.filePath ?? `src/content/blog/${post.id}.md`;
+  const gitUpdateDate = getLastModifiedDateFromGit(contentFilePath);
+  if (gitUpdateDate && gitUpdateDate > createDate) {
+    lastUpdateDate = gitUpdateDate;
+  }
+}
+---
+
+<Layout title={title} description={description}>
+  <ReadingProgress />
+
+  <div
+    class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in relative"
+  >
+    <div
+      class="flex flex-col lg:grid lg:grid-cols-[10rem_minmax(0,48rem)] lg:justify-center lg:gap-8 xl:grid-cols-[13rem_minmax(0,48rem)] xl:gap-10 2xl:grid-cols-[16rem_minmax(0,48rem)] 2xl:gap-12"
+    >
+      <TableOfContents />
+
+      <!-- 主内容区 -->
+      <article class="flex-1 w-full lg:max-w-3xl">
+        <ArticleHeader
+          title={title}
+          createDate={createDate}
+          updateDate={lastUpdateDate}
+          author={author}
+          category={category}
+          wordCount={wordCount}
+          readTime={readTime}
+        />
+
+        <ArticleTags tags={tags} />
+
+        <ArticleContent>
+          <Content />
+        </ArticleContent>
+
+        <!-- 文章导航 -->
+        <PostNavigation prevPost={prevPost} nextPost={nextPost} />
+
+        {
+          site.features.comments.enable &&
+            site.features.comments.type === 'giscus' && <Giscus />
+        }
+      </article>
+    </div>
+  </div>
+</Layout>

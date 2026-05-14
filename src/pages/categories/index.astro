@@ -1,0 +1,228 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PostList from '../../components/PostList.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+type BlogPost = CollectionEntry<'blog'>;
+
+const posts: BlogPost[] = await getCollection(
+  'blog',
+  ({ data }: { data: { draft?: boolean } }) => {
+    return !data.draft;
+  }
+);
+
+// 获取所有分类并统计文章数量
+const categories: string[] = [
+  ...new Set(posts.map(post => post.data.category).filter(Boolean) as string[]),
+];
+
+// 按分类分组文章，并按时间从新到旧排序
+const postsByCategory: Record<string, BlogPost[]> = {};
+const categoryCounts: Record<string, number> = {};
+
+categories.forEach(category => {
+  const categoryPosts = posts
+    .filter(post => post.data.category === category)
+    .sort((a, b) => {
+      // 从新到旧排序：b 的日期减去 a 的日期
+      return b.data.createDate.getTime() - a.data.createDate.getTime();
+    });
+  postsByCategory[category] = categoryPosts;
+  categoryCounts[category] = categoryPosts.length;
+});
+
+// 按文章数量从高到低排序分类
+const sortedCategories = [...categories].sort(
+  (a, b) => categoryCounts[b] - categoryCounts[a]
+);
+const initialCategory = sortedCategories[0] || '';
+---
+
+<Layout title="Blog Categories">
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex flex-col md:flex-row gap-8">
+      <!-- 左侧分类列表 -->
+      <div class="md:w-1/4 md:sticky md:top-24 md:self-start">
+        <div
+          class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden md:max-h-[calc(100vh-16rem)]"
+        >
+          <h2
+            class="text-xl font-semibold p-4 border-b border-gray-200 dark:border-gray-700"
+          >
+            分类
+          </h2>
+          <div class="relative">
+            <div class="flex flex-col overflow-y-auto md:max-h-[calc(100vh-21rem)] scroll-list overscroll-contain">
+            {
+              sortedCategories.map(category => (
+                <button
+                  data-category={category}
+                  class={`category-button flex justify-between items-center px-3 py-2 text-sm border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition-colors ${
+                    category === initialCategory
+                      ? 'bg-blue-700 text-blue-50 dark:bg-blue-800'
+                      : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                >
+                  <span>{category}</span>
+                  <span
+                    class={`rounded-full px-1.5 py-0.5 text-xs ${
+                      category === initialCategory
+                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-200/90 dark:text-blue-950'
+                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
+                    }`}
+                  >
+                    {categoryCounts[category]}
+                  </span>
+                </button>
+              ))
+            }
+            </div>
+            <!-- 渐变阴影 -->
+            <div class="pointer-events-none absolute top-0 left-0 right-0 h-12 opacity-0 transition-opacity duration-300 scroll-shadow-top" style="background: linear-gradient(to bottom, rgba(0,0,0,0.06), transparent);"></div>
+            <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-12 transition-opacity duration-300 scroll-shadow-bottom" style="background: linear-gradient(to top, rgba(0,0,0,0.06), transparent);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧文章列表 -->
+      <div class="md:w-3/4">
+        {
+          sortedCategories.map((category, index) => (
+            <div
+              id={`category-${category}`}
+              class={`category-content ${index === 0 ? 'block' : 'hidden'}`}
+            >
+              <PostList
+                posts={postsByCategory[category]}
+                title={category}
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import {
+      getCategoryFromUrl,
+      updateUrlCategory,
+    } from '../../utils/navigation';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const categoryButtons = document.querySelectorAll('.category-button');
+      const categoryContents = document.querySelectorAll('.category-content');
+
+      // 处理滚动阴影
+      const scrollList = document.querySelector<HTMLElement>('.scroll-list');
+      const shadowTop = document.querySelector<HTMLElement>('.scroll-shadow-top');
+      const shadowBottom = document.querySelector<HTMLElement>('.scroll-shadow-bottom');
+
+      function updateScrollShadows() {
+        if (!scrollList || !shadowTop || !shadowBottom) return;
+
+        const { scrollTop, scrollHeight, clientHeight } = scrollList;
+        const isAtTop = scrollTop === 0;
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+
+        // 顶部阴影：不在顶部时显示
+        shadowTop.style.opacity = isAtTop ? '0' : '1';
+        // 底部阴影：不在底部时显示
+        shadowBottom.style.opacity = isAtBottom ? '0' : '1';
+      }
+
+      if (scrollList) {
+        scrollList.addEventListener('scroll', updateScrollShadows);
+        // 初始化阴影状态
+        updateScrollShadows();
+      }
+
+      // 处理分类按钮点击
+      function showCategory(category: string | null) {
+        if (!category) return;
+
+        // 更新URL
+        updateUrlCategory(category);
+
+        // 更新按钮样式
+        categoryButtons.forEach(btn => {
+          const btnCategory = btn.getAttribute('data-category');
+          if (btnCategory === category) {
+            btn.classList.add('bg-blue-700', 'text-blue-50', 'dark:bg-blue-800');
+            btn.classList.remove('hover:bg-gray-100', 'dark:hover:bg-gray-800');
+            const countSpan = btn.querySelector('span:last-child');
+            if (countSpan) {
+              countSpan.classList.add('bg-blue-100', 'text-blue-800', 'dark:bg-blue-200/90', 'dark:text-blue-950');
+              countSpan.classList.remove(
+                'bg-gray-200',
+                'dark:bg-gray-600',
+                'text-gray-700',
+                'dark:text-gray-300'
+              );
+            }
+          } else {
+            btn.classList.remove(
+              'bg-blue-700',
+              'text-blue-50',
+              'dark:bg-blue-800'
+            );
+            btn.classList.add('hover:bg-gray-100', 'dark:hover:bg-gray-800');
+            const countSpan = btn.querySelector('span:last-child');
+            if (countSpan) {
+              countSpan.classList.remove('bg-blue-100', 'text-blue-800', 'dark:bg-blue-200/90', 'dark:text-blue-950');
+              countSpan.classList.add(
+                'bg-gray-200',
+                'dark:bg-gray-600',
+                'text-gray-700',
+                'dark:text-gray-300'
+              );
+            }
+          }
+        });
+
+        // 显示对应内容，隐藏其他内容
+        categoryContents.forEach(content => {
+          if (content.id === `category-${category}`) {
+            content.classList.remove('hidden');
+            content.classList.add('block');
+          } else {
+            content.classList.remove('block');
+            content.classList.add('hidden');
+          }
+        });
+
+        // 滚动到页面顶部
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const category = button.getAttribute('data-category');
+          showCategory(category);
+        });
+      });
+
+      // 页面加载时从URL读取初始分类
+      const categoryFromUrl = getCategoryFromUrl();
+      if (categoryFromUrl) {
+        // 检查分类是否存在
+        const categoryExists = Array.from(categoryButtons).some(
+          btn => btn.getAttribute('data-category') === categoryFromUrl
+        );
+
+        if (categoryExists) {
+          showCategory(categoryFromUrl);
+        } else {
+          // 如果URL中的分类不存在，则显示默认分类（第一个分类）
+          const firstCategory =
+            categoryButtons[0]?.getAttribute('data-category');
+          if (firstCategory) {
+            showCategory(firstCategory);
+          }
+        }
+      }
+    });
+  </script>
+</Layout>

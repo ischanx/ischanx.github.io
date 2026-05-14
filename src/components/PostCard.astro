@@ -1,0 +1,249 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '../utils/date';
+import { countWords, readingTime } from '../utils/content';
+import { getPostUrl } from '../utils/route';
+import Icon from './Icon.astro';
+import { site } from '../config';
+import { createCategoryUrl, createTagUrl } from '../utils/navigation';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, description, createDate, tags, category, sticky, image } =
+  post.data;
+
+// 文章最终显示的图片
+const displayImage = image;
+
+// 获取置顶配置
+const stickyConfig = site.indexSettings.sticky;
+
+// 获取原始Markdown内容
+const rawContent = post.body ?? '';
+// 计算字数
+const wordCount = countWords(rawContent);
+// 计算阅读时间
+const readTime = readingTime(rawContent);
+
+// 生成随机的渐变色,基于标题的散列值
+function generateGradientFromTitle(title: string) {
+  const hash = title.split('').reduce((acc, char) => {
+    return char.charCodeAt(0) + ((acc << 5) - acc);
+  }, 0);
+
+  const gradients = [
+    'from-pink-500 to-purple-500',
+    'from-blue-500 to-teal-500',
+    'from-green-500 to-lime-500',
+    'from-orange-500 to-amber-500',
+    'from-indigo-500 to-blue-500',
+    'from-red-500 to-pink-500',
+    'from-emerald-500 to-teal-500',
+    'from-violet-500 to-fuchsia-500',
+  ];
+
+  return gradients[Math.abs(hash) % gradients.length];
+}
+
+// 生成轻微的背景色调，与渐变色相匹配但更淡
+function generateBgTint(title: string) {
+  const hash = title.split('').reduce((acc, char) => {
+    return char.charCodeAt(0) + ((acc << 5) - acc);
+  }, 0);
+
+  const bgTints = [
+    'bg-pink-50 dark:bg-pink-950/10',
+    'bg-blue-50 dark:bg-blue-950/10',
+    'bg-green-50 dark:bg-green-950/10',
+    'bg-amber-50 dark:bg-amber-950/10',
+    'bg-indigo-50 dark:bg-indigo-950/10',
+    'bg-red-50 dark:bg-red-950/10',
+    'bg-emerald-50 dark:bg-emerald-950/10',
+    'bg-violet-50 dark:bg-violet-950/10',
+  ];
+
+  return bgTints[Math.abs(hash) % bgTints.length];
+}
+
+// 生成与背景色相匹配的边框颜色
+function generateBorderColor(title: string) {
+  const hash = title.split('').reduce((acc, char) => {
+    return char.charCodeAt(0) + ((acc << 5) - acc);
+  }, 0);
+
+  const borderColors = [
+    'border-pink-200 dark:border-pink-800/30',
+    'border-blue-200 dark:border-blue-800/30',
+    'border-green-200 dark:border-green-800/30',
+    'border-amber-200 dark:border-amber-800/30',
+    'border-indigo-200 dark:border-indigo-800/30',
+    'border-red-200 dark:border-red-800/30',
+    'border-emerald-200 dark:border-emerald-800/30',
+    'border-violet-200 dark:border-violet-800/30',
+  ];
+
+  return borderColors[Math.abs(hash) % borderColors.length];
+}
+
+const gradientClass = generateGradientFromTitle(title);
+const bgTintClass = generateBgTint(title);
+const borderColorClass = generateBorderColor(title);
+---
+
+<article
+  class="group relative p-[2px] rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform active:scale-[0.99] animate-fade-in w-full"
+>
+  <!-- 渐变边框效果 -->
+  <div
+    class={`absolute inset-0 opacity-30 group-hover:opacity-100 bg-gradient-to-br ${gradientClass} transition-opacity duration-500 rounded-lg blur-[0.5px]`}
+  >
+  </div>
+
+  <!-- 卡片内容 -->
+  <div
+    class={`min-h-40 relative bg-card dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden p-5 h-full z-10 backdrop-blur-sm transition-all duration-300 group-hover:shadow-lg border ${borderColorClass} flex flex-col`}
+  >
+    <!-- 装饰元素 -->
+    <div
+      class="absolute top-0 right-0 h-12 w-12 opacity-10 -rotate-12 transform translate-x-2 -translate-y-2 bg-gradient-to-br from-primary-300 to-primary-500 rounded-full"
+    >
+    </div>
+
+    <!-- 封面图 - 始终显示在右侧，hover时变亮 -->
+    {
+      displayImage && (
+        <div class="hidden md:block md:absolute md:right-0 md:top-0 md:bottom-0 md:w-[150px] md:opacity-50 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none">
+          <div class="h-full w-full overflow-hidden">
+            <img
+              src={displayImage}
+              alt={title}
+              class="object-cover h-full w-full transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-l from-transparent to-card dark:to-gray-800 opacity-50 group-hover:opacity-30 transition-opacity duration-300" />
+        </div>
+      )
+    }
+
+    <!-- 左侧边框装饰 -->
+    <div
+      class={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${gradientClass} opacity-20`}
+    >
+    </div>
+
+    <!-- 标题 -->
+    <h2 class="text-base md:text-xl font-bold mb-2 relative">
+      <a
+        href={getPostUrl(post)}
+        class="text-card-foreground dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-300"
+      >
+        {title}
+
+        {/* 置顶标签 */}
+        {
+          sticky && stickyConfig.enable && (
+            <span class="inline-flex items-center ml-2 px-1.5 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
+              {stickyConfig.icon && (
+                <Icon name={stickyConfig.icon} class="mr-1 text-xs" />
+              )}
+              {stickyConfig.text}
+            </span>
+          )
+        }
+      </a>
+    </h2>
+
+    <!-- 摘要 -->
+    <p
+      class="text-sm text-muted-foreground dark:text-muted-foreground mb-3 line-clamp-3 overflow-hidden text-ellipsis pointer-events-none md:pr-[160px] transition-all duration-300"
+    >
+      {description}
+    </p>
+
+    <!-- 元信息 -->
+    <div
+      class="flex flex-wrap items-center text-[10px] sm:text-xs text-muted-foreground dark:text-muted-foreground gap-2 sm:gap-3 mt-auto md:pr-[160px] transition-all duration-300"
+    >
+      <time
+        datetime={createDate.toISOString()}
+        class="flex items-center pointer-events-none"
+      >
+        <Icon name="calendar" fontSize="14px" class="mr-1" />
+        {formatDate(createDate)}
+      </time>
+
+      {
+        category && (
+          <span class="flex items-center relative z-20">
+            <Icon name="category" fontSize="14px" class="mr-1" />
+            <a
+              href={createCategoryUrl(category)}
+              class="hover:text-primary dark:hover:text-primary transition-colors duration-300 relative z-30"
+            >
+              {category}
+            </a>
+          </span>
+        )
+      }
+
+      {
+        tags && tags.length > 0 && (
+          <span class="flex flex-wrap items-center gap-1.5 sm:gap-2 relative z-20">
+            <Icon name="tags" fontSize="14px" />
+            {tags.map((tag: string) => (
+              <a
+                href={createTagUrl(tag)}
+                class="hover:text-primary dark:hover:text-primary transition-colors duration-300 relative z-30"
+              >
+                #{tag}
+              </a>
+            ))}
+          </span>
+        )
+      }
+    </div>
+  </div>
+</article>
+
+<style>
+  .card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    cursor: pointer;
+  }
+
+  /* 让分类和标签可以穿透点击，覆盖全局卡片点击 */
+  .card-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    pointer-events: auto;
+  }
+
+  /* 确保只有实际链接有鼠标手型 */
+  a {
+    position: relative;
+    z-index: 30;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  /* 卡片悬停效果 */
+  article:hover .card-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.02);
+    z-index: 15;
+  }
+
+  /* 深色模式卡片悬停效果 */
+  :global(.dark) article:hover .card-link::after {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+</style>

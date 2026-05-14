@@ -1,0 +1,101 @@
+---
+// 从配置中获取 Giscus 设置
+import { site } from '../config';
+
+const giscusConfig = site.features.comments.giscus;
+---
+
+<div
+  class="mt-12 rounded-xl border border-neutral-200/80 bg-neutral-100/90 p-4 animate-slide-up sm:p-6 dark:border-neutral-800 dark:bg-neutral-900/90"
+  style="animation-delay: 400ms;"
+>
+  <div class="mx-auto my-6 h-px w-full max-w-32 rounded-full bg-neutral-300/80 dark:bg-neutral-700/80 sm:my-8">
+  </div>
+  <div id="giscus-container"></div>
+</div>
+
+<script define:vars={{ giscusConfig }}>
+  // 动态加载 Giscus
+  function loadGiscus() {
+    // 移除之前的 Giscus 容器内容
+    const container = document.getElementById('giscus-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    // 检测当前主题
+    const isDark = document.documentElement.classList.contains('dark');
+    const theme = isDark ? giscusConfig.themeDark : giscusConfig.themeLight;
+
+    // 创建 script 元素
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.setAttribute('data-repo', giscusConfig.repo);
+    script.setAttribute('data-repo-id', giscusConfig.repoId);
+    script.setAttribute('data-category', giscusConfig.category);
+    script.setAttribute('data-category-id', giscusConfig.categoryId);
+    script.setAttribute('data-mapping', giscusConfig.mapping);
+    script.setAttribute('data-strict', '0');
+    script.setAttribute(
+      'data-reactions-enabled',
+      giscusConfig.reactionsEnabled
+    );
+    script.setAttribute('data-emit-metadata', giscusConfig.emitMetadata);
+    script.setAttribute('data-input-position', giscusConfig.inputPosition);
+    script.setAttribute('data-theme', theme);
+    script.setAttribute('data-lang', giscusConfig.lang);
+    script.setAttribute('crossorigin', 'anonymous');
+    script.async = true;
+
+    // 添加脚本到容器
+    container.appendChild(script);
+  }
+
+  // 尝试立即加载，但如果已经存在 iframe 则不重复加载
+  function initGiscus() {
+    const existingFrame = document.querySelector('iframe.giscus-frame');
+    if (existingFrame) {
+      updateGiscusTheme();
+    } else {
+      loadGiscus();
+    }
+  }
+
+  // 更新 Giscus 主题
+  function updateGiscusTheme() {
+    const iframe = document.querySelector('iframe.giscus-frame');
+    if (!iframe) return;
+
+    const isDark = document.documentElement.classList.contains('dark');
+    const theme = isDark ? giscusConfig.themeDark : giscusConfig.themeLight;
+
+    iframe.contentWindow.postMessage(
+      { giscus: { setConfig: { theme } } },
+      'https://giscus.app'
+    );
+  }
+
+  // 立即初始化
+  initGiscus();
+
+  // 监听主题变化
+  const observer = new MutationObserver(mutations => {
+    for (const mutation of mutations) {
+      if (
+        mutation.attributeName === 'class' &&
+        mutation.target === document.documentElement
+      ) {
+        // 尝试更新主题，如果更新失败（iframe不存在）则重新加载
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (iframe) {
+          updateGiscusTheme();
+        } else {
+          loadGiscus();
+        }
+        break;
+      }
+    }
+  });
+
+  observer.observe(document.documentElement, { attributes: true });
+</script>

@@ -1,0 +1,28 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import CompactPostList from './CompactPostList.astro';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+  title?: string;
+}
+
+const { posts, title } = Astro.props;
+---
+
+<div class="mb-6">
+  {
+    title && (
+      <h2 class="text-3xl font-bold">
+        <span class="inline-block bg-blue-600 text-blue-50 dark:bg-blue-700 px-4 py-1 rounded-md">
+          {title}
+        </span>
+      </h2>
+    )
+  }
+</div>
+
+<!-- 简洁视图 -->
+<div class="space-y-2">
+  <CompactPostList posts={posts} />
+</div>

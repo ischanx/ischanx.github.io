@@ -1,0 +1,318 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { createTagUrl } from '../utils/navigation';
+import { getPostUrl } from '../utils/route';
+import { countWords } from '../utils/content';
+import { site } from '../config';
+
+type BlogPost = CollectionEntry<'blog'>;
+
+// 获取所有非草稿文章
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+
+// 按创建日期从新到旧排序
+const posts = [...allPosts].sort(
+  (a, b) =>
+    new Date(b.data.createDate).getTime() -
+    new Date(a.data.createDate).getTime()
+);
+
+// 计算统计数据
+const totalPosts = posts.length;
+const totalWords = posts.reduce((sum, post) => sum + countWords(post.body ?? ''), 0);
+
+const monthKey = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  return `${year}-${month}`;
+};
+
+const formatHeatmapDate = (date: Date) =>
+  date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+
+// 计算博客运行时间
+const startDate = new Date(site.footer.startTime);
+const now = new Date();
+const diffTime = Math.abs(now.getTime() - startDate.getTime());
+const diffYears = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 365));
+const diffMonths = Math.floor((diffTime % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
+const diffDays = Math.floor((diffTime % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+
+// 格式化运行时间
+let runningTime = '';
+if (diffYears > 0) {
+  runningTime += `${diffYears} 年`;
+  if (diffMonths > 0) {
+    runningTime += ` ${diffMonths} 个月`;
+  }
+} else if (diffMonths > 0) {
+  runningTime += `${diffMonths} 个月`;
+  if (diffDays > 0) {
+    runningTime += ` ${diffDays} 天`;
+  }
+} else {
+  runningTime += `${diffDays} 天`;
+}
+
+const heatmapEndDate = new Date(now);
+heatmapEndDate.setHours(0, 0, 0, 0);
+
+// 生成最近约 5 年的文章周热力图数据
+const heatmapWeekCount = 260;
+const heatmapStartDate = new Date(heatmapEndDate);
+heatmapStartDate.setDate(heatmapStartDate.getDate() - (heatmapWeekCount * 7 - 1));
+heatmapStartDate.setHours(0, 0, 0, 0);
+
+const archiveHeatmapWeeks = [];
+for (let weekStart = new Date(heatmapStartDate); weekStart <= heatmapEndDate;) {
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 6);
+
+  const rangeStart = weekStart;
+  const rangeEnd = weekEnd > heatmapEndDate ? heatmapEndDate : weekEnd;
+  const weekPosts = posts.filter(post => {
+    const postDate = new Date(post.data.createDate);
+    postDate.setHours(0, 0, 0, 0);
+    return postDate >= rangeStart && postDate <= rangeEnd;
+  });
+  const count = weekPosts.length;
+  const words = weekPosts.reduce((sum, post) => sum + countWords(post.body ?? ''), 0);
+
+  archiveHeatmapWeeks.push({
+    key: weekStart.toISOString(),
+    count,
+    words,
+    level: 0,
+    dateRange: `${formatHeatmapDate(rangeStart)} - ${formatHeatmapDate(rangeEnd)}`,
+    label: `${formatHeatmapDate(rangeStart)} - ${formatHeatmapDate(rangeEnd)}：${count} 篇文章，${words.toLocaleString()} 字`,
+    posts: weekPosts.map(post => ({
+      title: post.data.title,
+      url: getPostUrl(post),
+    })),
+  });
+
+  weekStart.setDate(weekStart.getDate() + 7);
+}
+
+const maxWeeklyWords = Math.max(...archiveHeatmapWeeks.map(week => week.words), 0);
+for (const week of archiveHeatmapWeeks) {
+  week.level = week.words === 0
+    ? 0
+    : maxWeeklyWords === 0
+      ? 1
+      : Math.max(1, Math.ceil((week.words / maxWeeklyWords) * 4));
+}
+
+const heatmapStartYear = heatmapStartDate.getFullYear();
+const heatmapEndYear = heatmapEndDate.getFullYear();
+
+// 按年份和月份分组
+type PostsByYearMonth = Record<number, Record<string, BlogPost[]>>;
+
+const postsByYearMonth = posts.reduce((acc: PostsByYearMonth, post) => {
+  const date = new Date(post.data.createDate);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+
+  if (!acc[year]) {
+    acc[year] = {};
+  }
+  if (!acc[year][month]) {
+    acc[year][month] = [];
+  }
+  acc[year][month].push(post);
+  return acc;
+}, {});
+
+// 获取所有年份并排序
+const years = Object.keys(postsByYearMonth)
+  .map(Number)
+  .sort((a, b) => b - a);
+---
+
+<Layout title="归档">
+  <div class="max-w-4xl mx-auto px-2 sm:px-4 py-6 md:py-8">
+    <!-- 统计信息 -->
+    <div class="mb-8 rounded-xl border border-neutral-200 bg-neutral-100/90 p-4 md:mb-12 md:p-6 dark:border-neutral-800 dark:bg-neutral-900/90">
+      <p class="text-sm leading-relaxed text-neutral-700 md:text-base dark:text-neutral-300">
+        过去 <span class="font-bold text-neutral-900 dark:text-neutral-100">{runningTime}</span>，
+        总共有 <span class="font-bold text-neutral-900 dark:text-neutral-100">{totalPosts}</span> 篇文章，
+        累计 <span class="font-bold text-neutral-900 dark:text-neutral-100">{totalWords.toLocaleString()}</span> 字
+      </p>
+    </div>
+
+    <section class="mb-10 md:mb-12" aria-label="过去五年文章周热力图">
+      <div class="mb-2 flex items-center justify-between text-xs font-medium text-gray-400 dark:text-gray-500">
+        <span>{heatmapStartYear}</span>
+        <span>{heatmapEndYear}</span>
+      </div>
+      <div class="grid grid-flow-col grid-rows-[repeat(5,minmax(0,1fr))] gap-0.5 sm:gap-1">
+        {archiveHeatmapWeeks.map(week => (
+          <span
+            class={`archive-heatmap-cell aspect-square rounded-[2px] ring-neutral-400/0 transition duration-150 hover:z-10 hover:scale-125 hover:ring-2 dark:ring-neutral-200/0 dark:hover:ring-neutral-200/70 ${
+              week.level === 0
+                ? 'bg-neutral-200 dark:bg-neutral-800'
+                : week.level === 1
+                  ? 'bg-neutral-300 dark:bg-neutral-700'
+                  : week.level === 2
+                    ? 'bg-neutral-400 dark:bg-neutral-600'
+                    : week.level === 3
+                      ? 'bg-neutral-500 dark:bg-neutral-500'
+                      : 'bg-neutral-700 dark:bg-neutral-300'
+            }`}
+            aria-label={week.label}
+            data-heatmap-cell
+          >
+            <template data-heatmap-tooltip>
+              <div class="w-72 overflow-hidden rounded-md border border-slate-200 bg-white text-left shadow-[0_18px_45px_rgba(15,23,42,0.18)] ring-1 ring-slate-900/5 dark:border-slate-700 dark:bg-slate-950 dark:shadow-[0_18px_45px_rgba(0,0,0,0.45)] dark:ring-white/10">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-3 py-2 dark:border-slate-800">
+                  <div class="min-w-0 truncate text-xs font-medium text-slate-700 dark:text-slate-200">
+                  {week.dateRange}
+                  </div>
+                  <div class="shrink-0 rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700 dark:bg-blue-400/10 dark:text-blue-300">
+                  {week.words.toLocaleString()} 字
+                  </div>
+                </div>
+                <div class="border-b border-slate-100 px-3 py-1.5 text-[11px] text-slate-400 dark:border-slate-800 dark:text-slate-500">
+                {week.count} 篇文章
+                </div>
+                <div class="px-3 py-2">
+                {week.posts.length > 0 ? (
+                  week.posts.slice(0, 4).map(post => (
+                    <a
+                      href={post.url}
+                      class="block truncate rounded-sm py-0.5 text-xs text-slate-600 transition-colors hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-300"
+                    >
+                      {post.title}
+                    </a>
+                  ))
+                ) : (
+                  <div class="text-xs text-slate-400 dark:text-slate-500">
+                    暂无文章
+                  </div>
+                )}
+                {week.posts.length > 4 && (
+                  <div class="mt-1 text-[10px] font-medium text-blue-600 dark:text-blue-300">
+                    还有 {week.posts.length - 4} 篇
+                  </div>
+                )}
+                </div>
+              </div>
+            </template>
+          </span>
+        ))}
+      </div>
+    </section>
+
+    <div class="space-y-12">
+      {
+        years.map(year => {
+          const months = Object.keys(postsByYearMonth[year]).sort((a, b) => b.localeCompare(a));
+          const totalPostsInYear = months.reduce((sum, month) => sum + postsByYearMonth[year][month].length, 0);
+
+          return (
+            <div>
+              <div class="mb-4">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-200">
+                  {year}
+                </h2>
+              </div>
+
+              <div class="space-y-8">
+                {months.map(month => (
+                  <div>
+                    {/* 月份标题 */}
+                    <div class="text-base font-semibold text-gray-500 dark:text-gray-500 mb-3">
+                      {month}月
+                    </div>
+
+                    {/* 该月份的文章列表 */}
+                    <div class="pl-6 space-y-3">
+                      {postsByYearMonth[year][month].map((post) => (
+                        <div class="flex items-center gap-2 flex-wrap">
+                          <span class="text-blue-600 dark:text-blue-400">•</span>
+                          <a
+                            href={`${getPostUrl(post)}`}
+                            class="text-base font-medium text-gray-900 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                          >
+                            {post.data.title}
+                          </a>
+
+                          {post.data.tags && post.data.tags.length > 0 && (
+                            <>
+                              {post.data.tags.map((tag: string) => (
+                                <a
+                                  href={createTagUrl(tag)}
+                                  class="rounded-md border border-neutral-300 bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-600 transition-colors duration-200 hover:border-neutral-400 hover:bg-neutral-200 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-700 dark:hover:text-neutral-100"
+                                >
+                                  #{tag}
+                                </a>
+                              ))}
+                            </>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import tippy from 'tippy.js';
+  import 'tippy.js/dist/tippy.css';
+
+  document.querySelectorAll('[data-heatmap-cell]').forEach((cell) => {
+    const template = cell.querySelector('template[data-heatmap-tooltip]');
+
+    if (!(template instanceof HTMLTemplateElement)) {
+      return;
+    }
+
+    tippy(cell, {
+      allowHTML: true,
+      appendTo: document.body,
+      content: template.innerHTML,
+      delay: [80, 40],
+      duration: [140, 100],
+      interactive: true,
+      maxWidth: 'none',
+      offset: [0, 10],
+      placement: 'top',
+      theme: 'archive-heatmap',
+    });
+  });
+</script>
+
+<style is:global>
+  .tippy-box[data-theme~='archive-heatmap'] {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    color: inherit;
+  }
+
+  .tippy-box[data-theme~='archive-heatmap'] > .tippy-content {
+    padding: 0;
+  }
+
+  .tippy-box[data-theme~='archive-heatmap'] > .tippy-arrow {
+    color: rgb(255 255 255);
+  }
+
+  .dark .tippy-box[data-theme~='archive-heatmap'] > .tippy-arrow {
+    color: rgb(2 6 23);
+  }
+</style>
