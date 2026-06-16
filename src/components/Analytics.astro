@@ -1,7 +1,19 @@
 ---
+import { OpenPanelComponent } from '@openpanel/astro';
 import { site } from '../config.ts';
 const { analytics } = site || {};
 ---
+
+{
+  analytics?.openpanel?.enable && (
+    <OpenPanelComponent
+      apiUrl={analytics.openpanel.apiUrl}
+      clientId={analytics.openpanel.clientId}
+      trackScreenViews={analytics.openpanel.trackScreenViews}
+      trackOutgoingLinks={analytics.openpanel.trackOutgoingLinks}
+    />
+  )
+}
 
 {
   analytics?.umami?.enable && (

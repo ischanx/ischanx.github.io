@@ -137,6 +137,13 @@ export const site = {
     ]
   },
   analytics: {
+    openpanel: {
+      enable: true,
+      apiUrl: "https://data.chanx.app/api",
+      clientId: "f070e406-ebd4-47e8-b69a-c3e2dfc428cf",
+      trackScreenViews: true,
+      trackOutgoingLinks: true
+    },
     umami: {
       enable: true,
       websiteId: "46b25fe7-e42b-4a02-abe8-9a92b78fc8c0", // 替换为你的 Umami 网站 ID
