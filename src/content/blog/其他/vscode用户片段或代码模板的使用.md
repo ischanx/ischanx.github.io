@@ -22,7 +22,7 @@ permalink: vscode-snippets
 
 **这里举一个我码博客文章的一个Markdown模板**
 
-![image-20200530162713944](https://static.chanx.tech/image/8xl1p_0.png)
+![image-20200530162713944](https://cdn.chanx.tech/image/8xl1p_0.png)
 
 <u>打开配置文件：文件 - 首选项 - 用户片段  - markdown.json</u>
 
@@ -115,7 +115,7 @@ $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:anot
 
 **你还需要打开vscode的配置文件setting.json**
 
-![image-20200530164742943](https://static.chanx.tech/image/8ydz5_0.png)
+![image-20200530164742943](https://cdn.chanx.tech/image/8ydz5_0.png)
 
 **添加如下代码**
 
@@ -131,6 +131,6 @@ $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:anot
 
 然后享受模板带来的快乐吧！
 
-![image-20200530164913044](https://static.chanx.tech/image/8ykhx_0.png)
+![image-20200530164913044](https://cdn.chanx.tech/image/8ykhx_0.png)
 
-![image-20200530164906681](https://static.chanx.tech/image/8za6p_0.png)
+![image-20200530164906681](https://cdn.chanx.tech/image/8za6p_0.png)

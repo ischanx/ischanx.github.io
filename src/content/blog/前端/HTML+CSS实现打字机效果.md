@@ -17,7 +17,7 @@ permalink: typewriter-effect
 
 
 
-![](https://static.chanx.tech/image/6oau0_0.gif)
+![](https://cdn.chanx.tech/image/6oau0_0.gif)
 
 一个字总结：**丑**。
 

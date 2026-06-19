@@ -17,7 +17,7 @@ permalink: tabs-effect
 
 具体效果：
 
-<img src="https://static.chanx.tech/image/a5otc_0.png" alt="Snipaste_2020-09-13_16-48-03" style="zoom:50%;" />
+<img src="https://cdn.chanx.tech/image/a5otc_0.png" alt="Snipaste_2020-09-13_16-48-03" style="zoom:50%;" />
 
 
 

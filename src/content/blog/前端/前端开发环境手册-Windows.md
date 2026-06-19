@@ -18,7 +18,7 @@ permalink: /fe-landing-log-windows/
 
 访问[下载地址](https://git-scm.com/download/win)，下载独立安装程序，默认配置点点点就好
 
-![](https://static.chanx.tech/image/FzzrbWQv1oK29vxsmsTcltK6nPH.png)
+![](https://cdn.chanx.tech/image/FzzrbWQv1oK29vxsmsTcltK6nPH.png)
 
 ## 基本配置
 
@@ -72,7 +72,7 @@ cat ~/.ssh/id_rsa.pub
 
 执行命令后输出的 ssh-rsa 开头文本即为公钥
 
-![](https://static.chanx.tech/image/SUJFbKxDfoBpkBx2h4OcDyLvncB.png)
+![](https://cdn.chanx.tech/image/SUJFbKxDfoBpkBx2h4OcDyLvncB.png)
 
 ### 远程仓库配置公钥（Github 为例）
 
@@ -80,7 +80,7 @@ cat ~/.ssh/id_rsa.pub
 
 将上一步骤生成的公钥复制到 Key 下面的文本框，Title 根据实际情况命名，然后点保存即可
 
-![](https://static.chanx.tech/image/TvkFb6k18ot4N9xEms8ccWY2naf.png)
+![](https://cdn.chanx.tech/image/TvkFb6k18ot4N9xEms8ccWY2naf.png)
 
 **一般其他远程****仓库****到这已经配置完成了**
 
@@ -103,7 +103,7 @@ Host github.com
 ssh -T git@github.com
 ```
 
-![](https://static.chanx.tech/image/NkosbmGFhoGkaGx3zelcdXy9nsC.png)
+![](https://cdn.chanx.tech/image/NkosbmGFhoGkaGx3zelcdXy9nsC.png)
 
 # Node.js
 
@@ -154,7 +154,7 @@ npm_mirror:  https://registry.npmmirror.com
 - `nvm install v18`
 - `nvm use v18`
 
-![](https://static.chanx.tech/image/CForbTHAwotIXyxgn3PcTRPzn5d.png)
+![](https://cdn.chanx.tech/image/CForbTHAwotIXyxgn3PcTRPzn5d.png)
 
 ## npm 包管理器
 
@@ -195,7 +195,7 @@ pnpm config get registry
 
 1. 遇到如图报错“禁止运行脚本”，执行以下指令更改策略，[详情可见](https://learn.microsoft.com/zh-cn/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.3)
 
-![](https://static.chanx.tech/image/ULZMblvT5oKlZkx3zGQcYssznzf.png)
+![](https://cdn.chanx.tech/image/ULZMblvT5oKlZkx3zGQcYssznzf.png)
 
 ```shell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
@@ -217,7 +217,7 @@ JetBrains Mono: [https://www.jetbrains.com/lp/mono/](https://www.jetbrains.com/l
 
 区别是文字的粗细和斜体，我目前使用的是 **JetBrainsMono-Regular.ttf **
 
-![](https://static.chanx.tech/image/Sa9FbCphgoDuCExMyfOcWc8Hn2f.gif)
+![](https://cdn.chanx.tech/image/Sa9FbCphgoDuCExMyfOcWc8Hn2f.gif)
 
 1. 安装后打开 VSCode -> 设置 -> Editor: Font Family，在前面加入 `JetBrains Mono,` 或直接使用以下内容覆盖
 
@@ -225,7 +225,7 @@ JetBrains Mono: [https://www.jetbrains.com/lp/mono/](https://www.jetbrains.com/l
 JetBrains Mono, Consolas, 'Courier New', monospace
 ```
 
-![](https://static.chanx.tech/image/RLtWbNMUUoPvEwx3jwpcLu3gnAc.gif)
+![](https://cdn.chanx.tech/image/RLtWbNMUUoPvEwx3jwpcLu3gnAc.gif)
 
 ## 推荐安装插件
 

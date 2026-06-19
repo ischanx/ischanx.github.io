@@ -22,7 +22,7 @@ permalink: /vue-pages/
 
 在项目根目录下新建`vue.config.js`文件，我们先看看默认配置了解一下单页应用
 
-![image-20201027173459149](https://static.chanx.tech/image/aghmr_0.png)
+![image-20201027173459149](https://cdn.chanx.tech/image/aghmr_0.png)
 
 ```javascript
 module.exports = {
@@ -139,19 +139,19 @@ module.exports = {
 
 那么每一个页面都是这样子的咯，我们开始改造？
 
-![image-20201027181144590](https://static.chanx.tech/image/apwha_0.png)
+![image-20201027181144590](https://cdn.chanx.tech/image/apwha_0.png)
 
 根据两个页面对象的`filename`，我们知道打包后是两个页面文件`app1.html`和`app2.html`
 
 那`index.html`是什么？
 
-![image-20201027181312761](https://static.chanx.tech/image/cr4xb_0.png)
+![image-20201027181312761](https://cdn.chanx.tech/image/cr4xb_0.png)
 
 可以看到`index.html`里面并没有逻辑代码，所以纯粹就是输出了一个默认的网页模板
 
 打开浏览器，看下我们的成果
 
-![image-20201027181619615](https://static.chanx.tech/image/aqb4q_0.png)
+![image-20201027181619615](https://cdn.chanx.tech/image/aqb4q_0.png)
 
 **多页面应用get!!!**
 
@@ -203,13 +203,13 @@ module.exports = {
 
 然后我们兴奋地打包文件部署到生产环境`Nginx`上，然后访问
 
-![image-20201027183545808](https://static.chanx.tech/image/arf0c_0.png)
+![image-20201027183545808](https://cdn.chanx.tech/image/arf0c_0.png)
 
 一脸问号？？？那我们换个方式....
 
 > index.html 是默认网页，在服务器上比如访问'/'时，服务器会指向index.html。故不会发生这种情况
 
-![image-20201027183640128](https://static.chanx.tech/image/as3v1_0.png)
+![image-20201027183640128](https://cdn.chanx.tech/image/as3v1_0.png)
 
 啊这...每次都要加个html后缀才能访问，甲方会不会炸的？
 
