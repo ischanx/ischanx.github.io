@@ -25,7 +25,8 @@ FROM nginx:alpine
 # 复制构建好的文件到nginx服务目录
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# 复制nginx配置文件
+# 复制 nginx 配置文件（rate-limit 需在 default 之前加载）
+COPY nginx-rate-limit.conf /etc/nginx/conf.d/rate-limit.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # 暴露80端口
