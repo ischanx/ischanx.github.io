@@ -3,81 +3,98 @@ import { site } from '../config';
 
 const { footer } = site;
 const currentYear = new Date().getFullYear();
-const footerContent = String(footer.content).replace(
+const footerContent = String(footer.copyright).replace(
   '{currentYear}',
   String(currentYear)
 );
 
 // 预先计算网站运行天数
 let runningDays = '';
-if (footer.showRunningTime && footer.startTime) {
+if (footer.showUptime && footer.launchedAt) {
   try {
-    const startDate = new Date(footer.startTime);
+    const startDate = new Date(footer.launchedAt);
     const now = new Date();
     const diffTime = now.getTime() - startDate.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     runningDays = `${diffDays} 天`;
   } catch (e) {
-    runningDays = '计算中...';
+    runningDays = footer.text.calculating;
   }
 }
 ---
 
-<footer
-  class="relative flex justify-center border-t border-neutral-200/80 bg-neutral-100/95 py-6 backdrop-blur-sm dark:border-neutral-800 dark:bg-neutral-900/95"
->
-  <div class="container mx-auto px-4 py-3 sm:px-6">
-    <div class="text-center text-neutral-600 dark:text-neutral-400">
-      <div
-        class="mb-3 text-sm font-medium leading-6 text-neutral-700 transition-all duration-300 dark:text-neutral-300"
-        set:html={footerContent}
-      />
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__main">
+      <div class="site-footer__statement">
+        <i aria-hidden="true"></i>
+        <p>{footer.text.statementTitle}</p>
+        <span>{footer.text.statementDescription}</span>
+      </div>
 
-      {
-        footer.showRunningTime && (
-          <div class="mb-3 text-xs leading-5 text-neutral-500 dark:text-neutral-500">
+      <nav class="site-footer__nav" aria-label={footer.text.navigationLabel}>
+        <div>
+          <span class="site-footer__label">{footer.text.browseLabel}</span>
+          <a href="/archives">{footer.text.archives}</a>
+          <a href="/categories">{footer.text.categories}</a>
+          <a href="/about">{footer.text.about}</a>
+        </div>
+        <div>
+          <span class="site-footer__label">{footer.text.connectLabel}</span>
+          <a
+            href="https://github.com/ischanx"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {footer.text.github} <span aria-hidden="true">↗</span>
+          </a>
+          <a href="/atom.xml" target="_blank" rel="noopener noreferrer">{footer.text.rss}</a>
+          <a href={`mailto:${site.email}`}>{footer.text.email}</a>
+        </div>
+      </nav>
+    </div>
+
+    <div class="site-footer__meta">
+      <div class="site-footer__copyright" set:html={footerContent} />
+
+      <div class="site-footer__status">
+        {
+          footer.showUptime && (
             <span id="runtime-container">
-              本站已稳定运行{' '}
-              <span id="runtime" class="font-medium text-neutral-700 dark:text-neutral-300">
-                {runningDays}
-              </span>
+              {footer.text.runningTime} <strong id="runtime">{runningDays}</strong>
             </span>
-          </div>
-        )
-      }
+          )
+        }
 
-      {
-        footer.beian.enable && (
-          <div class="text-xs leading-5 text-neutral-500 dark:text-neutral-500">
-            <a
-              href="https://beian.miit.gov.cn/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="transition-colors duration-300 hover:text-neutral-900 dark:hover:text-neutral-100"
-            >
-              {footer.beian.icp}
-            </a>
-            {footer.beian.police && (
-              <>
-                <span class="mx-1.5 text-neutral-400 dark:text-neutral-600">|</span>
+        {
+          footer.beian.enabled && (
+            <>
+              <a
+                href="https://beian.miit.gov.cn/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {footer.beian.icp}
+              </a>
+              {footer.beian.police && (
                 <a
                   href={`http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=${footer.beian.policeCode}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center transition-colors duration-300 hover:text-neutral-900 dark:hover:text-neutral-100"
                 >
                   <img
                     src={footer.beian.policeIcon}
-                    alt="公安备案图标"
-                    class="mr-1 inline-block h-3 opacity-80 transition duration-300 hover:scale-110 hover:opacity-100"
+                    alt=""
+                    width="12"
+                    height="12"
                   />
                   {footer.beian.police}
                 </a>
-              </>
-            )}
-          </div>
-        )
-      }
+              )}
+            </>
+          )
+        }
+      </div>
     </div>
   </div>
 </footer>
@@ -85,8 +102,8 @@ if (footer.showRunningTime && footer.startTime) {
 <!-- 添加到顶部按钮：不要放进带 backdrop-filter 的 footer 内，否则 fixed 会相对 footer 定位 -->
 <button
   id="back-to-top"
-  class="fixed bottom-5 right-5 z-[60] rounded-full bg-primary/90 p-2.5 text-primary-foreground shadow-lg opacity-0 invisible transition-all duration-300 hover:scale-110 hover:bg-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-100 dark:focus-visible:ring-offset-neutral-950 sm:bottom-6 sm:right-6"
-  aria-label="返回顶部"
+  class="back-to-top opacity-0 invisible"
+  aria-label={footer.text.backToTop}
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -101,6 +118,245 @@ if (footer.showRunningTime && footer.startTime) {
     ></path>
   </svg>
 </button>
+
+<style>
+  .site-footer {
+    --footer-ink: #171717;
+    --footer-muted: #737373;
+    --footer-faint: #a3a3a3;
+    --footer-line: rgb(23 23 23 / 0.13);
+    --footer-accent: #525252;
+    background: #fff;
+    border-top: 1px solid var(--footer-line);
+    color: var(--footer-muted);
+    position: relative;
+  }
+
+  .site-footer__inner {
+    margin: 0 auto;
+    max-width: 72rem;
+    padding: clamp(3rem, 5vw, 4.5rem) 1rem 1.6rem;
+  }
+
+  .site-footer__main {
+    align-items: start;
+    display: grid;
+    gap: 4rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding-bottom: clamp(3rem, 5vw, 4rem);
+  }
+
+  .site-footer__statement {
+    max-width: 36rem;
+    position: relative;
+  }
+
+  .site-footer__statement i {
+    background: var(--footer-accent);
+    display: block;
+    height: 1px;
+    margin-bottom: 1.6rem;
+    transform: rotate(-1deg);
+    width: 2.75rem;
+  }
+
+  .site-footer__statement p {
+    color: var(--footer-ink);
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    font-weight: 680;
+    letter-spacing: -0.035em;
+    line-height: 1.35;
+    margin: 0 0 0.7rem;
+  }
+
+  .site-footer__statement > span {
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+
+  .site-footer__nav {
+    display: grid;
+    gap: clamp(3rem, 7vw, 5.5rem);
+    grid-template-columns: repeat(2, minmax(5rem, 1fr));
+  }
+
+  .site-footer__nav > div {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.78rem;
+  }
+
+  .site-footer__label {
+    color: var(--footer-faint);
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 0.35rem;
+  }
+
+  .site-footer__nav a {
+    color: var(--footer-ink);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    text-decoration: none;
+    text-underline-offset: 0.3em;
+    transition: color 180ms ease;
+  }
+
+  .site-footer__nav a:hover {
+    color: var(--footer-accent);
+  }
+
+  .site-footer__nav a:focus-visible,
+  .site-footer__meta a:focus-visible {
+    outline: 1px dashed var(--footer-accent);
+    outline-offset: 0.25rem;
+  }
+
+  .site-footer__meta {
+    align-items: center;
+    border-top: 1px solid var(--footer-line);
+    display: flex;
+    font-size: 0.68rem;
+    gap: 1.5rem;
+    justify-content: space-between;
+    line-height: 1.7;
+    padding-top: 1.35rem;
+  }
+
+  .site-footer__copyright {
+    color: var(--footer-muted);
+  }
+
+  .site-footer__status {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 1.2rem;
+    justify-content: flex-end;
+  }
+
+  .site-footer__status strong {
+    color: var(--footer-muted);
+    font-weight: 600;
+  }
+
+  .site-footer__status a {
+    align-items: center;
+    color: var(--footer-muted);
+    display: inline-flex;
+    gap: 0.28rem;
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  .site-footer__status a:hover {
+    color: var(--footer-ink);
+  }
+
+  .site-footer__status img {
+    height: 0.75rem;
+    opacity: 0.72;
+    width: 0.75rem;
+  }
+
+  .back-to-top {
+    align-items: center;
+    background: rgb(255 255 255 / 0.88);
+    border: 1px solid var(--footer-line, rgb(23 23 23 / 0.14));
+    border-radius: 999px;
+    bottom: 1.5rem;
+    color: #404040;
+    cursor: pointer;
+    display: flex;
+    height: 2.5rem;
+    justify-content: center;
+    position: fixed;
+    right: 1.5rem;
+    transition:
+      background-color 180ms ease,
+      border-color 180ms ease,
+      color 180ms ease,
+      opacity 240ms ease,
+      transform 180ms ease,
+      visibility 240ms ease;
+    width: 2.5rem;
+    z-index: 60;
+  }
+
+  .back-to-top:hover {
+    border-color: #737373;
+    color: #171717;
+    transform: translateY(-2px);
+  }
+
+  .back-to-top:focus-visible {
+    outline: 1px dashed #737373;
+    outline-offset: 0.25rem;
+  }
+
+  :global(.dark) .site-footer {
+    --footer-ink: #eeeeee;
+    --footer-muted: #ababab;
+    --footer-faint: #8a8a8a;
+    --footer-line: rgb(255 255 255 / 0.13);
+    --footer-accent: #b5b5b5;
+    background: var(--theme-dark-page-bg);
+  }
+
+  :global(.dark) .back-to-top {
+    background: rgb(25 25 25 / 0.88);
+    border-color: rgb(255 255 255 / 0.15);
+    color: #b7b7b7;
+  }
+
+  :global(.dark) .back-to-top:hover {
+    border-color: #737373;
+    color: #f5f5f5;
+  }
+
+  @media (max-width: 767px) {
+    .site-footer__inner {
+      padding: 3.5rem 1.25rem 1.4rem;
+    }
+
+    .site-footer__main {
+      gap: 3.5rem;
+      grid-template-columns: 1fr;
+      padding-bottom: 3.5rem;
+    }
+
+    .site-footer__statement p {
+      font-size: 1.3rem;
+    }
+
+    .site-footer__nav {
+      gap: 3.5rem;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .site-footer__meta {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .site-footer__status {
+      justify-content: flex-start;
+    }
+
+    .back-to-top {
+      bottom: 1rem;
+      right: 1rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .back-to-top {
+      transition: none;
+    }
+  }
+</style>
 
 <script>
   // 返回顶部按钮逻辑

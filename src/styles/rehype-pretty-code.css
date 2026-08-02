@@ -3,13 +3,12 @@
 
 /* 代码块容器样式 */
 pre {
-  @apply relative overflow-hidden border border-gray-200 rounded-lg;
-  --code-block-bg: var(--shiki-light-bg, #ffffff);
-  --code-block-border: rgb(229 231 235);
-  --code-line-highlight-bg: rgb(243 244 246);
+  @apply relative overflow-hidden border border-neutral-200 rounded-lg;
+  --code-block-bg: var(--theme-light-code-bg);
+  --code-block-border: var(--theme-light-code-border);
+  --code-line-highlight-bg: var(--theme-light-code-highlight-bg);
   --code-line-highlight-border: rgb(59 130 246);
   --code-word-bg: rgb(254 249 195);
-  border-color: rgb(229 231 235);
   background-color: var(--code-block-bg);
   border-color: var(--code-block-border);
   --code-gutter-bg: var(--code-block-bg);
@@ -110,13 +109,17 @@ code[data-line-numbers-max-digits="4"] > [data-line]::before {
 /* 支持深色/浅色主题切换 */
 code[data-theme*=" "],
 code[data-theme*=" "] span {
-  color: var(--shiki-light);
+  color: color-mix(in srgb, var(--shiki-light) 88%, #475569 12%);
   background-color: var(--code-block-bg);
 }
 
 /* 深色模式主动切换 */
 .dark code[data-theme*=" "],
 .dark code[data-theme*=" "] span {
-  color: var(--shiki-dark);
+  color: color-mix(
+    in srgb,
+    var(--shiki-dark) 52%,
+    var(--theme-dark-code-neutral) 48%
+  );
   background-color: var(--code-block-bg);
 } 

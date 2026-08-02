@@ -7,8 +7,8 @@ const {
   title = site.title,
   description = site.description,
   keywords = site.keywords,
-  image = site.seo?.defaultImage || site.avatar,
-  type = site.seo?.defaultType || 'website',
+  image = site.avatar,
+  type = 'website',
   canonical,
   publishDate,
   modifiedDate,
@@ -50,16 +50,14 @@ const canonicalURL = getCanonicalURL(canonical);
 <meta property="og:site_name" content={site.title} />
 {publishDate && <meta property="article:published_time" content={publishDate.toISOString()} />}
 {modifiedDate && <meta property="article:modified_time" content={modifiedDate.toISOString()} />}
-{site.seo?.social?.facebook && <meta property="fb:pages" content={site.seo.social.facebook} />}
-
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={canonicalURL} />
 <meta property="twitter:title" content={pageTitle} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={imageUrl} />
-{site.seo?.social?.twitter && <meta name="twitter:creator" content={site.seo.social.twitter} />}
-{site.seo?.social?.twitter && <meta name="twitter:site" content={site.seo.social.twitter} />}
+{site.seo.social.twitter && <meta name="twitter:creator" content={site.seo.social.twitter} />}
+{site.seo.social.twitter && <meta name="twitter:site" content={site.seo.social.twitter} />}
 
 <!-- RSS和规范链接 -->
 <link rel="canonical" href={canonicalURL} />
@@ -73,7 +71,7 @@ const canonicalURL = getCanonicalURL(canonical);
 <meta name="language" content={site.language} />
 
 <!-- 额外的元标签，由站点配置提供 -->
-{site.seo?.extraMeta?.map((meta) => (
+{site.seo.metaTags.map((meta) => (
   <meta name={meta.name} content={meta.content} />
 ))}
 
@@ -94,11 +92,11 @@ const canonicalURL = getCanonicalURL(canonical);
           "url": site.url
         },
         "publisher": {
-          "@type": site.seo?.schema?.publisher?.type || "Person",
-          "name": site.seo?.schema?.publisher?.name || site.author,
+          "@type": "Person",
+          "name": site.author,
           "logo": {
             "@type": "ImageObject",
-            "url": site.seo?.schema?.publisher?.logo ? `${site.url}${site.seo.schema.publisher.logo}` : `${site.url}${site.avatar}`
+            "url": `${site.url}${site.avatar}`
           }
         },
         "mainEntityOfPage": {

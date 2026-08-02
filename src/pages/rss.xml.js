@@ -49,7 +49,7 @@ export async function GET(context) {
         description = wrapInCDATA(description);
       }
 
-      // 使用getPostUrl函数获取正确的链接路径，支持permalink
+      // 使用内容目录和文件名生成文章链接，兼容旧 permalink 数据
       const postUrl = getPostUrl(post);
       // 移除开头的斜杠，因为link会自动拼接网站URL
       // 同时确保移除末尾的斜杠，解决guid链接末尾多斜杠的问题

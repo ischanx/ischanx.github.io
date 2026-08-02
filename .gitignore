@@ -9,11 +9,15 @@ _multiconfig.yml
 
 dist
 
+# Local snapshots of remote CDN assets.
+backups/
+
 .cursorrules
 
 CLAUDE.md
 
 .playwright-mcp
+.playwright-cli
 
 .astro
 

@@ -1,67 +1,52 @@
+import { categoryMap, tagMap } from '../config';
+
 /**
  * 导航相关工具函数
  */
 
-/**
- * 生成标签页URL
- * @param tag 标签名
- * @returns 带有标签参数的URL
- */
-export function createTagUrl(tag: string): string {
-  if (!tag) return '/tags';
+export function getCategorySlugFromPost(post: { id: string }): string {
+  return post.id.split('/').filter(Boolean)[0] ?? '';
+}
 
-  // 编码标签名，以防包含特殊字符
-  const encodedTag = encodeURIComponent(tag);
-  return `/tags?tag=${encodedTag}`;
+export function getCategoryLabel(slug: string): string {
+  return categoryMap[slug] ?? slug;
+}
+
+export function getTagSlug(slug: string): string | null {
+  const normalized = slug.trim();
+  return tagMap[normalized] ? normalized : null;
+}
+
+export function getTagLabel(slug: string): string {
+  return tagMap[slug] ?? slug;
+}
+
+export function normalizeTags(tags?: string[]): string[] {
+  return [
+    ...new Set(
+      (tags ?? [])
+        .filter(tag => tag.trim().length > 0)
+        .map(tag => tag.trim())
+    ),
+  ];
 }
 
 /**
- * 生成分类页URL
- * @param category 分类名
- * @returns 带有分类参数的URL
+ * 生成标签详情页URL
+ * @param slug 标签 slug
+ * @returns 标签详情页URL
  */
-export function createCategoryUrl(category: string): string {
-  if (!category) return '/categories';
+export function createTagUrl(slug: string): string {
+  if (!slug.trim()) return '/tags';
 
-  // 编码分类名，以防包含特殊字符
-  const encodedCategory = encodeURIComponent(category);
-  return `/categories?category=${encodedCategory}`;
+  return getTagSlug(slug) ? `/tags/${slug}` : '/tags';
 }
 
 /**
- * 从URL获取标签参数
- * @returns URL中的标签参数
+ * 生成分类详情页URL
+ * @param categorySlug 分类 slug
+ * @returns 分类详情页URL
  */
-export function getTagFromUrl(): string | null {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get('tag');
+export function createCategoryUrl(categorySlug: string): string {
+  return categorySlug.trim() ? `/categories/${categorySlug}` : '/categories';
 }
-
-/**
- * 从URL获取分类参数
- * @returns URL中的分类参数
- */
-export function getCategoryFromUrl(): string | null {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get('category');
-}
-
-/**
- * 更新URL中的标签参数
- * @param tag 标签名
- */
-export function updateUrlTag(tag: string): void {
-  const url = new URL(window.location.href);
-  url.searchParams.set('tag', tag);
-  window.history.pushState({}, '', url);
-}
-
-/**
- * 更新URL中的分类参数
- * @param category 分类名
- */
-export function updateUrlCategory(category: string): void {
-  const url = new URL(window.location.href);
-  url.searchParams.set('category', category);
-  window.history.pushState({}, '', url);
-} 

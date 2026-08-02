@@ -3,12 +3,16 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { initArticleScrollAreas } from '../../utils/article/code-blocks';
 
 const MERMAID_LIGHT_BACKGROUND = '#ffffff';
-const MERMAID_DARK_BACKGROUND = 'rgb(23 23 23)';
+type MermaidTheme = 'light' | 'dark';
 
 interface MermaidPanelProps {
   graphDefinition: string;
   highlightedPre: HTMLElement;
 }
+
+const getThemeToken = (name: string, fallback: string) =>
+  getComputedStyle(document.documentElement).getPropertyValue(name).trim() ||
+  fallback;
 
 const getMermaidBackground = (element?: Element | null) => {
   if (element) {
@@ -20,13 +24,28 @@ const getMermaidBackground = (element?: Element | null) => {
   }
 
   return document.documentElement.classList.contains('dark')
-    ? MERMAID_DARK_BACKGROUND
+    ? getThemeToken('--theme-dark-page-bg', '#191919')
     : MERMAID_LIGHT_BACKGROUND;
 };
 
-const getMermaidThemeVariables = () => {
-  const background = getMermaidBackground();
-  const isDark = document.documentElement.classList.contains('dark');
+const getCurrentMermaidTheme = (): MermaidTheme =>
+  document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+
+const getMermaidThemeVariables = (theme: MermaidTheme) => {
+  const isDark = theme === 'dark';
+  const darkBackground = getThemeToken('--theme-dark-page-bg', '#191919');
+  const darkText = getThemeToken('--theme-dark-diagram-text', '#ababab');
+  const darkMutedText = getThemeToken(
+    '--theme-dark-diagram-text-muted',
+    '#9e9e9e'
+  );
+  const darkSubtleText = getThemeToken(
+    '--theme-dark-diagram-text-subtle',
+    '#979797'
+  );
+  const background = isDark
+    ? darkBackground
+    : MERMAID_LIGHT_BACKGROUND;
 
   const lightTheme = {
     background,
@@ -92,33 +111,33 @@ const getMermaidThemeVariables = () => {
   return {
     ...lightTheme,
     primaryColor: '#262626',
-    primaryTextColor: '#e5e5e5',
+    primaryTextColor: darkText,
     primaryBorderColor: '#737373',
     secondaryColor: '#303030',
-    secondaryTextColor: '#f5f5f5',
+    secondaryTextColor: darkText,
     secondaryBorderColor: '#a3a3a3',
     tertiaryColor: '#262626',
-    tertiaryTextColor: '#f5f5f5',
+    tertiaryTextColor: darkText,
     tertiaryBorderColor: '#737373',
     noteBkgColor: '#303030',
-    noteTextColor: '#f5f5f5',
+    noteTextColor: darkText,
     lineColor: '#a3a3a3',
-    textColor: '#e5e5e5',
-    titleColor: '#e5e5e5',
+    textColor: darkMutedText,
+    titleColor: darkText,
     clusterBkg: '#262626',
     clusterBorder: '#737373',
     defaultLinkColor: '#a3a3a3',
     nodeBorder: '#737373',
     actorBkg: '#262626',
     actorBorder: '#a3a3a3',
-    actorTextColor: '#e5e5e5',
+    actorTextColor: darkText,
     actorLineColor: '#737373',
     signalColor: '#a3a3a3',
-    signalTextColor: '#e5e5e5',
+    signalTextColor: darkText,
     labelBoxBkgColor: '#262626',
     labelBoxBorderColor: '#a3a3a3',
-    labelTextColor: '#e5e5e5',
-    loopTextColor: '#e5e5e5',
+    labelTextColor: darkText,
+    loopTextColor: darkText,
     activationBkgColor: '#303030',
     activationBorderColor: '#a3a3a3',
     sectionBkgColor: '#303030',
@@ -126,18 +145,18 @@ const getMermaidThemeVariables = () => {
     sectionBkgColor2: '#262626',
     taskBorderColor: '#737373',
     taskBkgColor: '#262626',
-    taskTextColor: '#e5e5e5',
-    taskTextLightColor: '#d4d4d4',
-    taskTextOutsideColor: '#e5e5e5',
-    taskTextClickableColor: '#f5f5f5',
+    taskTextColor: darkMutedText,
+    taskTextLightColor: darkSubtleText,
+    taskTextOutsideColor: darkMutedText,
+    taskTextClickableColor: darkText,
     activeTaskBorderColor: '#a3a3a3',
     activeTaskBkgColor: '#303030',
     gridColor: '#525252',
     doneTaskBkgColor: '#262626',
     critBkgColor: '#303030',
-    labelColor: '#e5e5e5',
+    labelColor: darkMutedText,
     errorBkgColor: '#303030',
-    errorTextColor: '#f5f5f5',
+    errorTextColor: darkText,
   };
 };
 
@@ -380,11 +399,31 @@ export default function MermaidPanel({
 }: MermaidPanelProps) {
   const graphId = useId().replaceAll(':', '-');
   const diagramRef = useRef<HTMLDivElement>(null);
+  const renderSequence = useRef(0);
   const [activeView, setActiveView] = useState<'diagram' | 'code'>('diagram');
   const [copied, setCopied] = useState(false);
+  const [theme, setTheme] = useState<MermaidTheme>(getCurrentMermaidTheme);
+
+  useEffect(() => {
+    const html = document.documentElement;
+    const observer = new MutationObserver(() => {
+      const nextTheme = getCurrentMermaidTheme();
+      setTheme(currentTheme =>
+        currentTheme === nextTheme ? currentTheme : nextTheme
+      );
+    });
+
+    observer.observe(html, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
+    const currentRender = ++renderSequence.current;
 
     import('mermaid')
       .then(async ({ default: mermaid }) => {
@@ -392,11 +431,11 @@ export default function MermaidPanel({
           startOnLoad: false,
           securityLevel: 'strict',
           theme: 'base',
-          themeVariables: getMermaidThemeVariables(),
+          themeVariables: getMermaidThemeVariables(theme),
         });
 
         const { svg, bindFunctions } = await mermaid.render(
-          `mermaid-${graphId}`,
+          `mermaid-${graphId}-${theme}-${currentRender}`,
           graphDefinition
         );
 
@@ -419,7 +458,7 @@ export default function MermaidPanel({
     return () => {
       cancelled = true;
     };
-  }, [graphDefinition, graphId]);
+  }, [graphDefinition, graphId, theme]);
 
   useEffect(() => {
     if (activeView === 'code') {
@@ -477,6 +516,7 @@ export default function MermaidPanel({
       <div
         ref={diagramRef}
         className="mermaid"
+        data-theme={theme}
         aria-label="Mermaid diagram"
         role="button"
         tabIndex={0}

@@ -5,26 +5,12 @@ const { analytics } = site || {};
 ---
 
 {
-  analytics?.openpanel?.enable && (
+  analytics?.openpanel?.enabled && (
     <OpenPanelComponent
       apiUrl={analytics.openpanel.apiUrl}
       clientId={analytics.openpanel.clientId}
       trackScreenViews={analytics.openpanel.trackScreenViews}
       trackOutgoingLinks={analytics.openpanel.trackOutgoingLinks}
-    />
-  )
-}
-
-{
-  analytics?.umami?.enable && (
-    <script
-      async
-      defer
-      data-website-id={analytics?.umami?.websiteId}
-      src={analytics?.umami?.scriptUrl}
-      data-domains={analytics?.umami?.domains}
-      data-auto-track={analytics?.umami?.autoTrack}
-      data-respect-dnt={analytics?.umami?.respectDoNotTrack}
     />
   )
 }

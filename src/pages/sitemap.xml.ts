@@ -1,6 +1,10 @@
 import { getCollection } from 'astro:content';
 import { site } from '../config';
 import { getPostUrl } from '../utils/route';
+import {
+  getCategorySlugFromPost,
+  getTagSlug,
+} from '../utils/navigation';
 
 const escapeXml = (value: string) =>
   value
@@ -40,8 +44,19 @@ export async function GET() {
     return !latest || lastmod > latest ? lastmod : latest;
   }, null);
   const siteLastmod = latestPostUpdateDate ?? new Date();
-  const postsPerPage = site.indexSettings.perPage;
+  const postsPerPage = site.posts.pageSize;
   const totalPages = Math.ceil(posts.length / postsPerPage);
+
+  const categories = [...new Set(posts.map(getCategorySlugFromPost))];
+  const tags = [
+    ...new Set(
+      posts
+        .flatMap(post => post.data.tags ?? [])
+        .filter((tag): tag is string => tag.trim().length > 0)
+        .map(getTagSlug)
+        .filter((tag): tag is string => Boolean(tag))
+    ),
+  ];
 
   const staticPages = ['/', '/about', '/archives', '/categories', '/tags', '/links'];
   const paginationPages = Array.from(
@@ -59,6 +74,16 @@ export async function GET() {
       url: toCanonicalUrl(path),
       lastmod: siteLastmod,
       priority: 0.7,
+    })),
+    ...categories.map(category => ({
+      url: toCanonicalUrl(`/categories/${category}`),
+      lastmod: siteLastmod,
+      priority: 0.6,
+    })),
+    ...tags.map(tag => ({
+      url: toCanonicalUrl(`/tags/${tag}`),
+      lastmod: siteLastmod,
+      priority: 0.6,
     })),
     ...posts.map((post) => ({
       url: toCanonicalUrl(getPostUrl(post)),

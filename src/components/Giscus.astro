@@ -2,15 +2,13 @@
 // 从配置中获取 Giscus 设置
 import { site } from '../config';
 
-const giscusConfig = site.features.comments.giscus;
+const giscusConfig = site.comments.giscus;
 ---
 
 <div
-  class="mt-12 rounded-xl border border-neutral-200/80 bg-neutral-100/90 p-4 animate-slide-up sm:p-6 dark:border-neutral-800 dark:bg-neutral-900/90"
+  class="mt-12 animate-slide-up"
   style="animation-delay: 400ms;"
 >
-  <div class="mx-auto my-6 h-px w-full max-w-32 rounded-full bg-neutral-300/80 dark:bg-neutral-700/80 sm:my-8">
-  </div>
   <div id="giscus-container"></div>
 </div>
 

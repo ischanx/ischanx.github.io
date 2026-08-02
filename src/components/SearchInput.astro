@@ -24,20 +24,20 @@ const {
       id="search-input"
       value={value}
       placeholder={placeholder}
-      class="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
+      class="w-full pl-10 pr-4 py-2 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
       autocomplete="off"
     />
     <div
       class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
     >
-      <Icon name="search" class="text-gray-500 dark:text-gray-400" />
+      <Icon name="search" class="text-neutral-500 dark:text-neutral-400" />
     </div>
     {
       value && (
         <button
           type="button"
           id="clear-search"
-          class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+          class="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-500 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-400"
         >
           <span class="sr-only">清除搜索</span>
           <svg
@@ -64,12 +64,12 @@ const {
     live && (
       <div
         id="search-results"
-        class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 overflow-hidden hidden"
+        class="absolute z-10 w-full mt-1 bg-white dark:bg-neutral-800 shadow-lg rounded-md border border-neutral-200 dark:border-neutral-700 overflow-hidden hidden"
       >
         <div class="p-2">
           <div
             id="search-loading"
-            class="py-4 px-3 text-center text-gray-500 dark:text-gray-400 hidden"
+            class="py-4 px-3 text-center text-neutral-500 dark:text-neutral-400 hidden"
           >
             <div class="inline-block animate-spin mr-2">
               <svg
@@ -91,12 +91,12 @@ const {
           <div id="search-list" />
           <div
             id="search-empty"
-            class="py-4 px-3 text-center text-gray-500 dark:text-gray-400 hidden"
+            class="py-4 px-3 text-center text-neutral-500 dark:text-neutral-400 hidden"
           >
             没有找到匹配的结果
           </div>
         </div>
-        <div class="border-t border-gray-200 dark:border-gray-700 p-2 text-xs text-gray-500 dark:text-gray-400 text-center">
+        <div class="border-t border-neutral-200 dark:border-neutral-700 p-2 text-xs text-neutral-500 dark:text-neutral-400 text-center">
           按回车键查看所有结果
         </div>
       </div>

@@ -5,20 +5,65 @@ import Icon from '../components/Icon.astro';
 import Giscus from '../components/Giscus.astro';
 
 const { author, socialLinks } = site;
+
+interface Experience {
+  location: string;
+  organization: string;
+  product?: string;
+  logo: string;
+  logoAlt: string;
+  details: string[];
+}
+
+const experiences: Experience[] = [
+  {
+    location: '广州',
+    organization: '广东工业大学',
+    logo: '/img/about/gdut-logo.png',
+    logoAlt: '广东工业大学校徽',
+    details: [
+      '负责校园编程练习平台 Anyview 开发，积累前端开发与项目实践经验。',
+    ],
+  },
+  {
+    location: '深圳',
+    organization: '字节跳动',
+    product: '飞书文档',
+    logo: '/img/about/feishu-logo.png',
+    logoAlt: '飞书 Logo',
+    details: [
+      '实习期间参与飞书文档大中台建设，涉及 Dark Mode、基础组件接入和业务组件库搭建。',
+      '正式工作后，独立负责文档中台自动化测试体系与研发流水线建设，持续推进研发效能优化与构建提速。',
+      '随后转向业务开发，参与开放能力方向的文档小组件开发及文档 AI 能力建设。',
+    ],
+  },
+  {
+    location: '北京',
+    organization: '即时设计',
+    product: 'Wegic.ai',
+    logo: '/img/about/wegic-logo.ico',
+    logoAlt: 'Wegic.ai Logo',
+    details: [
+      '参与业务从 0 到上线的全过程，负责前端方案设计、实现和落地。',
+      '持续推进业务迭代，并在前端工程化、性能优化、架构演进和研发效能等方向积累实践。',
+      '技术实践扩展至全栈开发与 Agent 应用，并以业务架构和全链路视角参与产品落地。',
+    ],
+  },
+];
 ---
 
 <Layout title="关于">
   <div class="max-w-4xl mx-auto px-4 py-8">
     <div class="flex flex-col md:flex-row gap-8">
       <!-- 左侧个人信息 -->
-      <div class="md:w-1/3 text-center mb-8 md:mb-0">
+      <div class="md:w-1/4 text-center mb-8 md:mb-0">
         <div class="sticky top-20">
           <img
             src={site.avatar}
             alt={author}
             class="w-32 h-32 rounded-full mx-auto mb-6"
           />
-          <h1 class="text-3xl font-bold mb-4 text-black dark:text-gray-200">
+          <h1 class="text-2xl font-bold mb-4 text-black dark:text-neutral-200">
             {author}
           </h1>
           <div class="flex space-x-4 mt-6 justify-center">
@@ -26,7 +71,7 @@ const { author, socialLinks } = site;
               socialLinks.map(link => (
                 <a
                   href={link.link}
-                  class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-200"
+                  class="text-neutral-600 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-primary-400"
                   target={link.target || '_blank'}
                   rel="noopener noreferrer"
                 >
@@ -40,91 +85,71 @@ const { author, socialLinks } = site;
       </div>
 
       <!-- 右侧内容 -->
-      <div class="md:w-2/3">
-        <div class="prose dark:prose-invert max-w-none">
+      <div class="min-w-0 md:w-3/4">
+        <div class="prose max-w-none text-[15px] dark:prose-invert">
+          <h2 class="text-xl font-semibold text-black dark:text-neutral-200">简介</h2>
+          <p>嗨，我是 Chanx，也可以叫我陈同学，目前专注 AI 与 Web 全栈开发。</p>
+          <p>从前端出发，持续拓展 Agent 应用和业务架构方面的实践。</p>
+          <p>喜欢把有想象力的想法做成真实可用的产品，虽然 Bug 偶尔会比惊喜先上线。</p>
+          <p>保持好奇，也始终相信美好的事情正在发生。</p>
+
+          <h2 class="text-xl font-semibold text-black dark:text-neutral-200">个人经历</h2>
+          <ol class="not-prose mt-6 space-y-5">
+            {
+              experiences.map(experience => (
+                <li>
+                  <article
+                    class="rounded-md border border-neutral-200 bg-neutral-50/80 p-4 shadow-sm shadow-neutral-900/[0.03] dark:border-neutral-700 dark:bg-neutral-800/55 dark:shadow-black/20 sm:p-5"
+                  >
+                    <header class="flex items-center gap-3">
+                      <span class="flex h-7 w-7 shrink-0 items-center justify-center">
+                        <img
+                          src={experience.logo}
+                          alt={experience.logoAlt}
+                          width="28"
+                          height="28"
+                          class="h-full w-full object-contain"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </span>
+                      <h3 class="m-0 min-w-0 text-base font-semibold leading-6 text-neutral-900 dark:text-neutral-100">
+                        {experience.organization}
+                        {experience.product && ` · ${experience.product}`}
+                        <span class="font-normal text-neutral-500 dark:text-neutral-400">
+                          {' · '}{experience.location}
+                        </span>
+                      </h3>
+                    </header>
+                    <ul class="mt-4 list-disc space-y-2 pl-5 text-[15px] leading-6 text-neutral-600 marker:text-neutral-400 dark:text-neutral-300 dark:marker:text-neutral-600">
+                      {experience.details.map(detail => <li>{detail}</li>)}
+                    </ul>
+                  </article>
+                </li>
+              ))
+            }
+          </ol>
+
+          <h2 class="text-xl font-semibold text-black dark:text-neutral-200">联系我</h2>
+          <p>欢迎聊聊前端、AI 和产品，也欢迎分享那些值得动手试试的新想法。</p>
+          <p>
+            技术交流、项目合作或内容勘误，都可以通过 <a
+              href="https://github.com/ischanx"
+              target="_blank"
+              rel="noopener">GitHub</a
+            > 或<a href="mailto:ischanx@foxmail.com">邮件</a>联系我。
+          </p>
+
           <div
-            class="bg-green-50 dark:bg-green-900/20 p-4 rounded-md border-l-4 border-green-500 mb-8"
+            class="mt-8 rounded-md border-l-4 border-green-500 bg-green-50 px-3 py-1.5 dark:bg-green-900/20"
           >
-            <p class="text-green-800 dark:text-green-300 m-0">
-              有人去餐厅点了鸽子汤，汤里面没有鸽子。但是他说这个汤很正宗，噢？
+            <p class="m-0 text-[14px] leading-5 text-green-800 dark:text-green-300">
+              点了一碗鸽子汤，里面却没有鸽子。想了想，也挺正宗，毕竟鸽子真的鸽了。
             </p>
           </div>
-
-          <h2 class="text-black dark:text-gray-200">简介</h2>
-          <p>嗨～我是陈同学，一个充满好奇心的前端选手</p>
-          <p>在往全栈开发方向发展，希望利用 AI 创造更多有意思的产品</p>
-          <p>业余时间偶尔搞点代码玩具、搞搞服务器、折腾开源～</p>
-
-          <h2 class="text-black dark:text-gray-200">个人经历</h2>
-          <ul>
-            <li>广东工业大学 • 计算机科学与技术</li>
-            <li>
-              广工 • 编程练习平台 <a
-                href="https://anyview.gdut.edu.cn/"
-                target="_blank"
-                rel="noopener">Anyview</a
-              >
-            </li>
-            <li>
-              深圳 • 字节跳动 • <a
-                href="https://www.feishu.cn/product/docs"
-                target="_blank"
-                rel="noopener">飞书文档</a
-              >
-              • 中台
-              <ul>
-                <li>接入基础组件库 Universal Design</li>
-                <li>业务组件库 Monorepo 搭建</li>
-                <li>增长业务支持，迁移平台和工具维护</li>
-              </ul>
-            </li>
-            <li>
-              深圳 • 字节跳动 • <a
-                href="https://www.feishu.cn/product/docs"
-                target="_blank"
-                rel="noopener">飞书文档</a
-              >
-              • Doc
-              <ul>
-                <li>文档质量建设，自动化测试流程搭建</li>
-                <li>文档研发效能，持续集成流水线优化</li>
-                <li>文档开放能力，文档小组件开发</li>
-                <li>文档 AIGC 开发</li>
-              </ul>
-            </li>
-            <li>
-              北京 • 即时设计 • <a
-                href="https://wegic.ai/"
-                target="_blank"
-                rel="noopener">Wegic.ai</a
-              >
-              <ul>
-                <li>AI 业务 x 前端工程 x 全栈开发</li>
-              </ul>
-            </li>
-          </ul>
-
-          <h2 class="text-black dark:text-gray-200">联系我</h2>
-          <p>欢迎交流前端技术、产品设计或开源项目～ 如有侵权问题，请联系删除</p>
-
-          <ul>
-            <li>
-              Github: <a
-                href="https://github.com/ischanx"
-                target="_blank"
-                rel="noopener">https://github.com/ischanx</a
-              >
-            </li>
-            <li>
-              Email: <a href="mailto:ischanx@foxmail.com">ischanx@foxmail.com</a
-              >
-            </li>
-          </ul>
         </div>
 
-        <div class="mt-8">
-          <Giscus />
-        </div>
+        <Giscus />
       </div>
     </div>
   </div>

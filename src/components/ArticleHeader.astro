@@ -1,7 +1,6 @@
 ---
 import Icon from './Icon.astro';
 import { formatDate } from '../utils/date';
-import { createCategoryUrl } from '../utils/navigation';
 
 interface Props {
   title: string;
@@ -9,12 +8,21 @@ interface Props {
   updateDate?: Date;
   author?: string;
   category?: string;
+  categorySlug?: string;
   wordCount: number;
   readTime: number;
 }
 
-const { title, createDate, updateDate, author, category, wordCount, readTime } =
-  Astro.props;
+const {
+  title,
+  createDate,
+  updateDate,
+  author,
+  category,
+  categorySlug,
+  wordCount,
+  readTime,
+} = Astro.props;
 ---
 
 <header class="mb-3 md:mb-4 animate-slide-down">
@@ -25,7 +33,7 @@ const { title, createDate, updateDate, author, category, wordCount, readTime } =
           文章
         </a>
         <span class="article-breadcrumb-separator">/</span>
-        <a href={createCategoryUrl(category)} class="article-breadcrumb-current">
+        <a href={categorySlug ? `/categories/${categorySlug}` : '/categories'} class="article-breadcrumb-current">
           {category}
         </a>
       </nav>
@@ -33,7 +41,7 @@ const { title, createDate, updateDate, author, category, wordCount, readTime } =
   }
 
   <h1
-    class="text-2xl md:text-3xl font-bold mt-4 md:mt-5 mb-4 md:mb-5 text-black dark:text-gray-300 leading-tight"
+    class="text-2xl md:text-3xl font-bold mt-4 md:mt-5 mb-4 md:mb-5 text-[#20242b] dark:text-[var(--theme-dark-page-title)] leading-tight"
   >
     {title}
   </h1>
@@ -78,23 +86,23 @@ const { title, createDate, updateDate, author, category, wordCount, readTime } =
   @reference "../styles/global.css";
 
   .article-breadcrumb {
-    @apply mt-6 md:mt-8 flex items-center gap-2 text-xs leading-5 text-gray-400 dark:text-gray-500;
+    @apply mt-6 md:mt-8 flex items-center gap-2 text-xs leading-5 text-neutral-400 dark:text-neutral-500;
   }
 
   .article-breadcrumb-link {
-    @apply hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200;
+    @apply hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200;
   }
 
   .article-breadcrumb-separator {
-    @apply text-gray-300 dark:text-gray-700;
+    @apply text-neutral-300 dark:text-neutral-700;
   }
 
   .article-breadcrumb-current {
-    @apply font-medium text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 transition-colors duration-200;
+    @apply font-medium text-neutral-600 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-primary-400 transition-colors duration-200;
   }
 
   .article-meta {
-    @apply flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] leading-6 text-gray-500 dark:text-gray-400;
+    @apply flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] leading-6 text-neutral-500 dark:text-neutral-400;
   }
 
   .article-meta-item {
@@ -102,7 +110,7 @@ const { title, createDate, updateDate, author, category, wordCount, readTime } =
   }
 
   .article-meta-item:not(:first-child)::before {
-    @apply mr-1 hidden h-1 w-1 rounded-full bg-gray-300 dark:bg-gray-600 sm:inline-block;
+    @apply mr-1 hidden h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-600 sm:inline-block;
     content: '';
   }
 

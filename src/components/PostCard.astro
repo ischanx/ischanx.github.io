@@ -1,171 +1,118 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { formatDate } from '../utils/date';
-import { countWords, readingTime } from '../utils/content';
+import { readingTime } from '../utils/content';
 import { getPostUrl } from '../utils/route';
 import Icon from './Icon.astro';
 import { site } from '../config';
-import { createCategoryUrl, createTagUrl } from '../utils/navigation';
+import { createTagUrl, getTagLabel, normalizeTags } from '../utils/navigation';
 
 interface Props {
   post: CollectionEntry<'blog'>;
+  variant?: 'card' | 'list';
 }
 
-const { post } = Astro.props;
-const { title, description, createDate, tags, category, sticky, image } =
-  post.data;
+const { post, variant = 'card' } = Astro.props;
+const { title, description, createDate, tags, sticky, image } = post.data;
+const normalizedTags = normalizeTags(tags);
 
 // 文章最终显示的图片
 const displayImage = image;
 
 // 获取置顶配置
-const stickyConfig = site.indexSettings.sticky;
+const pinnedBadge = site.posts.pinnedBadge;
 
 // 获取原始Markdown内容
 const rawContent = post.body ?? '';
-// 计算字数
-const wordCount = countWords(rawContent);
 // 计算阅读时间
 const readTime = readingTime(rawContent);
 
-// 生成随机的渐变色,基于标题的散列值
-function generateGradientFromTitle(title: string) {
-  const hash = title.split('').reduce((acc, char) => {
-    return char.charCodeAt(0) + ((acc << 5) - acc);
-  }, 0);
-
-  const gradients = [
-    'from-pink-500 to-purple-500',
-    'from-blue-500 to-teal-500',
-    'from-green-500 to-lime-500',
-    'from-orange-500 to-amber-500',
-    'from-indigo-500 to-blue-500',
-    'from-red-500 to-pink-500',
-    'from-emerald-500 to-teal-500',
-    'from-violet-500 to-fuchsia-500',
-  ];
-
-  return gradients[Math.abs(hash) % gradients.length];
-}
-
-// 生成轻微的背景色调，与渐变色相匹配但更淡
-function generateBgTint(title: string) {
-  const hash = title.split('').reduce((acc, char) => {
-    return char.charCodeAt(0) + ((acc << 5) - acc);
-  }, 0);
-
-  const bgTints = [
-    'bg-pink-50 dark:bg-pink-950/10',
-    'bg-blue-50 dark:bg-blue-950/10',
-    'bg-green-50 dark:bg-green-950/10',
-    'bg-amber-50 dark:bg-amber-950/10',
-    'bg-indigo-50 dark:bg-indigo-950/10',
-    'bg-red-50 dark:bg-red-950/10',
-    'bg-emerald-50 dark:bg-emerald-950/10',
-    'bg-violet-50 dark:bg-violet-950/10',
-  ];
-
-  return bgTints[Math.abs(hash) % bgTints.length];
-}
-
-// 生成与背景色相匹配的边框颜色
-function generateBorderColor(title: string) {
-  const hash = title.split('').reduce((acc, char) => {
-    return char.charCodeAt(0) + ((acc << 5) - acc);
-  }, 0);
-
-  const borderColors = [
-    'border-pink-200 dark:border-pink-800/30',
-    'border-blue-200 dark:border-blue-800/30',
-    'border-green-200 dark:border-green-800/30',
-    'border-amber-200 dark:border-amber-800/30',
-    'border-indigo-200 dark:border-indigo-800/30',
-    'border-red-200 dark:border-red-800/30',
-    'border-emerald-200 dark:border-emerald-800/30',
-    'border-violet-200 dark:border-violet-800/30',
-  ];
-
-  return borderColors[Math.abs(hash) % borderColors.length];
-}
-
-const gradientClass = generateGradientFromTitle(title);
-const bgTintClass = generateBgTint(title);
-const borderColorClass = generateBorderColor(title);
 ---
 
 <article
-  class="group relative p-[2px] rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform active:scale-[0.99] animate-fade-in w-full"
+  class:list={[
+    'post-card group relative w-full animate-fade-in overflow-hidden transition-all duration-300 active:scale-[0.99]',
+    variant === 'list' ? 'post-card--list' : 'rounded-lg',
+  ]}
 >
-  <!-- 渐变边框效果 -->
-  <div
-    class={`absolute inset-0 opacity-30 group-hover:opacity-100 bg-gradient-to-br ${gradientClass} transition-opacity duration-500 rounded-lg blur-[0.5px]`}
-  >
-  </div>
+  <a
+    href={getPostUrl(post)}
+    class="card-link"
+    aria-label={`阅读文章：${title}`}
+  ></a>
 
   <!-- 卡片内容 -->
   <div
-    class={`min-h-40 relative bg-card dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden p-5 h-full z-10 backdrop-blur-sm transition-all duration-300 group-hover:shadow-lg border ${borderColorClass} flex flex-col`}
+    class:list={[
+      'relative z-10 flex min-h-40 h-full flex-col overflow-hidden pointer-events-none transition-all duration-300',
+      variant === 'list'
+        ? 'rounded-none bg-transparent px-3 py-5 sm:px-4 md:py-6 dark:bg-transparent'
+        : 'rounded-lg bg-neutral-50/90 p-5 dark:bg-neutral-900/90',
+    ]}
   >
-    <!-- 装饰元素 -->
-    <div
-      class="absolute top-0 right-0 h-12 w-12 opacity-10 -rotate-12 transform translate-x-2 -translate-y-2 bg-gradient-to-br from-primary-300 to-primary-500 rounded-full"
+    <!-- 标题 -->
+    <h2
+      class:list={[
+        'text-base md:text-xl font-bold mb-2 relative',
+        displayImage && 'md:pr-[205px]',
+      ]}
     >
-    </div>
+      <span
+        class:list={[
+          'post-title text-card-foreground transition-colors duration-300 dark:text-neutral-400',
+          'group-hover:text-primary dark:group-hover:text-primary',
+        ]}
+      >
+        {title}
+      </span>
 
-    <!-- 封面图 - 始终显示在右侧，hover时变亮 -->
+      {/* 置顶标签 */}
+      {
+        sticky && pinnedBadge.enabled && (
+          <span class="inline-flex items-center ml-2 px-1.5 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
+            {pinnedBadge.icon && (
+              <Icon name={pinnedBadge.icon} class="mr-1 text-xs" />
+            )}
+            {pinnedBadge.label}
+          </span>
+        )
+      }
+    </h2>
+
+    <!-- 封面图：桌面端 16:10 右侧缩略图，移动端使用更紧凑的宽幅横图 -->
     {
       displayImage && (
-        <div class="hidden md:block md:absolute md:right-0 md:top-0 md:bottom-0 md:w-[150px] md:opacity-50 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none">
-          <div class="h-full w-full overflow-hidden">
-            <img
-              src={displayImage}
-              alt={title}
-              class="object-cover h-full w-full transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-l from-transparent to-card dark:to-gray-800 opacity-50 group-hover:opacity-30 transition-opacity duration-300" />
+        <div
+          class:list={[
+            'post-cover relative z-20 mb-4 aspect-[9/4] w-full shrink-0 overflow-hidden rounded-md border border-neutral-200 bg-neutral-100 pointer-events-none md:absolute md:top-5 md:mb-0 md:aspect-[16/10] md:w-[180px] dark:border-neutral-700 dark:bg-neutral-800',
+            variant === 'list' ? 'md:right-4' : 'md:right-5',
+          ]}
+        >
+          <img
+            src={displayImage}
+            alt=""
+            class="absolute inset-0 h-full w-full object-cover opacity-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-[1.025]"
+          />
         </div>
       )
     }
 
-    <!-- 左侧边框装饰 -->
-    <div
-      class={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${gradientClass} opacity-20`}
-    >
-    </div>
-
-    <!-- 标题 -->
-    <h2 class="text-base md:text-xl font-bold mb-2 relative">
-      <a
-        href={getPostUrl(post)}
-        class="text-card-foreground dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-300"
-      >
-        {title}
-
-        {/* 置顶标签 */}
-        {
-          sticky && stickyConfig.enable && (
-            <span class="inline-flex items-center ml-2 px-1.5 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
-              {stickyConfig.icon && (
-                <Icon name={stickyConfig.icon} class="mr-1 text-xs" />
-              )}
-              {stickyConfig.text}
-            </span>
-          )
-        }
-      </a>
-    </h2>
-
     <!-- 摘要 -->
     <p
-      class="text-sm text-muted-foreground dark:text-muted-foreground mb-3 line-clamp-3 overflow-hidden text-ellipsis pointer-events-none md:pr-[160px] transition-all duration-300"
+      class:list={[
+        'post-description text-sm text-muted-foreground dark:text-muted-foreground mb-3 line-clamp-3 overflow-hidden text-ellipsis pointer-events-none transition-all duration-300',
+        displayImage && 'md:pr-[205px]',
+      ]}
     >
       {description}
     </p>
 
     <!-- 元信息 -->
     <div
-      class="flex flex-wrap items-center text-[10px] sm:text-xs text-muted-foreground dark:text-muted-foreground gap-2 sm:gap-3 mt-auto md:pr-[160px] transition-all duration-300"
+      class:list={[
+        'post-meta flex flex-wrap items-center text-[10px] sm:text-xs text-muted-foreground dark:text-muted-foreground gap-2 sm:gap-3 mt-auto transition-all duration-300',
+        displayImage && 'md:pr-[205px]',
+      ]}
     >
       <time
         datetime={createDate.toISOString()}
@@ -176,74 +123,119 @@ const borderColorClass = generateBorderColor(title);
       </time>
 
       {
-        category && (
-          <span class="flex items-center relative z-20">
-            <Icon name="category" fontSize="14px" class="mr-1" />
-            <a
-              href={createCategoryUrl(category)}
-              class="hover:text-primary dark:hover:text-primary transition-colors duration-300 relative z-30"
-            >
-              {category}
-            </a>
-          </span>
-        )
-      }
-
-      {
-        tags && tags.length > 0 && (
-          <span class="flex flex-wrap items-center gap-1.5 sm:gap-2 relative z-20">
+        normalizedTags.length > 0 && (
+          <span class="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <Icon name="tags" fontSize="14px" />
-            {tags.map((tag: string) => (
+            {normalizedTags.map((tag: string) => (
               <a
                 href={createTagUrl(tag)}
-                class="hover:text-primary dark:hover:text-primary transition-colors duration-300 relative z-30"
+                class="pointer-events-auto inline-flex items-center gap-[2px] hover:text-primary dark:hover:text-primary transition-colors duration-300"
               >
-                #{tag}
+                <span aria-hidden="true">#</span>
+                <span>{getTagLabel(tag)}</span>
               </a>
             ))}
           </span>
         )
       }
+
+      <span
+        class="flex items-center pointer-events-none"
+        aria-label={`预计阅读时间 ${readTime} 分钟`}
+      >
+        <Icon name="clock" fontSize="14px" class="mr-1" />
+        {readTime} 分钟
+      </span>
     </div>
   </div>
 </article>
 
 <style>
+  .post-card:not(.post-card--list) {
+    border: 1px solid rgb(212 212 212 / 0.95);
+    box-shadow: 3px 3px 0 rgb(23 23 23 / 0.045);
+  }
+
+  :global(.dark) .post-card:not(.post-card--list) {
+    border-color: rgb(82 82 82 / 0.9);
+    box-shadow: 3px 3px 0 rgb(255 255 255 / 0.035);
+  }
+
+  .post-card:not(.post-card--list):hover,
+  .post-card:not(.post-card--list):focus-within {
+    border-color: rgb(115 115 115);
+    box-shadow: 4px 4px 0 rgb(23 23 23 / 0.075);
+  }
+
+  :global(.dark) .post-card:not(.post-card--list):hover,
+  :global(.dark) .post-card:not(.post-card--list):focus-within {
+    border-color: rgb(115 115 115);
+    box-shadow: 4px 4px 0 rgb(255 255 255 / 0.06);
+  }
+
+  .post-card--list {
+    border-bottom: 1px solid rgb(212 212 212 / 0.95);
+    transition:
+      background-color 220ms ease,
+      transform 300ms ease;
+  }
+
+  .post-card--list .post-title {
+    color: #171717;
+  }
+
+  .post-card--list:hover,
+  .post-card--list:focus-within {
+    background-color: rgb(229 229 229 / 0.88);
+  }
+
+  .post-card--list:hover .post-title,
+  .post-card--list:focus-within .post-title {
+    color: #171717;
+  }
+
+  .post-card--list:hover .post-description,
+  .post-card--list:hover .post-meta,
+  .post-card--list:focus-within .post-description,
+  .post-card--list:focus-within .post-meta {
+    color: #525252;
+  }
+
+  :global(.dark) .post-card--list {
+    border-bottom-color: rgb(82 82 82 / 0.9);
+  }
+
+  :global(.dark) .post-card--list .post-title {
+    color: #eeeeee;
+  }
+
+  :global(.dark) .post-card--list:hover,
+  :global(.dark) .post-card--list:focus-within {
+    background-color: rgb(50 50 50 / 0.96);
+  }
+
+  :global(.dark) .post-card--list:hover .post-title,
+  :global(.dark) .post-card--list:focus-within .post-title {
+    color: #fafafa;
+  }
+
+  :global(.dark) .post-card--list:hover .post-description,
+  :global(.dark) .post-card--list:hover .post-meta,
+  :global(.dark) .post-card--list:focus-within .post-description,
+  :global(.dark) .post-card--list:focus-within .post-meta {
+    color: #d4d4d4;
+  }
+
   .card-link {
     position: absolute;
     inset: 0;
-    z-index: 20;
+    z-index: 0;
+    border-radius: inherit;
     cursor: pointer;
   }
 
-  /* 让分类和标签可以穿透点击，覆盖全局卡片点击 */
-  .card-link::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 20;
-    pointer-events: auto;
-  }
-
-  /* 确保只有实际链接有鼠标手型 */
-  a {
-    position: relative;
-    z-index: 30;
-    cursor: pointer;
-    pointer-events: auto;
-  }
-
-  /* 卡片悬停效果 */
-  article:hover .card-link::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.02);
-    z-index: 15;
-  }
-
-  /* 深色模式卡片悬停效果 */
-  :global(.dark) article:hover .card-link::after {
-    background-color: rgba(255, 255, 255, 0.03);
+  .card-link:focus-visible {
+    outline: 2px solid rgb(82 82 82);
+    outline-offset: -4px;
   }
 </style>

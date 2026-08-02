@@ -2,7 +2,12 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
-import { createTagUrl } from '../utils/navigation';
+import {
+  createTagUrl,
+  getTagLabel,
+  getTagSlug,
+  normalizeTags,
+} from '../utils/navigation';
 import { getPostUrl } from '../utils/route';
 import { countWords } from '../utils/content';
 import { site } from '../config';
@@ -37,7 +42,7 @@ const formatHeatmapDate = (date: Date) =>
   });
 
 // 计算博客运行时间
-const startDate = new Date(site.footer.startTime);
+const startDate = new Date(site.footer.launchedAt);
 const now = new Date();
 const diffTime = Math.abs(now.getTime() - startDate.getTime());
 const diffYears = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 365));
@@ -139,32 +144,32 @@ const years = Object.keys(postsByYearMonth)
 <Layout title="归档">
   <div class="max-w-4xl mx-auto px-2 sm:px-4 py-6 md:py-8">
     <!-- 统计信息 -->
-    <div class="mb-8 rounded-xl border border-neutral-200 bg-neutral-100/90 p-4 md:mb-12 md:p-6 dark:border-neutral-800 dark:bg-neutral-900/90">
+    <div class="mb-8 rounded-xl border border-neutral-200 border-l-4 border-l-primary-500 bg-neutral-100/90 p-4 md:mb-12 md:p-6 dark:border-neutral-800 dark:border-l-primary-400 dark:bg-neutral-900/90">
       <p class="text-sm leading-relaxed text-neutral-700 md:text-base dark:text-neutral-300">
-        过去 <span class="font-bold text-neutral-900 dark:text-neutral-100">{runningTime}</span>，
-        总共有 <span class="font-bold text-neutral-900 dark:text-neutral-100">{totalPosts}</span> 篇文章，
-        累计 <span class="font-bold text-neutral-900 dark:text-neutral-100">{totalWords.toLocaleString()}</span> 字
+        过去 <span class="font-bold text-primary-700 dark:text-primary-300">{runningTime}</span>，
+        总共有 <span class="font-bold text-primary-700 dark:text-primary-300">{totalPosts}</span> 篇文章，
+        累计 <span class="font-bold text-primary-700 dark:text-primary-300">{totalWords.toLocaleString()}</span> 字
       </p>
     </div>
 
     <section class="mb-10 md:mb-12" aria-label="过去五年文章周热力图">
-      <div class="mb-2 flex items-center justify-between text-xs font-medium text-gray-400 dark:text-gray-500">
+      <div class="mb-2 flex items-center justify-between text-xs font-medium text-neutral-400 dark:text-neutral-500">
         <span>{heatmapStartYear}</span>
         <span>{heatmapEndYear}</span>
       </div>
       <div class="grid grid-flow-col grid-rows-[repeat(5,minmax(0,1fr))] gap-0.5 sm:gap-1">
         {archiveHeatmapWeeks.map(week => (
           <span
-            class={`archive-heatmap-cell aspect-square rounded-[2px] ring-neutral-400/0 transition duration-150 hover:z-10 hover:scale-125 hover:ring-2 dark:ring-neutral-200/0 dark:hover:ring-neutral-200/70 ${
+            class={`archive-heatmap-cell aspect-square rounded-[2px] ring-primary-300/0 transition duration-150 hover:z-10 hover:scale-125 hover:ring-2 dark:ring-primary-500/0 dark:hover:ring-primary-500/70 ${
               week.level === 0
-                ? 'bg-neutral-200 dark:bg-neutral-800'
+              ? 'bg-neutral-200 dark:bg-neutral-800'
                 : week.level === 1
-                  ? 'bg-neutral-300 dark:bg-neutral-700'
-                  : week.level === 2
-                    ? 'bg-neutral-400 dark:bg-neutral-600'
-                    : week.level === 3
-                      ? 'bg-neutral-500 dark:bg-neutral-500'
-                      : 'bg-neutral-700 dark:bg-neutral-300'
+                  ? 'bg-primary-100 dark:bg-primary-950/80'
+                : week.level === 2
+                    ? 'bg-primary-300 dark:bg-primary-800'
+                : week.level === 3
+                      ? 'bg-primary-500 dark:bg-primary-600'
+                      : 'bg-primary-700 dark:bg-primary-400'
             }`}
             aria-label={week.label}
             data-heatmap-cell
@@ -175,7 +180,7 @@ const years = Object.keys(postsByYearMonth)
                   <div class="min-w-0 truncate text-xs font-medium text-slate-700 dark:text-slate-200">
                   {week.dateRange}
                   </div>
-                  <div class="shrink-0 rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700 dark:bg-blue-400/10 dark:text-blue-300">
+                  <div class="shrink-0 rounded bg-neutral-50 px-1.5 py-0.5 text-[10px] font-semibold text-neutral-700 dark:bg-neutral-400/10 dark:text-neutral-300">
                   {week.words.toLocaleString()} 字
                   </div>
                 </div>
@@ -187,7 +192,7 @@ const years = Object.keys(postsByYearMonth)
                   week.posts.slice(0, 4).map(post => (
                     <a
                       href={post.url}
-                      class="block truncate rounded-sm py-0.5 text-xs text-slate-600 transition-colors hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-300"
+                      class="block truncate rounded-sm py-0.5 text-xs text-slate-600 transition-colors hover:text-primary-600 dark:text-slate-300 dark:hover:text-primary-400"
                     >
                       {post.title}
                     </a>
@@ -198,7 +203,7 @@ const years = Object.keys(postsByYearMonth)
                   </div>
                 )}
                 {week.posts.length > 4 && (
-                  <div class="mt-1 text-[10px] font-medium text-blue-600 dark:text-blue-300">
+                  <div class="mt-1 text-[10px] font-medium text-neutral-600 dark:text-neutral-300">
                     还有 {week.posts.length - 4} 篇
                   </div>
                 )}
@@ -214,53 +219,55 @@ const years = Object.keys(postsByYearMonth)
       {
         years.map(year => {
           const months = Object.keys(postsByYearMonth[year]).sort((a, b) => b.localeCompare(a));
-          const totalPostsInYear = months.reduce((sum, month) => sum + postsByYearMonth[year][month].length, 0);
+          const yearPosts = months.flatMap(month => postsByYearMonth[year][month]);
 
           return (
             <div>
               <div class="mb-4">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-200">
+                <h2 class="border-l-4 border-primary-500 pl-3 text-2xl font-bold text-neutral-900 dark:border-primary-400 dark:text-neutral-200">
                   {year}
                 </h2>
               </div>
 
-              <div class="space-y-8">
-                {months.map(month => (
-                  <div>
-                    {/* 月份标题 */}
-                    <div class="text-base font-semibold text-gray-500 dark:text-gray-500 mb-3">
-                      {month}月
-                    </div>
+              <div class="divide-y divide-neutral-200 dark:divide-neutral-800">
+                {yearPosts.map(post => {
+                  const postDate = new Date(post.data.createDate);
 
-                    {/* 该月份的文章列表 */}
-                    <div class="pl-6 space-y-3">
-                      {postsByYearMonth[year][month].map((post) => (
-                        <div class="flex items-center gap-2 flex-wrap">
-                          <span class="text-blue-600 dark:text-blue-400">•</span>
-                          <a
-                            href={`${getPostUrl(post)}`}
-                            class="text-base font-medium text-gray-900 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
-                          >
-                            {post.data.title}
-                          </a>
+                  return (
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-2 py-3 first:pt-0 last:pb-0">
+                      <time
+                        datetime={postDate.toISOString()}
+                        class="w-12 shrink-0 text-xs font-medium text-primary-600 dark:text-primary-400"
+                      >
+                        {postDate.getMonth() + 1}月
+                      </time>
+                      <a
+                        href={`${getPostUrl(post)}`}
+                        class="min-w-0 text-base font-medium text-neutral-900 transition-colors duration-200 hover:text-primary-600 dark:text-neutral-200 dark:hover:text-primary-400"
+                      >
+                        {post.data.title}
+                      </a>
 
-                          {post.data.tags && post.data.tags.length > 0 && (
-                            <>
-                              {post.data.tags.map((tag: string) => (
-                                <a
-                                  href={createTagUrl(tag)}
-                                  class="rounded-md border border-neutral-300 bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-600 transition-colors duration-200 hover:border-neutral-400 hover:bg-neutral-200 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-700 dark:hover:text-neutral-100"
-                                >
-                                  #{tag}
-                                </a>
-                              ))}
-                            </>
-                          )}
+                      {normalizeTags(post.data.tags).length > 0 && (
+                        <div class="flex flex-wrap gap-1.5">
+                          {normalizeTags(post.data.tags).map((tag: string) => {
+                            const slug = getTagSlug(tag);
+                            const label = getTagLabel(tag);
+                            const className = 'rounded-md border border-neutral-300 bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-600 transition-colors duration-200 hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-primary-700 dark:hover:bg-primary-950/40 dark:hover:text-primary-300';
+
+                            return slug ? (
+                              <a href={createTagUrl(tag)} class={className}>
+                                #{label}
+                              </a>
+                            ) : (
+                              <span class={className}>#{label}</span>
+                            );
+                          })}
                         </div>
-                      ))}
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           );

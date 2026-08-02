@@ -20,20 +20,28 @@ const { maxLevel = 3 } = Astro.props;
 
 <div
   id="toc-container"
-  class="z-50 hidden h-[calc(100vh-20rem)] overflow-hidden lg:sticky lg:top-32 lg:block lg:w-40 lg:self-start xl:w-52 2xl:w-64"
+  class="z-50 hidden h-[calc(100vh-20rem)] lg:sticky lg:top-32 lg:block lg:w-12 lg:self-start"
   data-max-level={maxLevel}
 >
   <ScrollArea
     class="h-full [--scroll-area-track-inset-bottom:2rem]"
-    viewportClass="toc-content h-full pl-4 pr-4 pb-8"
+    viewportClass="toc-content h-full px-2 pb-8"
     contentClass="toc-scroll-content"
   >
-    <nav id="toc" class="toc-list text-[13px] leading-5">
-      <div class="toc-placeholder text-gray-400 dark:text-gray-500">
-        加载中...
+    <nav id="toc" class="toc-list" aria-label="文章目录">
+      <div class="toc-skeleton" role="status" aria-label="正在加载文章目录">
+        <span class="toc-skeleton-bar" style="--skeleton-width: 1.15rem;"></span>
+        <span class="toc-skeleton-bar" style="--skeleton-width: 1.85rem;"></span>
+        <span class="toc-skeleton-bar" style="--skeleton-width: 1.4rem;"></span>
+        <span class="toc-skeleton-bar" style="--skeleton-width: 2.1rem;"></span>
+        <span class="toc-skeleton-bar" style="--skeleton-width: 1.65rem;"></span>
       </div>
     </nav>
   </ScrollArea>
+
+  <div id="toc-panel" class="toc-panel">
+    <nav id="toc-text" class="toc-text-list" aria-label="文章目录文字列表"></nav>
+  </div>
 </div>
 
 <script>
@@ -45,11 +53,44 @@ const { maxLevel = 3 } = Astro.props;
     const articleContent = document.querySelector('.prose');
     const tocContainer = document.getElementById('toc-container');
     const tocList = document.getElementById('toc');
+    const tocTextList = document.getElementById('toc-text');
+    const tocPanel = document.getElementById('toc-panel');
     const initScrollAreas = (
       window as Window & { initScrollAreas?: () => void }
     ).initScrollAreas;
 
-    if (!articleContent || !tocContainer || !tocList) return;
+    if (
+      !articleContent ||
+      !tocContainer ||
+      !tocList ||
+      !tocTextList ||
+      !tocPanel
+    )
+      return;
+
+    // 将文字目录作为独立滚动区域，滚动到边界时不带动外层页面。
+    if (tocPanel.dataset.scrollGuardReady !== 'true') {
+      tocPanel.dataset.scrollGuardReady = 'true';
+      tocPanel.addEventListener(
+        'wheel',
+        event => {
+          const canScroll = tocPanel.scrollHeight > tocPanel.clientHeight;
+          const atTop = tocPanel.scrollTop <= 0;
+          const atBottom =
+            Math.ceil(tocPanel.scrollTop + tocPanel.clientHeight) >=
+            tocPanel.scrollHeight;
+
+          if (
+            !canScroll ||
+            (event.deltaY < 0 && atTop) ||
+            (event.deltaY > 0 && atBottom)
+          ) {
+            event.preventDefault();
+          }
+        },
+        { passive: false }
+      );
+    }
 
     // 获取配置参数
     const maxLevel = parseInt(tocContainer.dataset.maxLevel || '3');
@@ -67,19 +108,21 @@ const { maxLevel = 3 } = Astro.props;
       tocContainer.classList.add('hidden');
       return;
     }
+    const baseLevel = Math.min(
+      ...Array.from(headings).map(heading =>
+        parseInt(heading.tagName.substring(1))
+      )
+    );
 
     // 清空占位内容
     tocList.innerHTML = '';
+    tocTextList.innerHTML = '';
 
     // 创建目录项
     const tocItems: Record<string, HTMLAnchorElement> = {};
-    const headingGroups: Record<
-      string,
-      { container: HTMLElement; items: HTMLElement[] }
-    > = {};
-    let currentParentIds: (string | null)[] = new Array(maxLevel).fill(null);
+    const tocTextItems: Record<string, HTMLAnchorElement> = {};
 
-    // 创建标题树结构
+    // 创建类似代码 minimap 的条状目录
     headings.forEach(heading => {
       const id = heading.id;
       if (!id) return;
@@ -101,101 +144,42 @@ const { maxLevel = 3 } = Astro.props;
       // 创建目录项
       const listItem = document.createElement('a');
       listItem.href = `#${id}`;
-      listItem.classList.add(
-        'toc-item',
-        `toc-level-${level}`,
-        'block',
-        'py-1.5',
-        'text-gray-600',
-        'dark:text-gray-300',
-        'hover:text-primary-600',
-        'dark:hover:text-primary-400',
-        'transition-all',
-        'duration-200',
-        'truncate'
-      );
-
-      // 根据标题层级添加缩进和字体大小
-      if (level === 1) {
-        listItem.style.paddingLeft = '0.5rem';
-        listItem.classList.add('font-bold');
-      } else {
-        const indentSize = (level - 1) * 0.75;
-        listItem.style.paddingLeft = `${indentSize}rem`;
-      }
-      listItem.textContent = text;
+      const visualLevel = level - baseLevel + 1;
+      listItem.classList.add('toc-item', `toc-level-${visualLevel}`);
+      listItem.setAttribute('aria-label', text);
       listItem.title = text;
 
-      // 记录当前层级的ID
-      currentParentIds[level - 1] = id;
+      const textIndent = Math.max(0, visualLevel - 1) * 0.75;
+      const characterCount = Array.from(text).length;
+      const minWidth = 0.7;
+      const maxWidth = 2.15;
+      const lengthRatio = Math.min(characterCount, 24) / 24;
+      const barWidth = minWidth + (maxWidth - minWidth) * lengthRatio;
 
-      // 清除当前层级之后的所有父ID
-      for (let i = level; i < maxLevel; i++) {
-        currentParentIds[i] = null;
-      }
+      listItem.style.setProperty('--toc-bar-width', `${barWidth}rem`);
 
-      // 确定父标题ID
-      const parentLevel = level - 1;
-      const parentId = parentLevel >= 0 ? currentParentIds[parentLevel] : null;
+      const bar = document.createElement('span');
+      bar.className = 'toc-bar';
+      bar.setAttribute('aria-hidden', 'true');
 
-      if (level === 1) {
-        // 一级标题直接添加到目录
-        tocList.appendChild(listItem);
-        tocItems[id] = listItem;
+      const textItem = document.createElement('a');
+      textItem.href = `#${id}`;
+      textItem.classList.add(
+        'toc-panel-item',
+        `toc-panel-level-${visualLevel}`
+      );
+      textItem.style.setProperty('--toc-text-indent', `${textIndent}rem`);
+      textItem.textContent = text;
 
-        // 为一级标题创建子标题容器
-        const subHeadingsContainer = document.createElement('div');
-        subHeadingsContainer.classList.add('sub-headings');
-        subHeadingsContainer.dataset.parentId = id;
-        tocList.appendChild(subHeadingsContainer);
-        headingGroups[id] = { container: subHeadingsContainer, items: [] };
-      } else if (parentId) {
-        // 如果有父标题，将当前标题添加到父标题的子标题组
-        if (!headingGroups[parentId]) {
-          // 如果父标题的子标题容器不存在，创建一个
-          const parentElement = tocItems[parentId];
-          const parentContainer = document.createElement('div');
-          parentContainer.classList.add('sub-headings');
-          parentContainer.dataset.parentId = parentId;
-
-          // 找到父元素在DOM中的位置并插入子标题容器
-          const parentIndex = Array.from(tocList.children).indexOf(
-            parentElement
-          );
-          if (parentIndex !== -1 && parentIndex + 1 < tocList.children.length) {
-            tocList.insertBefore(
-              parentContainer,
-              tocList.children[parentIndex + 1]
-            );
-          } else {
-            tocList.appendChild(parentContainer);
-          }
-
-          headingGroups[parentId] = { container: parentContainer, items: [] };
-        }
-
-        // 将当前标题添加到父标题的子标题组
-        headingGroups[parentId].items.push(listItem);
-        headingGroups[parentId].container.appendChild(listItem);
-        tocItems[id] = listItem;
-
-        // 如果当前标题不是最后一级，为它创建子标题容器
-        if (level < maxLevel) {
-          const subHeadingsContainer = document.createElement('div');
-          subHeadingsContainer.classList.add(
-            'sub-headings',
-            'nested-sub-headings'
-          );
-          subHeadingsContainer.dataset.parentId = id;
-          headingGroups[parentId].container.appendChild(subHeadingsContainer);
-          headingGroups[id] = { container: subHeadingsContainer, items: [] };
-        }
-      } else {
-        // 如果没有父标题（可能是因为文档结构不规范），直接添加到目录
-        tocList.appendChild(listItem);
-        tocItems[id] = listItem;
-      }
+      listItem.append(bar);
+      tocList.appendChild(listItem);
+      tocTextList.appendChild(textItem);
+      tocItems[id] = listItem;
+      tocTextItems[id] = textItem;
     });
+
+    Object.values(tocItems)[0]?.classList.add('active');
+    Object.values(tocTextItems)[0]?.classList.add('active');
 
     // 如果没有有效的目录项或者是移动设备，隐藏TOC
     if (Object.keys(tocItems).length === 0 || window.innerWidth < 768) {
@@ -227,6 +211,15 @@ const { maxLevel = 3 } = Astro.props;
     // 标记是否是由用户点击目录项触发的滚动
     let isUserScrolling = false;
 
+    const activateTocItem = (id: string) => {
+      Object.values(tocItems).forEach(item => item.classList.remove('active'));
+      Object.values(tocTextItems).forEach(item =>
+        item.classList.remove('active')
+      );
+      tocItems[id]?.classList.add('active');
+      tocTextItems[id]?.classList.add('active');
+    };
+
     // 检查URL中是否有锚点，如果有则高亮对应的目录项
     const checkUrlHash = () => {
       const hash = window.location.hash;
@@ -234,27 +227,7 @@ const { maxLevel = 3 } = Astro.props;
         const id = hash.substring(1);
         const tocItem = tocItems[id];
         if (tocItem) {
-          // 移除所有活动类
-          document.querySelectorAll('.toc-item').forEach(item => {
-            item.classList.remove('active');
-            item.classList.remove('text-primary-600');
-            item.classList.remove('dark:text-primary-400');
-            item.classList.remove('font-medium');
-            item.classList.remove('border-l-2');
-            item.classList.remove('border-primary-500');
-            item.classList.remove('bg-primary-50');
-            item.classList.remove('dark:bg-primary-900/20');
-          });
-
-          // 添加活动类
-          tocItem.classList.add('active');
-          tocItem.classList.add('text-primary-600');
-          tocItem.classList.add('dark:text-primary-400');
-          tocItem.classList.add('font-medium');
-          tocItem.classList.add('border-l-2');
-          tocItem.classList.add('border-primary-500');
-          tocItem.classList.add('bg-primary-50');
-          tocItem.classList.add('dark:bg-primary-900/20');
+          activateTocItem(id);
 
           // 将当前活动标题滚动到目录视图中
           const tocContainer = document.querySelector('.toc-content');
@@ -283,27 +256,7 @@ const { maxLevel = 3 } = Astro.props;
           if (!tocItem) return;
 
           if (entry.isIntersecting) {
-            // 移除所有活动类
-            document.querySelectorAll('.toc-item').forEach(item => {
-              item.classList.remove('active');
-              item.classList.remove('text-primary-600');
-              item.classList.remove('dark:text-primary-400');
-              item.classList.remove('font-medium');
-              item.classList.remove('border-l-2');
-              item.classList.remove('border-primary-500');
-              item.classList.remove('bg-primary-50');
-              item.classList.remove('dark:bg-primary-900/20');
-            });
-
-            // 添加活动类
-            tocItem.classList.add('active');
-            tocItem.classList.add('text-primary-600');
-            tocItem.classList.add('dark:text-primary-400');
-            tocItem.classList.add('font-medium');
-            tocItem.classList.add('border-l-2');
-            tocItem.classList.add('border-primary-500');
-            tocItem.classList.add('bg-primary-50');
-            tocItem.classList.add('dark:bg-primary-900/20');
+            activateTocItem(id);
 
             // 更新活动标题ID列表
             activeHeadingIds = [id];
@@ -389,38 +342,40 @@ const { maxLevel = 3 } = Astro.props;
     });
 
     // 点击TOC项时平滑滚动
-    tocList.querySelectorAll('.toc-item').forEach(item => {
-      item.addEventListener('click', e => {
-        e.preventDefault();
-        const id = item.getAttribute('href')?.substring(1);
-        if (!id) return;
+    document
+      .querySelectorAll('#toc .toc-item, #toc-text .toc-panel-item')
+      .forEach(item => {
+        item.addEventListener('click', e => {
+          e.preventDefault();
+          const id = item.getAttribute('href')?.substring(1);
+          if (!id) return;
 
-        const targetHeading = document.getElementById(id);
-        if (!targetHeading) return;
+          const targetHeading = document.getElementById(id);
+          if (!targetHeading) return;
 
-        // 标记为用户点击触发的滚动
-        isUserScrolling = true;
+          // 标记为用户点击触发的滚动
+          isUserScrolling = true;
 
-        window.scrollTo({
-          top: targetHeading.offsetTop + 100,
-          behavior: 'smooth',
+          window.scrollTo({
+            top: targetHeading.offsetTop + 100,
+            behavior: 'smooth',
+          });
+
+          // 更新URL，但不跳转
+          history.pushState(null, '', `#${id}`);
+
+          // 清除之前的定时器（如果存在）
+          if (scrollTimeoutId !== null) {
+            clearTimeout(scrollTimeoutId);
+          }
+
+          // 滚动完成后重置标记
+          scrollTimeoutId = setTimeout(() => {
+            isUserScrolling = false;
+            scrollTimeoutId = null;
+          }, 3000) as unknown as number; // 设置一个合理的延迟，确保滚动动画完成
         });
-
-        // 更新URL，但不跳转
-        history.pushState(null, '', `#${id}`);
-
-        // 清除之前的定时器（如果存在）
-        if (scrollTimeoutId !== null) {
-          clearTimeout(scrollTimeoutId);
-        }
-
-        // 滚动完成后重置标记
-        scrollTimeoutId = setTimeout(() => {
-          isUserScrolling = false;
-          scrollTimeoutId = null;
-        }, 3000) as unknown as number; // 设置一个合理的延迟，确保滚动动画完成
       });
-    });
   }
 
   // 页面加载完成后初始化TOC
@@ -432,44 +387,218 @@ const { maxLevel = 3 } = Astro.props;
 </script>
 
 <style>
+  #toc-container {
+    --toc-bar: #e4e7eb;
+    --toc-bar-hover: #bdc2c8;
+    --toc-bar-active: #9298a0;
+    --toc-panel-bg: rgb(248 250 252 / 0.98);
+    --toc-panel-border: rgb(203 213 225 / 0.82);
+    --toc-panel-text: #4b5563;
+    --toc-panel-active-bg: rgb(226 232 240 / 0.72);
+    --toc-panel-active-text: #20242b;
+    overflow: visible;
+  }
+
   .toc-list {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 0.125rem;
+    padding-block: 0.25rem;
+    width: 100%;
   }
 
-  .dark .toc-list {
-    border-left-color: rgba(75, 85, 99, 0.3);
+  .toc-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    width: 100%;
   }
 
-  .toc-item {
-    padding-left: 0.5rem;
+  .toc-skeleton-bar {
+    animation: toc-skeleton-pulse 1.6s ease-in-out infinite;
+    background: var(--toc-bar);
+    border-radius: 999px;
+    display: block;
+    height: 0.1875rem;
+    margin-block: 0.46875rem;
+    opacity: 0.65;
+    width: min(var(--skeleton-width), 100%);
+  }
+
+  .toc-skeleton-bar:nth-child(2) {
+    animation-delay: 80ms;
+  }
+
+  .toc-skeleton-bar:nth-child(3) {
+    animation-delay: 160ms;
+  }
+
+  .toc-skeleton-bar:nth-child(4) {
+    animation-delay: 240ms;
+  }
+
+  .toc-skeleton-bar:nth-child(5) {
+    animation-delay: 320ms;
+  }
+
+  @keyframes toc-skeleton-pulse {
+    0%,
+    100% {
+      opacity: 0.42;
+    }
+    50% {
+      opacity: 0.78;
+    }
+  }
+
+  :global(.dark) #toc-container {
+    --toc-bar: #303236;
+    --toc-bar-hover: #4e5258;
+    --toc-bar-active: #747a82;
+    --toc-panel-bg: rgb(30 30 30 / 0.98);
+    --toc-panel-border: rgb(82 82 82 / 0.78);
+    --toc-panel-text: #aeb4bc;
+    --toc-panel-active-bg: rgb(64 64 64 / 0.58);
+    --toc-panel-active-text: #d0d3d8;
+  }
+
+  :global(.toc-item) {
+    --toc-bar-width: 1.5rem;
+    align-items: center;
+    display: flex;
+    height: 1.125rem;
+    outline: none;
     position: relative;
-    margin-left: -1px;
-    max-width: 230px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    border-radius: 0 0.25rem 0.25rem 0;
+    width: 100%;
   }
 
-  .toc-item.active {
-    margin-left: -3px;
-    padding-right: 0.5rem;
+  :global(.toc-bar) {
+    background: var(--toc-bar);
+    border-radius: 999px;
+    display: block;
+    height: 0.1875rem;
+    transform-origin: left center;
+    transition:
+      background-color 160ms ease,
+      height 160ms ease,
+      transform 160ms ease;
+    width: min(var(--toc-bar-width), 100%);
   }
 
-  .sub-headings {
-    transition: all 0.3s ease;
-    margin-top: -0.25rem;
-    margin-bottom: 0.25rem;
+  .toc-panel {
+    background: var(--toc-panel-bg);
+    border: 1px solid var(--toc-panel-border);
+    border-radius: 0.5rem;
+    box-shadow:
+      0 12px 28px rgb(15 23 42 / 0.1),
+      0 2px 8px rgb(15 23 42 / 0.06);
+    left: 0;
+    max-height: min(32rem, calc(100vh - 10rem));
+    opacity: 0;
+    overscroll-behavior-y: contain;
+    overflow-y: auto;
+    padding: 0.45rem;
+    pointer-events: none;
+    position: absolute;
+    scrollbar-color: #aeb4bc transparent;
+    scrollbar-width: thin;
+    top: -0.5rem;
+    transform: scale(0.985);
+    transform-origin: left top;
+    transition:
+      opacity 150ms ease,
+      transform 170ms ease,
+      visibility 0s linear 170ms;
+    visibility: hidden;
+    width: clamp(18rem, 24vw, 22rem);
+    z-index: 20;
   }
 
-  .nested-sub-headings {
-    margin-left: 0.5rem;
+  :global(.dark) .toc-panel {
+    box-shadow:
+      0 16px 34px rgb(0 0 0 / 0.32),
+      0 2px 8px rgb(0 0 0 / 0.2);
+    scrollbar-color: #555b63 transparent;
+  }
+
+  #toc-container:hover .toc-panel,
+  #toc-container:focus-within .toc-panel {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+    transition-delay: 0s;
+    visibility: visible;
+  }
+
+  .toc-text-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  :global(.toc-panel-item) {
+    border-inline-start: 2px solid transparent;
+    border-radius: 0.3rem;
+    color: var(--toc-panel-text);
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    line-height: 1.35rem;
+    padding: 0.2rem 0.5rem 0.2rem
+      calc(0.5rem + var(--toc-text-indent, 0rem));
+    transition:
+      background-color 140ms ease,
+      border-color 140ms ease,
+      color 140ms ease;
+  }
+
+  :global(.toc-panel-level-1) {
+    font-weight: 600;
+  }
+
+  :global(.toc-panel-item:hover),
+  :global(.toc-panel-item:focus-visible) {
+    background: var(--toc-panel-active-bg);
+    color: var(--toc-panel-active-text);
+    outline: none;
+  }
+
+  :global(.toc-panel-item.active) {
+    background: var(--toc-panel-active-bg);
+    border-inline-start-color: var(--toc-bar-active);
+    color: var(--toc-panel-active-text);
+    font-weight: 600;
+  }
+
+  #toc-container:hover :global(.toc-bar),
+  #toc-container:focus-within :global(.toc-bar) {
+    background: var(--toc-bar-hover);
+  }
+
+  :global(.toc-item.active .toc-bar) {
+    background: var(--toc-bar-active);
+  }
+
+  :global(.toc-item:focus-visible .toc-bar) {
+    box-shadow: 0 0 0 2px rgb(59 130 246 / 0.32);
+  }
+
+  :global(#toc-container .scroll-area__scrollbar) {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toc-skeleton-bar,
+    :global(.toc-bar),
+    .toc-panel,
+    :global(.toc-panel-item) {
+      animation: none;
+      transition: none;
+    }
   }
 
   @media (max-width: 1023px) {
-    .toc {
+    #toc-container {
       display: none;
     }
   }

@@ -11,6 +11,10 @@ import { site } from '../../config';
 import { countWords, readingTime } from '../../utils/content';
 import { getLastModifiedDateFromGit } from '../../utils/git';
 import { getPostPath } from '../../utils/route';
+import {
+  getCategoryLabel,
+  getCategorySlugFromPost,
+} from '../../utils/navigation';
 import '../../styles/global.css';
 import Giscus from '../../components/Giscus.astro';
 
@@ -55,8 +59,9 @@ const {
   updateDate,
   author = site.author,
   tags,
-  category,
 } = post.data;
+const categorySlug = getCategorySlugFromPost(post);
+const category = post.data.category ?? getCategoryLabel(categorySlug);
 
 // 获取原始Markdown内容
 const rawContent = post.body ?? '';
@@ -83,7 +88,7 @@ if (!lastUpdateDate) {
     class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in relative"
   >
     <div
-      class="flex flex-col lg:grid lg:grid-cols-[10rem_minmax(0,48rem)] lg:justify-center lg:gap-8 xl:grid-cols-[13rem_minmax(0,48rem)] xl:gap-10 2xl:grid-cols-[16rem_minmax(0,48rem)] 2xl:gap-12"
+      class="flex flex-col lg:grid lg:grid-cols-[3rem_minmax(0,46rem)_3rem] lg:justify-center lg:gap-x-6"
     >
       <TableOfContents />
 
@@ -95,6 +100,7 @@ if (!lastUpdateDate) {
           updateDate={lastUpdateDate}
           author={author}
           category={category}
+          categorySlug={categorySlug}
           wordCount={wordCount}
           readTime={readTime}
         />
@@ -109,8 +115,8 @@ if (!lastUpdateDate) {
         <PostNavigation prevPost={prevPost} nextPost={nextPost} />
 
         {
-          site.features.comments.enable &&
-            site.features.comments.type === 'giscus' && <Giscus />
+          site.comments.enabled &&
+            site.comments.provider === 'giscus' && <Giscus />
         }
       </article>
     </div>

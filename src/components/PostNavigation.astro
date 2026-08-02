@@ -19,13 +19,13 @@ const { prevPost, nextPost } = Astro.props;
     prevPost ? (
       <a
         href={getPostUrl(prevPost)}
-        class="flex-1 p-3 md:p-4 bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-700 flex flex-col hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-500 hover:shadow-md transition-all duration-300 group cursor-pointer"
+        class="flex-1 p-3 md:p-4 bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-700 flex flex-col hover:bg-primary-50/70 dark:hover:bg-primary-950/20 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-md transition-all duration-300 group cursor-pointer"
       >
-        <span class="text-xs md:text-sm text-neutral-500 dark:text-neutral-400 flex items-center mb-1 group-hover:text-neutral-700 dark:group-hover:text-neutral-300 transition-colors">
+        <span class="text-xs md:text-sm text-neutral-500 dark:text-neutral-400 flex items-center mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
           <Icon name="arrow-left" fontSize="14px" class="mr-1" />
           上一篇
         </span>
-        <span class="font-medium text-sm md:text-base text-neutral-900 dark:text-neutral-200 group-hover:text-neutral-700 dark:group-hover:text-neutral-300 line-clamp-2 transition-colors">
+        <span class="font-medium text-sm md:text-base text-neutral-900 dark:text-neutral-200 group-hover:text-primary-700 dark:group-hover:text-primary-300 line-clamp-2 transition-colors">
           {prevPost.data.title}
         </span>
       </a>
@@ -46,13 +46,13 @@ const { prevPost, nextPost } = Astro.props;
     nextPost ? (
       <a
         href={getPostUrl(nextPost)}
-        class="flex-1 p-3 md:p-4 bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-700 flex flex-col text-right hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-500 hover:shadow-md transition-all duration-300 group cursor-pointer"
+        class="flex-1 p-3 md:p-4 bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-700 flex flex-col text-right hover:bg-primary-50/70 dark:hover:bg-primary-950/20 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-md transition-all duration-300 group cursor-pointer"
       >
-        <span class="text-xs md:text-sm text-neutral-500 dark:text-neutral-400 flex items-center justify-end mb-1 group-hover:text-neutral-700 dark:group-hover:text-neutral-300 transition-colors">
+        <span class="text-xs md:text-sm text-neutral-500 dark:text-neutral-400 flex items-center justify-end mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
           下一篇
           <Icon name="arrow-right" fontSize="14px" class="ml-1" />
         </span>
-        <span class="font-medium text-sm md:text-base text-neutral-900 dark:text-neutral-200 group-hover:text-neutral-700 dark:group-hover:text-neutral-300 line-clamp-2 transition-colors">
+        <span class="font-medium text-sm md:text-base text-neutral-900 dark:text-neutral-200 group-hover:text-primary-700 dark:group-hover:text-primary-300 line-clamp-2 transition-colors">
           {nextPost.data.title}
         </span>
       </a>

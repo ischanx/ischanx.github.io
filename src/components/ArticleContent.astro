@@ -17,32 +17,52 @@ import ScrollArea from './ScrollArea.astro';
   @reference "../styles/global.css";
 
   :global(.article-prose) {
-    --article-dark-text: #b8bec8;
-    @apply text-base;
-    color: rgb(17 24 39);
+    --article-text: #374151;
+    --article-heading: #20242b;
+    --article-heading-secondary: #303845;
+    --article-heading-tertiary: #46505e;
+    --article-muted-text: #5f6773;
+    --article-table-heading: #303845;
+    --inline-code-bg: #eef0f3;
+    --inline-code-border: #d2d6dc;
+    --inline-code-text: #263140;
+    color: var(--article-text);
     font-family: var(--font-article);
+    font-size: 1rem;
     font-kerning: normal;
     font-variant-ligatures: common-ligatures;
     font-weight: 400;
-    letter-spacing: 0.005em;
-    line-height: 1.88;
+    letter-spacing: 0;
+    line-height: 1.78;
     overflow-wrap: break-word;
     text-rendering: optimizeLegibility;
 
     :global(.dark) & {
-      color: var(--article-dark-text);
+      --article-text: var(--theme-dark-article-text);
+      --article-heading: var(--theme-dark-heading-primary);
+      --article-heading-secondary: var(--theme-dark-heading-secondary);
+      --article-heading-tertiary: var(--theme-dark-heading-tertiary);
+      --article-muted-text: var(--theme-dark-text-muted);
+      --article-table-heading: var(--theme-dark-table-heading);
+      --inline-code-bg: #292c31;
+      --inline-code-border: #454950;
+      --inline-code-text: var(--theme-dark-inline-code-text);
     }
 
     p {
-      @apply my-4 md:my-5;
-      line-height: 1.88;
-      text-align: justify;
+      margin-block: 1em;
+      line-height: inherit;
+      text-align: start;
       text-wrap: pretty;
       hanging-punctuation: first allow-end;
     }
 
+    p + p {
+      margin-top: 0.8em;
+    }
+
     hr {
-      @apply my-8 md:my-10 border-0;
+      @apply border-0;
     }
 
     h1,
@@ -52,50 +72,50 @@ import ScrollArea from './ScrollArea.astro';
     h5,
     h6 {
       font-family: var(--font-article-heading);
-      color: rgb(15 23 42);
-      letter-spacing: 0;
+      color: var(--article-heading);
+      font-weight: 700;
+      letter-spacing: -0.012em;
       scroll-margin-top: 5rem;
+      text-align: start;
       text-wrap: balance;
-
-      :global(.dark) & {
-        color: rgb(209 213 219);
-      }
     }
 
     h1 {
-      @apply text-xl md:text-[1.75rem] font-bold mb-3 md:mb-4 mt-9 md:mt-11;
-      line-height: 1.3;
+      font-size: 1.4em;
+      line-height: 1.28;
+      margin-block: 1.8em 0.55em;
     }
     h2 {
-      @apply text-xl md:text-[1.625rem] font-bold mb-3 md:mb-4 mt-8 md:mt-10;
-      line-height: 1.3;
+      font-size: 1.25em;
+      line-height: 1.35;
+      margin-block: 1.75em 0.55em;
     }
     h3 {
-      @apply text-lg md:text-[1.375rem] font-bold mb-2 md:mb-3 mt-6 md:mt-8;
-      line-height: 1.35;
+      color: var(--article-heading-secondary);
+      font-size: 1.125em;
+      line-height: 1.4;
+      margin-block: 1.65em 0.5em;
     }
     h4 {
-      @apply text-base md:text-lg font-semibold mb-2 mt-5 md:mt-6;
-      line-height: 1.45;
+      color: var(--article-heading-tertiary);
+      font-size: 1.05em;
+      line-height: 1.5;
+      margin-block: 1.55em 0.5em;
     }
     h5 {
-      @apply text-sm md:text-base font-semibold mb-2 mt-4 md:mt-5;
-      color: rgb(55 65 81);
+      color: var(--article-muted-text);
+      font-size: 0.95em;
       line-height: 1.5;
+      margin-block: 1.5em 0.5em;
 
-      :global(.dark) & {
-        color: rgb(209 213 219);
-      }
     }
     h6 {
-      @apply text-xs md:text-sm font-semibold mb-2 mt-4;
-      color: rgb(75 85 99);
-      letter-spacing: 0.02em;
+      color: var(--article-muted-text);
+      font-size: 0.875em;
+      letter-spacing: 0.015em;
       line-height: 1.5;
+      margin-block: 1.5em 0.5em;
 
-      :global(.dark) & {
-        color: rgb(156 163 175);
-      }
     }
 
     h1 > a[href^='#'],
@@ -104,7 +124,7 @@ import ScrollArea from './ScrollArea.astro';
     h4 > a[href^='#'],
     h5 > a[href^='#'],
     h6 > a[href^='#'] {
-      @apply ml-2 inline-flex h-4 w-4 items-center justify-center text-gray-400 no-underline opacity-0 transition-opacity duration-200 hover:text-primary-600 focus-visible:text-primary-600 focus-visible:opacity-100 focus-visible:outline-none dark:text-gray-600 dark:hover:text-primary-400 dark:focus-visible:text-primary-400;
+      @apply ml-2 inline-flex h-4 w-4 items-center justify-center text-neutral-400 no-underline opacity-0 transition-opacity duration-200 hover:text-primary-600 focus-visible:text-primary-600 focus-visible:opacity-100 focus-visible:outline-none dark:text-neutral-600 dark:hover:text-primary-400 dark:focus-visible:text-primary-400;
       line-height: 1;
       vertical-align: 0.01em;
     }
@@ -154,23 +174,29 @@ import ScrollArea from './ScrollArea.astro';
 
     ul,
     ol {
-      @apply my-4 md:my-5;
+      margin-block: 1.1em;
     }
 
     li {
-      @apply my-1.5;
-      line-height: 1.8;
+      margin-block: 0.32em;
+      line-height: 1.72;
+    }
+
+    li::marker {
+      color: var(--article-muted-text);
     }
 
     blockquote {
-      @apply my-5 md:my-6 py-1;
+      color: var(--article-text);
+      margin-block: 1.5em;
+      padding-block: 0.25em;
       font-style: normal;
-      line-height: 1.86;
+      line-height: 1.72;
     }
 
     .color-block {
       --callout-color: 59 130 246;
-      @apply my-5 md:my-6 rounded-lg border px-4 py-3 text-sm md:text-[15px] text-gray-800 shadow-sm dark:text-gray-200;
+      @apply rounded-lg border text-neutral-800 shadow-sm dark:text-neutral-200;
       background:
         linear-gradient(
           90deg,
@@ -180,7 +206,10 @@ import ScrollArea from './ScrollArea.astro';
         rgb(255 255 255 / 0.72);
       border-color: rgb(var(--callout-color) / 0.32);
       box-shadow: inset 4px 0 0 rgb(var(--callout-color) / 0.82);
+      font-size: 0.9375em;
       line-height: 1.8;
+      margin-block: 1.5em;
+      padding: 0.75em 1em;
     }
 
     .color-block > :first-child {
@@ -309,20 +338,22 @@ import ScrollArea from './ScrollArea.astro';
     }
 
     code {
-      @apply block text-[15px];
+      @apply block;
+      font-size: 0.875em;
       font-family: var(--font-code);
       letter-spacing: 0;
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
     :global(.article-prose .mermaid) {
-      @apply max-h-[70vh] overflow-auto bg-white p-4 text-center dark:bg-neutral-900;
+      @apply max-h-[70vh] overflow-auto bg-white text-center dark:bg-neutral-900;
       --mermaid-background: #ffffff;
       cursor: zoom-in;
+      padding: 1em;
     }
 
     :global(.dark .article-prose .mermaid) {
-      --mermaid-background: rgb(23 23 23);
+      --mermaid-background: var(--theme-dark-page-bg);
     }
 
     :global(.article-prose .mermaid svg) {
@@ -360,8 +391,8 @@ import ScrollArea from './ScrollArea.astro';
     :global(.dark .article-prose .mermaid svg .actor > tspan),
     :global(.dark .article-prose .mermaid svg .messageText),
     :global(.dark .article-prose .mermaid svg .loopText) {
-      fill: #e5e5e5 !important;
-      color: #e5e5e5 !important;
+      fill: var(--theme-dark-diagram-text) !important;
+      color: var(--theme-dark-diagram-text) !important;
     }
 
     :global(.dark .article-prose .mermaid svg .actor-line),
@@ -374,7 +405,8 @@ import ScrollArea from './ScrollArea.astro';
     }
 
     .mermaid-panel {
-      @apply my-5 md:my-6 overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900;
+      @apply overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900;
+      margin-block: 1.5em;
     }
 
     .mermaid-toolbar {
@@ -386,15 +418,15 @@ import ScrollArea from './ScrollArea.astro';
     }
 
     .mermaid-toggle {
-      @apply rounded-md px-2.5 py-1 text-xs font-medium text-neutral-500 transition-colors hover:bg-white hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-200;
+      @apply rounded-md px-2.5 py-1 text-xs font-medium text-neutral-500 transition-colors hover:bg-primary-50 hover:text-primary-700 dark:text-neutral-400 dark:hover:bg-primary-950/40 dark:hover:text-primary-300;
     }
 
     .mermaid-toggle.is-active {
-      @apply bg-white text-neutral-900 shadow-sm dark:bg-neutral-800 dark:text-neutral-200;
+      @apply bg-primary-50 text-primary-700 shadow-sm dark:bg-primary-950/40 dark:text-primary-300;
     }
 
     .mermaid-copy {
-      @apply inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-neutral-200 bg-white text-neutral-600 shadow-sm transition-colors hover:border-neutral-300 hover:bg-neutral-100 hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 dark:focus-visible:ring-offset-neutral-950;
+      @apply inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border-0 bg-transparent text-neutral-500 transition-colors hover:bg-primary-50 hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:bg-transparent dark:text-neutral-400 dark:hover:bg-primary-950/40 dark:hover:text-primary-300 dark:focus-visible:ring-offset-neutral-950;
     }
 
     .mermaid-copy svg {
@@ -411,9 +443,9 @@ import ScrollArea from './ScrollArea.astro';
 
     :global(.article-prose .mermaid-code-block__scroll) {
       @apply relative m-0 min-w-0 max-w-full overflow-hidden rounded-none border-0 p-0 shadow-none;
-      --code-block-bg: var(--shiki-light-bg, #ffffff);
+      --code-block-bg: var(--theme-light-code-bg);
       --code-block-border: transparent;
-      --code-line-highlight-bg: rgb(243 244 246);
+      --code-line-highlight-bg: var(--theme-light-code-highlight-bg);
       --code-line-highlight-border: rgb(59 130 246);
       --code-word-bg: rgb(254 249 195);
       --code-gutter-bg: var(--code-block-bg);
@@ -530,21 +562,31 @@ import ScrollArea from './ScrollArea.astro';
 
     /* 行内代码样式 */
     :not(pre) > code {
-      @apply text-[15px] bg-neutral-200 dark:bg-neutral-800 px-1.5 py-0.5 rounded-md text-neutral-900 dark:text-neutral-100 font-mono inline mx-0.5;
+      @apply inline rounded-md font-mono text-[0.875em];
+      background-color: var(--inline-code-bg) !important;
+      border: 1px solid var(--inline-code-border);
+      box-decoration-break: clone;
+      color: var(--inline-code-text) !important;
       font-family: var(--font-code);
+      font-weight: 500;
+      letter-spacing: 0.005em;
       line-height: normal;
+      margin-inline: 0.1em;
+      padding: 0.12em 0.38em;
+
+      span {
+        background-color: transparent !important;
+        color: inherit !important;
+      }
+
       &::before,
       &::after {
         content: none;
       }
     }
 
-    :global(.dark) & :not(pre) > code {
-      color: var(--article-dark-text);
-    }
-
     .line-numbers-container {
-      @apply text-gray-400 dark:text-gray-600 select-none h-full text-nowrap overflow-hidden;
+      @apply text-neutral-400 dark:text-neutral-600 select-none h-full text-nowrap overflow-hidden;
     }
 
     .highlighted {
@@ -558,8 +600,9 @@ import ScrollArea from './ScrollArea.astro';
 
     /* 表格样式 - 支持水平滚动 */
     table {
-      @apply w-full border-collapse my-6;
+      @apply w-full border-collapse;
       display: block;
+      margin-block: 1.6em;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
@@ -569,12 +612,16 @@ import ScrollArea from './ScrollArea.astro';
     }
 
     th {
-      @apply border border-neutral-300 px-4 py-2 text-left font-semibold text-neutral-900 dark:border-neutral-700 dark:text-neutral-100;
+      @apply border border-neutral-300 text-left font-semibold dark:border-neutral-700;
+      color: var(--article-table-heading);
+      padding: 0.55em 0.8em;
       white-space: nowrap;
     }
 
     td {
-      @apply border border-neutral-300 px-4 py-2 text-neutral-700 dark:border-neutral-700 dark:text-neutral-300;
+      @apply border border-neutral-300 dark:border-neutral-700;
+      color: var(--article-text);
+      padding: 0.55em 0.8em;
     }
 
     tbody tr:nth-child(even) {
@@ -586,25 +633,50 @@ import ScrollArea from './ScrollArea.astro';
     }
   }
 
+  @media (min-width: 768px) {
+    :global(.article-prose) {
+      font-size: 0.9375rem;
+    }
+
+    :global(.article-prose h1) {
+      font-size: 1.45em;
+    }
+
+    :global(.article-prose h2) {
+      font-size: 1.3em;
+    }
+
+    :global(.article-prose h3) {
+      font-size: 1.15em;
+    }
+
+    :global(.article-prose h4) {
+      font-size: 1.05em;
+    }
+
+    :global(.article-prose h5) {
+      font-size: 0.95em;
+    }
+
+    :global(.article-prose h6) {
+      font-size: 0.875em;
+    }
+  }
+
   :global(.article-prose hr) {
     height: 0;
-    margin: 2rem 0;
+    margin: 2.4em 0;
     border: 0 !important;
     border-top: 0 !important;
     background: transparent;
   }
 
-  @media (min-width: 768px) {
-    :global(.article-prose hr) {
-      margin: 2.5rem 0;
-    }
-  }
-
   :global(.article-prose .code-block) {
-    @apply relative my-5 max-w-full min-w-0 overflow-hidden rounded-lg border border-neutral-200 bg-neutral-50 md:my-6 dark:border-neutral-800 dark:bg-neutral-950;
+    @apply relative max-w-full min-w-0 overflow-hidden rounded-lg border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950;
     --scroll-area-track-inset-right: 0.5rem;
     --scroll-area-track-inset-left: 0.5rem;
     --scroll-area-track-inset-bottom: 0.25rem;
+    margin-block: 1.5em;
   }
 
   :global(.article-prose .code-block__language) {
@@ -612,7 +684,7 @@ import ScrollArea from './ScrollArea.astro';
   }
 
   :global(.article-prose .code-block__copy) {
-    @apply absolute right-3 top-2 z-10 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-neutral-200 bg-white/90 text-neutral-600 shadow-sm backdrop-blur transition-colors hover:border-neutral-300 hover:bg-neutral-100 hover:text-neutral-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 dark:border-neutral-700 dark:bg-neutral-900/90 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 dark:focus-visible:ring-offset-neutral-950;
+    @apply absolute right-3 top-2 z-10 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border-0 bg-transparent text-neutral-500 transition-colors hover:bg-primary-50 hover:text-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 dark:bg-transparent dark:text-neutral-400 dark:hover:bg-primary-950/40 dark:hover:text-primary-300 dark:focus-visible:ring-offset-neutral-950;
   }
 
   :global(.article-prose .code-block__copy svg) {
@@ -621,9 +693,9 @@ import ScrollArea from './ScrollArea.astro';
 
   :global(.article-prose .code-block__scroll) {
     @apply relative max-w-full min-w-0 overflow-hidden rounded-lg border-0;
-    --code-block-bg: #f8fafc;
+    --code-block-bg: var(--theme-light-code-bg);
     --code-block-border: transparent;
-    --code-line-highlight-bg: rgb(241 245 249);
+    --code-line-highlight-bg: var(--theme-light-code-highlight-bg);
     --code-line-highlight-border: rgb(59 130 246);
     --code-word-bg: rgb(254 249 195);
     --code-gutter-bg: var(--code-block-bg);
@@ -667,7 +739,8 @@ import ScrollArea from './ScrollArea.astro';
   }
 
   :global(.article-prose .code-block__scroll .scroll-area__content) {
-    @apply rounded-lg bg-slate-50;
+    @apply rounded-lg;
+    background-color: var(--code-block-bg);
     min-height: 0;
     width: max-content;
     min-width: 100%;
@@ -733,8 +806,8 @@ import ScrollArea from './ScrollArea.astro';
 
   :global(.article-prose .code-block pre) {
     @apply my-0 overflow-visible rounded-none border-0 bg-transparent;
-    --code-block-bg: #f8fafc;
-    --code-line-highlight-bg: rgb(241 245 249);
+    --code-block-bg: var(--theme-light-code-bg);
+    --code-line-highlight-bg: var(--theme-light-code-highlight-bg);
     --code-word-bg: rgb(254 249 195);
     --code-gutter-bg: var(--code-block-bg);
     --code-gutter-border: rgb(226 232 240);
@@ -756,17 +829,23 @@ import ScrollArea from './ScrollArea.astro';
   :global(.article-prose .code-block pre > code) {
     @apply min-w-max pb-4 pt-10;
     background-color: var(--code-block-bg) !important;
+    font-size: 1em;
+    line-height: 1.65;
   }
 
   :global(.article-prose .code-block code[data-theme*=" "]),
   :global(.article-prose .code-block code[data-theme*=" "] span) {
-    color: var(--shiki-light) !important;
+    color: color-mix(in srgb, var(--shiki-light) 88%, #475569 12%) !important;
     background-color: var(--code-block-bg) !important;
   }
 
   :global(.dark .article-prose .code-block code[data-theme*=" "]),
   :global(.dark .article-prose .code-block code[data-theme*=" "] span) {
-    color: var(--shiki-dark) !important;
+    color: color-mix(
+      in srgb,
+      var(--shiki-dark) 52%,
+      var(--theme-dark-code-neutral) 48%
+    ) !important;
     background-color: var(--code-block-bg) !important;
   }
 
@@ -782,10 +861,22 @@ import ScrollArea from './ScrollArea.astro';
 <script>
   import { initializeArticleContent } from '../utils/article';
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const articleContent = document.querySelector('.prose');
-    if (!articleContent) return;
+  const initialize = () => {
+    const articleContent = document.getElementById('article-content');
+    if (!articleContent || articleContent.dataset.enhanced === 'true') return;
 
-    initializeArticleContent(articleContent);
-  });
+    articleContent.dataset.enhanced = 'true';
+    initializeArticleContent(articleContent).catch(error => {
+      articleContent.dataset.enhanced = 'false';
+      console.error('文章内容初始化失败:', error);
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize, { once: true });
+  } else {
+    initialize();
+  }
+
+  document.addEventListener('astro:page-load', initialize);
 </script>

@@ -6,7 +6,7 @@ import { site } from '../../config';
 import { sortPosts, paginatePosts, type BlogPost } from '../../utils/posts';
 
 export async function getStaticPaths() {
-  const postsPerPage = site.indexSettings.perPage;
+  const postsPerPage = site.posts.pageSize;
   const allPosts = await getCollection('blog', ({ data }) => !data.draft);
   const sortedPosts = sortPosts(allPosts);
   const totalPages = Math.ceil(sortedPosts.length / postsPerPage);
@@ -57,7 +57,7 @@ const { posts, currentPage, totalPages, prevPage, nextPage, pageLinks } =
           prevPage && (
             <a
               href={prevPage}
-              class="min-w-[36px] md:min-w-[40px] h-9 md:h-10 flex items-center justify-center rounded-lg border border-neutral-300 bg-neutral-50 text-sm font-medium text-neutral-700 transition-all duration-300 hover:border-neutral-400 hover:bg-neutral-100 hover:text-neutral-900 md:text-base dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+              class="min-w-[36px] md:min-w-[40px] h-9 md:h-10 flex items-center justify-center rounded-lg border border-neutral-300 bg-neutral-50 text-sm font-medium text-neutral-700 transition-all duration-300 hover:border-primary-400 hover:bg-primary-50 hover:text-primary-700 md:text-base dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-primary-500 dark:hover:bg-primary-950/30 dark:hover:text-primary-300"
               aria-label="上一页"
             >
               ←
@@ -71,8 +71,8 @@ const { posts, currentPage, totalPages, prevPage, nextPage, pageLinks } =
               href={link.url}
               class={`min-w-[36px] md:min-w-[40px] h-9 md:h-10 flex items-center justify-center rounded-lg text-sm md:text-base font-medium transition-all duration-300 ${
                 link.isCurrent
-                  ? 'border border-neutral-900 bg-neutral-900 text-neutral-50 dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900'
-                  : 'border border-neutral-300 bg-neutral-50 text-neutral-700 hover:border-neutral-400 hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-800 dark:hover:text-neutral-100'
+                  ? 'border border-primary-600 bg-primary-600 text-white dark:border-primary-400 dark:bg-primary-500 dark:text-white'
+                  : 'border border-neutral-300 bg-neutral-50 text-neutral-700 hover:border-primary-400 hover:bg-primary-50 hover:text-primary-700 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-primary-500 dark:hover:bg-primary-950/30 dark:hover:text-primary-300'
               }`}
               aria-current={link.isCurrent ? 'page' : undefined}
             >
@@ -85,7 +85,7 @@ const { posts, currentPage, totalPages, prevPage, nextPage, pageLinks } =
           nextPage && (
             <a
               href={nextPage}
-              class="min-w-[36px] md:min-w-[40px] h-9 md:h-10 flex items-center justify-center rounded-lg border border-neutral-300 bg-neutral-50 text-sm font-medium text-neutral-700 transition-all duration-300 hover:border-neutral-400 hover:bg-neutral-100 hover:text-neutral-900 md:text-base dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+              class="min-w-[36px] md:min-w-[40px] h-9 md:h-10 flex items-center justify-center rounded-lg border border-neutral-300 bg-neutral-50 text-sm font-medium text-neutral-700 transition-all duration-300 hover:border-primary-400 hover:bg-primary-50 hover:text-primary-700 md:text-base dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-primary-500 dark:hover:bg-primary-950/30 dark:hover:text-primary-300"
               aria-label="下一页"
             >
               →

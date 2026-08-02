@@ -1,6 +1,5 @@
 ---
 import Icon from './Icon.astro';
-import { getPostUrl } from '../utils/route';
 ---
 
 <div
@@ -8,24 +7,24 @@ import { getPostUrl } from '../utils/route';
   class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden"
 >
   <div
-    class="bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full max-w-2xl overflow-hidden transform transition-all"
+    class="bg-white dark:bg-neutral-900 rounded-lg shadow-xl w-full max-w-2xl overflow-hidden transform transition-all"
   >
     <!-- 搜索头部 -->
     <div
-      class="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center"
+      class="p-4 border-b border-neutral-200 dark:border-neutral-700 flex items-center"
     >
-      <Icon name="search" class="text-gray-500 dark:text-gray-400 mr-2" />
+      <Icon name="search" class="text-neutral-500 dark:text-neutral-400 mr-2" />
       <input
         type="text"
         id="global-search-input"
         placeholder="搜索文章..."
-        class="flex-1 bg-transparent border-0 focus:ring-0 focus:outline-none text-gray-800 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400"
+        class="flex-1 bg-transparent border-0 focus:ring-0 focus:outline-none text-neutral-800 dark:text-neutral-200 placeholder-neutral-500 dark:placeholder-neutral-400"
         autocomplete="off"
       />
       <button
         type="button"
         id="global-search-close"
-        class="ml-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+        class="ml-2 text-neutral-500 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-400"
       >
         <span class="sr-only">关闭</span>
         <svg
@@ -49,7 +48,7 @@ import { getPostUrl } from '../utils/route';
     <div class="max-h-[60vh] overflow-y-auto">
       <div
         id="global-search-loading"
-        class="py-6 px-4 text-center text-gray-500 dark:text-gray-400 hidden"
+        class="py-6 px-4 text-center text-neutral-500 dark:text-neutral-400 hidden"
       >
         <div class="inline-block animate-spin mr-2">
           <svg
@@ -73,7 +72,7 @@ import { getPostUrl } from '../utils/route';
 
       <div
         id="global-search-empty"
-        class="py-6 px-4 text-center text-gray-500 dark:text-gray-400 hidden"
+        class="py-6 px-4 text-center text-neutral-500 dark:text-neutral-400 hidden"
       >
         没有找到匹配的结果
       </div>
@@ -81,25 +80,25 @@ import { getPostUrl } from '../utils/route';
 
     <!-- 搜索提示 -->
     <div
-      class="p-3 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400 flex flex-col sm:flex-row justify-between gap-2"
+      class="p-3 border-t border-neutral-200 dark:border-neutral-700 text-xs text-neutral-500 dark:text-neutral-400 flex flex-col sm:flex-row justify-between gap-2"
     >
       <div class="hidden sm:block">
         <span
-          class="inline-flex items-center px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mr-2"
+          class="inline-flex items-center px-2 py-0.5 rounded bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 mr-2"
         >
           <kbd class="font-sans">↑</kbd><kbd class="font-sans">↓</kbd>
         </span>
         <span>导航</span>
 
         <span
-          class="inline-flex items-center px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mx-2"
+          class="inline-flex items-center px-2 py-0.5 rounded bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 mx-2"
         >
           <kbd class="font-sans">Enter</kbd>
         </span>
         <span>选择</span>
 
         <span
-          class="inline-flex items-center px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 mx-2"
+          class="inline-flex items-center px-2 py-0.5 rounded bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 mx-2"
         >
           <kbd class="font-sans">Esc</kbd>
         </span>
@@ -124,7 +123,6 @@ import { getPostUrl } from '../utils/route';
     category?: string;
     tags?: string[];
     body?: string;
-    permalink?: string;
   }
 
   // 定义搜索结果的接口
@@ -220,13 +218,8 @@ import { getPostUrl } from '../utils/route';
       const matchQuality = 1 - score; // 将分数转换为匹配质量 (0-1)
 
       const resultElement = document.createElement('a');
-      resultElement.href = getPostUrl({
-        id: item.slug,
-        data: {
-          permalink: item.permalink,
-        },
-      });
-      resultElement.className = `block px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800 ${index === selectedIndex ? 'bg-gray-100 dark:bg-gray-800' : ''}`;
+      resultElement.href = getPostUrl({ id: item.slug });
+      resultElement.className = `block px-4 py-3 hover:bg-primary-50 dark:hover:bg-primary-950/40 ${index === selectedIndex ? 'bg-primary-50 dark:bg-primary-950/40' : ''}`;
       resultElement.dataset.index = index.toString();
 
       // 高亮标记
@@ -249,10 +242,10 @@ import { getPostUrl } from '../utils/route';
       }
 
       resultElement.innerHTML = `
-        <div class="font-medium text-gray-900 dark:text-gray-200">${title}</div>
-        <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">${item.description}</div>
+        <div class="font-medium text-neutral-900 dark:text-neutral-200">${title}</div>
+        <div class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">${item.description}</div>
         <div class="mt-2 flex items-center text-xs">
-          <div class="flex items-center text-gray-500 dark:text-gray-400 mr-3">
+          <div class="flex items-center text-neutral-500 dark:text-neutral-400 mr-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -264,7 +257,7 @@ import { getPostUrl } from '../utils/route';
           ${
             item.category
               ? `
-          <div class="flex items-center text-gray-500 dark:text-gray-400">
+          <div class="flex items-center text-neutral-500 dark:text-neutral-400">
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1">
               <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
               <polyline points="2 17 12 22 22 17"></polyline>
@@ -276,7 +269,7 @@ import { getPostUrl } from '../utils/route';
               : ''
           }
         </div>
-        <div class="mt-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1">
+        <div class="mt-1 w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-1">
           <div class="bg-primary h-1 rounded-full" style="width: ${Math.round(matchQuality * 100)}%"></div>
         </div>
       `;
@@ -330,8 +323,8 @@ import { getPostUrl } from '../utils/route';
     // 移除当前选中项的高亮
     if (selectedIndex >= 0 && selectedIndex < resultItems.length) {
       resultItems[selectedIndex].classList.remove(
-        'bg-gray-100',
-        'dark:bg-gray-800'
+        'bg-primary-50',
+        'dark:bg-primary-950/40'
       );
     }
 
@@ -347,8 +340,8 @@ import { getPostUrl } from '../utils/route';
     // 添加新选中项的高亮
     if (selectedIndex >= 0 && selectedIndex < resultItems.length) {
       resultItems[selectedIndex].classList.add(
-        'bg-gray-100',
-        'dark:bg-gray-800'
+        'bg-primary-50',
+        'dark:bg-primary-950/40'
       );
 
       // 滚动到视图中

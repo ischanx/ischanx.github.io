@@ -1,0 +1,4 @@
+interface:
+  display_name: "修复博客分类与标签"
+  short_description: "检查并修复新博客文章的分类目录、标签选择与元数据规范"
+  default_prompt: "使用 $fix-blog-metadata 检查并修复新博客文章的分类和标签问题。"

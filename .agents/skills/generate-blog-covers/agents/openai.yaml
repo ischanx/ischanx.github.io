@@ -1,0 +1,4 @@
+interface:
+  display_name: "生成博客封面"
+  short_description: "按极简工程出版风生成、筛选、裁切并压缩博客封面图片资产"
+  default_prompt: "Use $generate-blog-covers to generate and normalize local cover image assets for blog posts in this project."

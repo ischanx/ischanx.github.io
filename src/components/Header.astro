@@ -2,24 +2,49 @@
 import { site } from '../config';
 import Icon from './Icon.astro';
 
-const { nav, socialLinks } = site;
+const { navigation, socialLinks } = site;
+const isHomePage =
+  Astro.url.pathname === '/' || Astro.url.pathname === '/index.html';
+const isAboutPage =
+  Astro.url.pathname === '/about' || Astro.url.pathname === '/about.html';
+const hideBrand = isHomePage || isAboutPage;
+const headerNavItems = navigation;
+const normalizePath = (path: string) => {
+  const withoutExtension = path.replace(/\.html$/, '');
+  const withoutTrailingSlash = withoutExtension.replace(/\/$/, '');
+  return withoutTrailingSlash || '/';
+};
+const currentPath = normalizePath(Astro.url.pathname);
+const isActiveNavItem = (link: string) =>
+  normalizePath(link) === currentPath;
 ---
 
 <header
-  class="sticky top-0 z-50 h-16 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm transition-all duration-300"
+  class:list={[
+    'site-header sticky top-0 z-50 h-14 border-b border-transparent bg-white/72 backdrop-blur-sm transition-all duration-300 dark:bg-[var(--theme-dark-page-bg)]/72',
+    isHomePage && 'home-header',
+    isAboutPage && 'about-header',
+  ]}
 >
-  <nav class="container mx-auto px-4 sm:px-4 h-full">
-    <div class="flex items-center justify-between h-full">
-      <div class="flex items-center overflow-hidden relative">
+  <nav
+    class="mx-auto h-full max-w-6xl px-4"
+  >
+    <div
+      class:list={[
+        'header-inner relative flex items-center h-full',
+        hideBrand ? 'justify-end' : 'justify-between',
+      ]}
+    >
+      <div class="header-brand flex items-center overflow-hidden relative">
         <a
           href="/"
-          class="flex items-center gap-2 sm:gap-3 text-lg font-bold text-foreground dark:text-foreground transition-colors duration-300 blog-title"
+          class="flex items-center gap-2 sm:gap-3 text-lg font-bold text-neutral-900 dark:text-white transition-colors duration-300 blog-title"
           aria-label={`${site.title} 首页`}
         >
           <img
             src={site.avatar}
             alt={`${site.author} 的头像`}
-            class="h-8 w-8 sm:h-9 sm:w-9 shrink-0 rounded-full object-cover ring-1 ring-gray-300/80 dark:ring-neutral-700/90"
+            class="h-8 w-8 sm:h-9 sm:w-9 shrink-0 rounded-full object-cover ring-1 ring-neutral-300/80 dark:ring-neutral-700/90"
             loading="eager"
             decoding="async"
           />
@@ -27,18 +52,27 @@ const { nav, socialLinks } = site;
         </a>
       </div>
 
-      <div class="flex items-center space-x-3">
+      <div
+        class="flex items-center gap-1"
+      >
         <!-- 桌面端菜单 -->
         <div class="hidden md:flex items-center">
           {
-            nav.map((item, index) => (
+            headerNavItems.map((item, index) => (
               <a
                 href={item.link}
-                class="text-sm text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary transition-all duration-300 px-3 py-2 rounded-md flex items-center gap-1.5 relative after:absolute after:bottom-1 after:left-3 after:right-3 after:h-0.5 after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
+                class:list={[
+                  'text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary transition-all duration-300 flex items-center relative after:absolute after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left',
+                  'px-2.5 py-2 text-[13px] font-medium tracking-[0.02em] after:bottom-0 after:left-2.5 after:right-2.5 after:h-px',
+                  isActiveNavItem(item.link) &&
+                    'text-primary dark:text-primary after:scale-x-100',
+                ]}
                 style={`animation-delay: ${index * 100}ms`}
                 target={item.target}
+                aria-current={
+                  isActiveNavItem(item.link) ? 'page' : undefined
+                }
               >
-                {item.icon && <Icon name={item.icon} class="text-sm" />}
                 <span>{item.text}</span>
               </a>
             ))
@@ -47,16 +81,14 @@ const { nav, socialLinks } = site;
           <!-- 搜索按钮 -->
           <button
             id="search-button"
-            class="text-sm text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary transition-all duration-300 px-3 py-2 rounded-md flex items-center gap-1.5"
+            class:list={[
+              'text-sm text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary transition-all duration-300 py-2 flex items-center gap-1.5',
+              'ml-1 border-l border-neutral-900/10 pl-4 pr-2 dark:border-white/10',
+            ]}
             aria-label="搜索"
           >
             <Icon name="search" class="text-sm" />
             <span>搜索</span>
-            <span
-              class="hidden xl:inline-flex items-center ml-1 text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-800 rounded px-1.5 py-0.5"
-            >
-              <kbd class="font-sans">⌘K</kbd>
-            </span>
           </button>
         </div>
 
@@ -97,7 +129,10 @@ const { nav, socialLinks } = site;
         <div class="flex items-center">
           <button
             id="theme-toggle"
-            class="text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary transition-all duration-300 transform hover:rotate-12 ms-1"
+            class:list={[
+              'text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary transition-all duration-300 ms-1',
+              'p-2',
+            ]}
             aria-label="切换主题"
           >
             <span class="sr-only">切换主题</span>
@@ -112,15 +147,25 @@ const { nav, socialLinks } = site;
   <!-- 移动端下拉菜单 -->
   <div
     id="mobile-menu"
-    class="md:hidden absolute left-0 top-16 z-50 w-full invisible -translate-y-full opacity-0 border-b border-white/55 bg-gray-100/96 shadow-lg shadow-black/5 backdrop-blur-lg backdrop-saturate-125 transition-all duration-300 dark:border-white/14 dark:bg-neutral-900/96 dark:shadow-black/20"
+    class:list={[
+      'md:hidden absolute left-0 z-50 w-full invisible -translate-y-full opacity-0 border-b border-white/55 bg-neutral-100/96 shadow-lg shadow-black/5 backdrop-blur-lg backdrop-saturate-125 transition-all duration-300 dark:border-white/14 dark:bg-[var(--theme-dark-page-bg)]/96 dark:shadow-black/20',
+      'top-14',
+    ]}
   >
     <div class="container mx-auto px-4 sm:px-4 py-2">
       {
-        nav.map(item => (
+        headerNavItems.map(item => (
           <a
             href={item.link}
-            class="block text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary py-2 px-4 my-1 rounded flex items-center justify-center gap-2 relative after:absolute after:bottom-1 after:left-1/4 after:right-1/4 after:h-0.5 after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left text-center"
+            class:list={[
+              'block text-muted-foreground hover:text-primary dark:text-muted-foreground dark:hover:text-primary py-2 px-4 my-1 rounded flex items-center justify-center gap-2 relative after:absolute after:bottom-1 after:left-1/4 after:right-1/4 after:h-0.5 after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left text-center',
+              isActiveNavItem(item.link) &&
+                'text-primary dark:text-primary bg-neutral-200/60 dark:bg-neutral-800/60 after:scale-x-100',
+            ]}
             target={item.target}
+            aria-current={
+              isActiveNavItem(item.link) ? 'page' : undefined
+            }
           >
             {item.icon && <Icon name={item.icon} />}
             <span>{item.text}</span>
@@ -236,38 +281,93 @@ const { nav, socialLinks } = site;
   });
 
   const header = document.querySelector('header');
+  const homeHeroIdentity = document.querySelector('.blog-hero__identity');
+
+  function updateHeaderState() {
+    if (!header) return;
+
+    const currentScrollY = window.scrollY;
+    const isHomeHeader = header.classList.contains('home-header');
+    const identityBounds = homeHeroIdentity?.getBoundingClientRect();
+    const headerHeight = header.getBoundingClientRect().height;
+    const showHomeBrand = isHomeHeader && identityBounds
+      ? identityBounds.bottom <= headerHeight
+      : false;
+
+    header.classList.toggle('has-home-brand', showHomeBrand);
+    header.classList.toggle('is-scrolled', currentScrollY > 32);
+  }
 
   // 滚动效果 - 导航栏阴影变化
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (!header) return;
-
-      const currentScrollY = window.scrollY;
-
-      if (currentScrollY > 60) {
-        header.classList.add('shadow-md');
-      } else {
-        header.classList.remove('shadow-md');
-      }
-    },
-    { passive: true }
-  );
+  window.addEventListener('scroll', updateHeaderState, { passive: true });
+  window.addEventListener('resize', updateHeaderState, { passive: true });
+  updateHeaderState();
 </script>
 
 <style>
   header {
-    height: 64px;
-    min-height: 64px;
-    max-height: 64px;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 20% 98%;
+    --primary-color: hsl(221.2 83.2% 53.3%);
+    height: 56px;
+    min-height: 56px;
+    max-height: 56px;
     transition:
       background-color 0.3s,
       box-shadow 0.3s;
   }
 
+  :global(.dark) header {
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 210 20% 98%;
+    --primary-color: hsl(217.2 91.2% 59.8%);
+  }
+
+  header.site-header {
+    backdrop-filter: blur(18px) saturate(1.08);
+  }
+
+  header.home-header .header-brand {
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    visibility: hidden;
+    transition:
+      opacity 260ms ease,
+      visibility 0s linear 420ms;
+  }
+
+  header.home-header.has-home-brand .header-brand {
+    opacity: 0.96;
+    pointer-events: auto;
+    transition:
+      opacity 320ms ease,
+      visibility 0s;
+    visibility: visible;
+  }
+
+  header.about-header .header-brand {
+    display: none;
+  }
+
+  header.site-header.is-scrolled {
+    background-color: rgb(255 255 255 / 0.9);
+    border-bottom-color: rgb(23 23 23 / 0.1);
+    box-shadow: 0 1px 0 rgb(23 23 23 / 0.08);
+  }
+
+  :global(.dark) header.site-header.is-scrolled {
+    background-color: rgb(25 25 25 / 0.9);
+    border-bottom-color: rgb(255 255 255 / 0.1);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.08);
+  }
+
   /* 移动端菜单样式 */
   #mobile-menu {
-    max-height: calc(100vh - 64px);
+    max-height: calc(100vh - 56px);
     overflow-y: auto;
   }
 

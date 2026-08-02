@@ -1,6 +1,12 @@
 import type { CollectionEntry } from 'astro:content';
 import Fuse from 'fuse.js';
 import type { IFuseOptions, FuseResult } from 'fuse.js';
+import {
+  getCategoryLabel,
+  getCategorySlugFromPost,
+  getTagLabel,
+  normalizeTags,
+} from './navigation';
 
 // 为每篇文章创建搜索索引项
 export interface SearchIndexItem {
@@ -12,7 +18,6 @@ export interface SearchIndexItem {
   category: string;
   createDate: Date;
   image?: string;
-  permalink?: string;
 }
 
 // 从博客集合创建搜索索引数据
@@ -22,11 +27,10 @@ export function createSearchIndex(posts: CollectionEntry<'blog'>[]): SearchIndex
     title: post.data.title,
     description: post.data.description || '',
     body: post.body ?? '',
-    tags: post.data.tags || [],
-    category: post.data.category || '',
+    tags: normalizeTags(post.data.tags).map(getTagLabel),
+    category: getCategoryLabel(getCategorySlugFromPost(post)),
     createDate: post.data.createDate,
     image: post.data.image,
-    permalink: post.data.permalink
   }));
 }
 

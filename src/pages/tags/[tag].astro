@@ -1,0 +1,91 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PostList from '../../components/PostList.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import {
+  createTagUrl,
+  getTagLabel,
+  getTagSlug,
+} from '../../utils/navigation';
+import { site } from '../../config';
+
+type BlogPost = CollectionEntry<'blog'>;
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const tagSlugs = [
+    ...new Set(
+      posts
+        .flatMap(post => post.data.tags || [])
+        .filter((tag): tag is string => tag.trim().length > 0)
+        .map(getTagSlug)
+        .filter((slug): slug is string => Boolean(slug))
+    ),
+  ];
+
+  return tagSlugs.map(slug => ({
+    params: { tag: slug },
+    props: {
+      tagSlug: slug,
+      tag: getTagLabel(slug),
+      posts: posts
+        .filter(post =>
+          post.data.tags?.some(rawTag => getTagSlug(rawTag) === slug)
+        )
+        .sort(
+          (a, b) =>
+            b.data.createDate.getTime() - a.data.createDate.getTime()
+        ),
+    },
+  }));
+}
+
+const { tag, tagSlug, posts } = Astro.props as {
+  tag: string;
+  tagSlug: string;
+  posts: BlogPost[];
+};
+const tagUrl = createTagUrl(tagSlug);
+---
+
+<Layout
+  title={`#${tag} - 文章标签`}
+  description={`浏览 ${site.title} 中「${tag}」标签下的全部文章。`}
+  canonical={`${site.url}${tagUrl}`}
+>
+  <div class="mx-auto max-w-4xl px-4 py-8 md:py-12">
+    <nav
+      aria-label="面包屑"
+      class="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400"
+    >
+      <a
+        href="/"
+        class="transition-colors hover:text-primary-600 dark:hover:text-primary-400"
+      >首页</a>
+      <span aria-hidden="true" class="text-neutral-300 dark:text-neutral-700">/</span>
+      <a
+        href="/tags"
+        class="transition-colors hover:text-primary-600 dark:hover:text-primary-400"
+      >标签</a>
+      <span aria-hidden="true" class="text-neutral-300 dark:text-neutral-700">/</span>
+      <span class="font-medium text-neutral-700 dark:text-neutral-200" aria-current="page">
+        #{tag}
+      </span>
+    </nav>
+
+    <header class="mb-8 mt-8 md:mb-10">
+      <p class="mb-2 text-sm font-medium text-primary-600 dark:text-primary-400">
+        Article tag
+      </p>
+      <h1 class="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
+        #{tag}
+      </h1>
+      <p class="mt-3 text-sm text-neutral-600 dark:text-neutral-400">
+        共 {posts.length} 篇文章
+      </p>
+    </header>
+
+    <PostList posts={posts} />
+  </div>
+</Layout>

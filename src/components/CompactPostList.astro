@@ -1,7 +1,12 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { getPostUrl } from '../utils/route';
-import { createTagUrl } from '../utils/navigation';
+import {
+  createTagUrl,
+  getTagLabel,
+  getTagSlug,
+  normalizeTags,
+} from '../utils/navigation';
 
 interface Props {
   posts: CollectionEntry<'blog'>[];
@@ -13,13 +18,13 @@ const { posts } = Astro.props;
 <div class="overflow-hidden">
   <table class="w-full">
     <thead>
-      <tr class="border-b border-gray-200 dark:border-gray-700">
+      <tr class="border-b border-neutral-200 dark:border-neutral-700">
         <th
-          class="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300"
+          class="text-left py-3 px-4 font-semibold text-neutral-700 dark:text-neutral-300"
           >标题</th
         >
         <th
-          class="text-right py-3 px-4 font-semibold text-gray-700 dark:text-gray-300"
+          class="text-right py-3 px-4 font-semibold text-neutral-700 dark:text-neutral-300"
           >标签</th
         >
       </tr>
@@ -28,30 +33,38 @@ const { posts } = Astro.props;
       {
         posts.map(post => (
           <tr
-            class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            class="border-b border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
           >
             <td class="py-3 px-4">
               <a
                 href={getPostUrl(post)}
-                class="text-gray-900 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                class="text-neutral-900 dark:text-neutral-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium"
               >
                 {post.data.title}
               </a>
             </td>
             <td class="py-3 px-4 text-right">
               <div class="flex gap-2 justify-end flex-wrap">
-                {post.data.tags && post.data.tags.length > 0 ? (
-                  post.data.tags.map((tag: string) => (
-                    <a
-                      href={createTagUrl(tag)}
-                      class="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                      onclick="event.stopPropagation()"
-                    >
-                      #{tag}
-                    </a>
-                  ))
+                {normalizeTags(post.data.tags).length > 0 ? (
+                  normalizeTags(post.data.tags).map((tag: string) => {
+                    const slug = getTagSlug(tag);
+                    const label = getTagLabel(tag);
+                    const className = 'text-xs px-2 py-1 bg-neutral-100 dark:bg-neutral-700 rounded text-neutral-700 dark:text-neutral-300 hover:bg-primary-50 dark:hover:bg-primary-950/40 hover:text-primary-700 dark:hover:text-primary-300 transition-colors';
+
+                    return slug ? (
+                      <a
+                        href={createTagUrl(tag)}
+                        class={className}
+                        onclick="event.stopPropagation()"
+                      >
+                        #{label}
+                      </a>
+                    ) : (
+                      <span class={className}>#{label}</span>
+                    );
+                  })
                 ) : (
-                  <span class="text-sm text-gray-400 dark:text-gray-500">-</span>
+                  <span class="text-sm text-neutral-400 dark:text-neutral-500">-</span>
                 )}
               </div>
             </td>

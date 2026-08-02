@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from "astro/config";
+import { unified } from "@astrojs/markdown-remark";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import rss from "@astrojs/rss";
@@ -52,8 +53,6 @@ export default defineConfig({
     mdx(),
     react(),
     sitemap({
-      filter: (page) =>
-        !page.includes("/tags/") && !page.includes("/categories/"),
       changefreq: "weekly",
       lastmod: new Date(),
       serialize(item) {
@@ -82,22 +81,24 @@ export default defineConfig({
   ],
   markdown: {
     syntaxHighlight: false, // 禁用默认的语法高亮，使用 rehype-pretty-code 替代
-    remarkPlugins: [remarkGfm, remarkDirective, remarkColorBlocks],
-    rehypePlugins: [
-      rehypeSlug,
-      [rehypeAutolinkHeadings, { behavior: "append" }],
-      [
-        rehypePrettyCode,
-        {
-          theme: {
-            dark: "github-dark",
-            light: "github-light",
+    processor: unified({
+      remarkPlugins: [remarkGfm, remarkDirective, remarkColorBlocks],
+      rehypePlugins: [
+        rehypeSlug,
+        [rehypeAutolinkHeadings, { behavior: "append" }],
+        [
+          rehypePrettyCode,
+          {
+            theme: {
+              dark: "github-dark",
+              light: "github-light",
+            },
+            keepBackground: true,
+            grid: true,
           },
-          keepBackground: true,
-          grid: true,
-        },
+        ],
       ],
-    ],
+    }),
   },
   prefetch: {
     defaultStrategy: "hover",

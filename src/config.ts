@@ -1,22 +1,81 @@
+export const categoryMap: Record<string, string> = {
+  development: '软件开发',
+  ai: 'AI',
+  learning: '学习',
+  personal: '个人记录',
+};
+
+export const categoryDescriptions: Record<string, string> = {
+  development: '记录项目实现、系统设计、部署与工程实践。',
+  ai: '探索人工智能、Agent 与相关工具的实践。',
+  learning: '整理基础知识、原理课程与持续学习记录。',
+  personal: '保存生活观察、阶段总结与个人经历。',
+};
+
+export const tagMap: Record<string, string> = {
+  frontend: '前端',
+  backend: '后端',
+  'full-stack': '全栈',
+  ai: 'AI',
+  'mini-program': '小程序',
+  computer: '计算机',
+  fundamentals: '基础知识',
+  business: '业务',
+  'system-design': '系统设计',
+  performance: '性能',
+  security: '安全',
+  reliability: '稳定性',
+  engineering: '工程化',
+  'developer-experience': '研发体验',
+};
+
 export const site = {
   title: "Chanx's Blog",
-  description: "前端开发 | 陈同学技术博客 | 代码破破烂烂我在缝缝补补",
-  typewriter: ['哈喽，好久不见', 'JavaScript', 'React.js', 'Vue.js', 'TypeScript', 'Node.js', 'AI', 'LLM', 'Prompt', 'Agent'],
+  description:
+    '记录技术实践与 AI 探索，分享开发中的问题、思考与解决方案。',
+  home: {
+    hero: {
+      greeting: '嗨，我是陈同学。',
+      headingPrefix: '在 AI 时代，',
+      headingHighlight: '保持好奇心。',
+      summary:
+        '这里记录我和 AI 一起探索、一起进步的过程',
+      conversations: [
+        {
+          question: '为什么写博客？',
+          answer: '因为我想留下的，不只是答案，还有一个问题被想清楚的过程。',
+        },
+        {
+          question: '这里会写些什么？',
+          answer: '前端、后端、AI，也写一些技术之外的经历和思考。',
+        },
+        {
+          question: '这个博客写给谁？',
+          answer: '先写给自己，也写给刚好在思考同一个问题的人。',
+        },
+        {
+          question: '怎么看待 AI？',
+          answer: 'AI 是能力的放大器，而不是人的替代，最终能走多远仍取决于自身的能力和判断。',
+        },
+        {
+          question: 'AI 时代的工程师需要什么？',
+          answer: '技术上要有自己的深度，认知上也要有足够的广度，理解上下游链路和整个系统。',
+        },
+      ],
+    },
+  },
   keywords: "chanx, ischanx, chanxblog, 前端开发, web, tech, blog, astro, 程序员, 技术博客, 个人博客",
   author: "Chanx",
   email: "ischanx@foxmail.com",
   avatar: "/img/avatar.png",
   url: "https://chanx.tech",
   language: "zh-CN",
-  timezone: "Asia/Shanghai",
-  // 首页设置
-  indexSettings: {
-    perPage: 10,
-    orderBy: 'createDate',
-    sticky: {
-      enable: true,
+  posts: {
+    pageSize: 10,
+    pinnedBadge: {
+      enabled: true,
       icon: "pin",
-      text: "置顶"
+      label: "置顶",
     }
   },
   socialLinks: [
@@ -24,10 +83,11 @@ export const site = {
     { icon: "twitter", link: "https://x.com/ischanx8", target: "_blank" },
     { icon: "mail", link: "mailto:ischanx@foxmail.com" }
   ],
-  nav: [
+  navigation: [
     { text: "首页", link: "/", icon: "home" },
     { text: "归档", link: "/archives", icon: "clock" },
     { text: "分类", link: "/categories", icon: "category" },
+    { text: "标签", link: "/tags", icon: "tags" },
     { text: "关于", link: "/about", icon: "user" },
     { text: "友链", link: "/links", icon: "link" },
     {
@@ -38,119 +98,66 @@ export const site = {
     }
   ],
   footer: {
-    content: '© 2019 - {currentYear} Chanx | Powered by Astro',
-    startTime: '2019-01-01',
-    showRunningTime: true,
+    copyright: '© 2019 - {currentYear} Chanx | Powered by Astro',
+    launchedAt: '2019-01-01',
+    showUptime: true,
+    text: {
+      statementTitle: '持续探索，不断记录',
+      statementDescription: '这里记录我和 AI 一起探索、一起进步的过程',
+      navigationLabel: '页脚导航',
+      browseLabel: '浏览',
+      connectLabel: '连接',
+      archives: '归档',
+      categories: '分类',
+      about: '关于',
+      github: 'GitHub',
+      rss: 'RSS',
+      email: '邮件',
+      runningTime: '已运行',
+      calculating: '计算中...',
+      backToTop: '返回顶部',
+    },
     beian: {
-      enable: true,
+      enabled: true,
       icp: "粤ICP备20036386号",
       police: "粤公网安备44060602001609号",
       policeCode: "44060602001609",
       policeIcon: "/img/police_beian.png"
     }
   },
-  sticky: {
-    enable: true,
-    icon: "pin",
-    text: "置顶"
-  },
-  theme: {
-    darkMode: {
-      enable: true,
-      default: "auto"
-    },
-    color: {
-      primary: "#2563eb",
-      secondary: "#60a5fa",
-      background: "#f8fafc",
-      text: "#0f172a",
-      dark: {
-        background: "#171717",
-        text: "#f8fafc"
-      }
+  comments: {
+    enabled: true,
+    provider: "giscus",
+    giscus: {
+      repo: "ischanx/ischanx.github.io",
+      repoId: "MDEwOlJlcG9zaXRvcnkyNTkxODA5Njc=",
+      category: "Announcements",
+      categoryId: "DIC_kwDOD3LJp84CXbNd",
+      themeLight: "light",
+      themeDark: "dark",
+      mapping: "title",
+      reactionsEnabled: 1,
+      emitMetadata: 0,
+      inputPosition: "top",
+      lang: "zh-CN"
     }
   },
-  features: {
-    search: {
-      enable: true
-    },
-    toc: {
-      enable: true,
-      placement: "right",
-      headingSelector: "h1,h2,h3,h4,h5,h6",
-      collapseDepth: 2
-    },
-    code: {
-      copy: true,
-      lineNumber: true,
-      highlight: true
-    },
-    comments: {
-      enable: true,
-      type: "giscus",
-      giscus: {
-        repo: "ischanx/ischanx.github.io",
-        repoId: "MDEwOlJlcG9zaXRvcnkyNTkxODA5Njc=",
-        category: "Announcements",
-        categoryId: "DIC_kwDOD3LJp84CXbNd",
-        themeLight: "light",
-        themeDark: "dark",
-        mapping: "title",
-        reactionsEnabled: 1,
-        emitMetadata: 0,
-        inputPosition: "top",
-        lang: "zh-CN"
-      }
-    }
-  },
-  // SEO相关配置
   seo: {
-    // 是否使用强化SEO功能
-    enable: true,
-    // 默认图片（当文章没有设置封面图时使用）
-    defaultImage: "/default-cover.jpg",
-    // 站点Logo（用于结构化数据）
-    logo: "/logo.png",
-    // 站点默认类型
-    defaultType: "website",
-    // 社交媒体信息
     social: {
       twitter: "@ischanx8",
-      facebook: ""
     },
-    // 额外的结构化数据
-    schema: {
-      // 网站发布者信息（Person或Organization）
-      publisher: {
-        type: "Person",
-        name: "Chanx",
-        logo: "/avatar.png"
-      },
-      // 网站类型
-      siteType: "Blog",
-    },
-    // 额外的meta标签
-    extraMeta: [
+    metaTags: [
       { name: "referrer", content: "no-referrer-when-downgrade" },
       { name: "google-adsense-account", content: "ca-pub-6661696030972028" },
-      // { name: "baidu-site-verification", content: "code-xxxxxxxxxxxx" }
     ]
   },
   analytics: {
     openpanel: {
-      enable: true,
+      enabled: true,
       apiUrl: "https://data.chanx.app/api",
       clientId: "f070e406-ebd4-47e8-b69a-c3e2dfc428cf",
       trackScreenViews: true,
       trackOutgoingLinks: true
-    },
-    umami: {
-      enable: true,
-      websiteId: "46b25fe7-e42b-4a02-abe8-9a92b78fc8c0", // 替换为你的 Umami 网站 ID
-      scriptUrl: "https://umami.showmecode.net/script.js", // Umami 脚本地址，如果是自建可能需要修改
-      domains: "chanx.tech", // 可选，跟踪的域名
-      autoTrack: true, // 可选，自动跟踪页面浏览
-      respectDoNotTrack: true // 可选，尊重 Do Not Track 设置
     }
   }
 };
@@ -207,7 +214,7 @@ export const links = {
     },
   ],
   custom: {
-    enable: true,
-    content: '<p>在下方留言申请加入我的友链，按如下格式提供信息：</p><ul><li>博客名：Chanx &#39;s Blog</li><li>简介：想法 + 实践 = Bugs</li><li>链接：https://chanx.tech/</li><li>图片：https://chanx.tech/avatar.png</li></ul>'
+    enabled: true,
+    html: `<p>想加入朋友圈？请将以下信息发送至 <a href="mailto:${site.email}?subject=${encodeURIComponent('交个朋友')}&body=${encodeURIComponent('博客名：\n简介：\n链接：\n图片：')}">${site.email}</a>：</p><ul><li>博客名：Chanx &#39;s Blog</li><li>简介：想法 + 实践 = Bugs</li><li>链接：https://chanx.tech/</li><li>图片：https://chanx.tech/avatar.png</li></ul><p><a href="mailto:${site.email}?subject=${encodeURIComponent('交个朋友')}&body=${encodeURIComponent('博客名：\n简介：\n链接：\n图片：')}">发封邮件，交个朋友</a></p>`
   }
-}; 
+};
