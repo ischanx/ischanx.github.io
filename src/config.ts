@@ -27,6 +27,7 @@ export const tagMap: Record<string, string> = {
   reliability: '稳定性',
   engineering: '工程化',
   'developer-experience': '研发体验',
+  collaboration: '协作',
 };
 
 export const site = {
