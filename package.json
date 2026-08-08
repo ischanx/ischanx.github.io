@@ -40,7 +40,7 @@
     "@astrojs/sitemap": "^3.7.3",
     "@lobehub/icons-static-svg": "^1.94.0",
     "@openpanel/astro": "^1.4.1",
-    "astro": "^6.4.7",
+    "astro": "^7.1.1",
     "date-fns": "^4.4.0",
     "fuse.js": "^7.4.2",
     "lucide-react": "^1.20.0",
