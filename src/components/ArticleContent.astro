@@ -633,6 +633,12 @@ import ScrollArea from './ScrollArea.astro';
     }
   }
 
+  :global(.article-prose > figure[data-rehype-pretty-code-figure]) {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+
   @media (min-width: 768px) {
     :global(.article-prose) {
       font-size: 0.9375rem;

@@ -1,0 +1,223 @@
+---
+import Layout from '../layouts/Layout.astro';
+import JournalPage from '../components/JournalPage.astro';
+
+interface PersonalProject {
+  title: string;
+  description: string;
+}
+
+const projects2026: PersonalProject[] = [
+  {
+    title: '发现新东西的小站',
+    description:
+      '想做一个能随便逛逛、发现新产品的地方，也顺手试了试提交、认领和更新页面这些功能。',
+  },
+  {
+    title: 'AI 画图台',
+    description:
+      '把几个 AI 图片模型放进同一个页面，传张参考图、写句话，然后等它画完。',
+  },
+  {
+    title: '临时邮箱',
+    description:
+      '打开就能收邮件，还可以设置多久后失效；后来又顺手做了一个微信小程序版本。',
+  },
+  {
+    title: '论文雷达',
+    description:
+      '每天捞一些新论文，让 AI 先讲讲重点，帮我判断要不要花时间继续读。',
+  },
+  {
+    title: '和 AI 一起干活',
+    description:
+      '给不同的 AI 分点活，再给它们工具和记忆，看看能不能在一个地方把事情做完。',
+  },
+  {
+    title: '看看服务还活着没',
+    description:
+      '隔一会儿检查网站、接口和 AI 服务，出问题了就给自己发个消息。',
+  },
+  {
+    title: '一堆顺手的小工具',
+    description:
+      '图片转换、文字识别、链接预览、二维码，遇到一个小需求就往里面塞一个。',
+  },
+];
+
+const projects2025: PersonalProject[] = [
+  {
+    title: '写题和跑代码',
+    description:
+      '在浏览器里写 JavaScript，丢进隔离环境跑一遍，再看看测试过了几条。',
+  },
+  {
+    title: '会聊天的表单',
+    description:
+      '不把一堆输入框摆在面前，改成让 AI 一句句问，最后再把答案整理好。',
+  },
+];
+
+const projects2024: PersonalProject[] = [
+  {
+    title: '文档搬家',
+    description:
+      '把在线文档变成 Markdown，方便搬走、存起来，或者换个地方继续写。',
+  },
+];
+
+const projectGroups = [
+  {
+    year: '2026',
+    note: '最近在折腾，想到哪做到哪。',
+    projects: projects2026,
+  },
+  {
+    year: '2025',
+    note: '那阵子做的一些小实验。',
+    projects: projects2025,
+  },
+  {
+    year: '2024',
+    note: '一个用来搬文档的小工具。',
+    projects: projects2024,
+  },
+];
+---
+
+<Layout
+  title="我的玩具"
+  description="一些因为好奇而开始、在空闲时间慢慢做出来的小玩具。"
+>
+  <JournalPage
+    title="我的玩具"
+    description="都没正式上线，有些解决自己的小问题，有些只是想看看一个念头能不能跑起来。"
+  >
+    <div class="project-groups">
+      {
+        projectGroups.map(group => (
+          <section
+            class="project-group"
+            aria-labelledby={`projects-${group.year}`}
+          >
+            <header class="project-group__header">
+              <h2 id={`projects-${group.year}`}>{group.year}</h2>
+              <p>{group.note}</p>
+            </header>
+            <ul class="project-list">
+              {group.projects.map(project => (
+                <li>
+                  <article class="project-item">
+                    <h3>{project.title}</h3>
+                    <p>{project.description}</p>
+                  </article>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+  </JournalPage>
+</Layout>
+
+<style>
+  .project-groups {
+    display: grid;
+    gap: 4.5rem;
+  }
+
+  .project-group__header {
+    align-items: baseline;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .project-group__header h2 {
+    color: rgb(38 38 38);
+    font-size: 1.08rem;
+    font-weight: 680;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .project-group__header p {
+    color: rgb(163 163 163);
+    font-size: 0.72rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .project-list {
+    display: grid;
+    gap: 0 3rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .project-list > li {
+    border-top: 1px dashed rgb(212 212 212 / 0.7);
+    min-width: 0;
+  }
+
+  .project-item {
+    padding: 1.35rem 0.25rem 1.55rem;
+  }
+
+  .project-item h3 {
+    color: rgb(38 38 38);
+    font-size: 0.98rem;
+    font-weight: 650;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .project-item p {
+    color: rgb(98 98 98);
+    font-size: 0.82rem;
+    line-height: 1.78;
+    margin: 0.65rem 0 0;
+    text-wrap: pretty;
+  }
+
+  :global(.dark) .project-group__header h2,
+  :global(.dark) .project-item h3 {
+    color: rgb(229 229 229);
+  }
+
+  :global(.dark) .project-group__header p {
+    color: rgb(115 115 115);
+  }
+
+  :global(.dark) .project-list > li {
+    border-top-color: rgb(82 82 82 / 0.65);
+  }
+
+  :global(.dark) .project-item p {
+    color: rgb(163 163 163);
+  }
+
+  @media (max-width: 640px) {
+    .project-groups {
+      gap: 3.5rem;
+    }
+
+    .project-group__header {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .project-list {
+      grid-template-columns: 1fr;
+    }
+
+    .project-item {
+      padding-inline: 0;
+    }
+  }
+</style>

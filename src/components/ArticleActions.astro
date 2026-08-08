@@ -1,0 +1,292 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../config';
+
+interface Props {
+  title: string;
+  url: string;
+  markdownUrl: string;
+}
+
+const { title, url, markdownUrl } = Astro.props;
+const articleUrl = new URL(url, site.url).toString();
+const articleMarkdownUrl = new URL(markdownUrl, site.url).toString();
+---
+
+<div
+  class="article-actions"
+  data-article-actions
+  data-title={title}
+  data-url={articleUrl}
+  data-markdown-url={articleMarkdownUrl}
+>
+  <div class="article-actions__trigger-group">
+    <button
+      type="button"
+      class="article-actions__copy-button"
+      aria-label="复制链接"
+      data-article-action="copy-link"
+    >
+      <Icon name="copy" fontSize="17px" />
+      <span data-article-actions-label>复制链接</span>
+    </button>
+    <button
+      type="button"
+      class="article-actions__menu-button"
+      aria-label="展开文章操作"
+      aria-haspopup="menu"
+      aria-expanded="false"
+      title="更多文章操作"
+      data-article-actions-trigger
+    >
+      <Icon name="chevron-down" fontSize="16px" />
+    </button>
+  </div>
+
+  <div class="article-actions__panel" data-article-actions-panel>
+    <div class="article-actions__menu" role="menu" aria-label="文章操作">
+      <button type="button" role="menuitem" data-article-action="copy-link">
+        <span class="article-actions__item-icon" aria-hidden="true"><Icon name="link" fontSize="16px" /></span>
+        <span class="article-actions__item-copy">
+          <strong>复制链接</strong>
+          <small>复制当前页面地址</small>
+        </span>
+      </button>
+      <button type="button" role="menuitem" data-article-action="copy-markdown">
+        <span class="article-actions__item-icon" aria-hidden="true"><Icon name="copy" fontSize="16px" /></span>
+        <span class="article-actions__item-copy">
+          <strong>复制 Markdown</strong>
+          <small>复制全文，方便交给 AI</small>
+        </span>
+      </button>
+      <a href={articleMarkdownUrl} role="menuitem" target="_blank" rel="noopener noreferrer">
+        <span class="article-actions__item-icon" aria-hidden="true"><Icon name="file-text" fontSize="16px" /></span>
+        <span class="article-actions__item-copy">
+          <strong>查看 Markdown <span aria-hidden="true">↗</span></strong>
+          <small>以纯文本查看这篇文章</small>
+        </span>
+      </a>
+      <button type="button" role="menuitem" data-article-action="ask-chatgpt">
+        <span class="article-actions__item-icon" aria-hidden="true"><Icon name="openai" fontSize="16px" /></span>
+        <span class="article-actions__item-copy">
+          <strong>在 ChatGPT 中打开 <span aria-hidden="true">↗</span></strong>
+          <small>围绕这篇文章继续提问</small>
+        </span>
+      </button>
+      <p class="article-actions__feedback" aria-live="polite" data-article-actions-feedback></p>
+    </div>
+  </div>
+</div>
+
+<style>
+  @reference "../styles/global.css";
+
+  .article-actions {
+    @apply relative mt-0.5 shrink-0;
+  }
+
+  .article-actions__trigger-group {
+    @apply flex h-9 overflow-hidden rounded-md border border-neutral-300/80 bg-white text-neutral-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300;
+  }
+
+  .article-actions__copy-button,
+  .article-actions__menu-button {
+    @apply flex items-center justify-center transition-colors duration-150 hover:bg-neutral-100 hover:text-neutral-950 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-500/50 dark:hover:bg-neutral-800 dark:hover:text-white;
+  }
+
+  .article-actions__copy-button {
+    @apply gap-1.5 px-2.5 text-xs font-semibold whitespace-nowrap;
+  }
+
+  .article-actions__menu-button {
+    @apply w-8 border-l border-neutral-200 dark:border-neutral-700;
+  }
+
+  .article-actions[data-open='true'] .article-actions__menu-button :global(svg) {
+    transform: rotate(180deg);
+  }
+
+  .article-actions__panel {
+    @apply invisible absolute right-0 top-full z-30 w-[min(16.5rem,calc(100vw-2rem))] pt-1 opacity-0 transition-[opacity,visibility,transform] duration-150;
+    transform: translateY(-3px);
+    pointer-events: none;
+  }
+
+  .article-actions:has(.article-actions__menu-button:hover) .article-actions__panel,
+  .article-actions:has(.article-actions__menu-button:focus-visible) .article-actions__panel,
+  .article-actions:has(.article-actions__panel:focus-within) .article-actions__panel,
+  .article-actions__panel:hover,
+  .article-actions[data-open='true'] .article-actions__panel {
+    @apply visible opacity-100;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .article-actions__menu {
+    @apply overflow-hidden rounded-md border border-neutral-300/80 bg-white p-1 dark:border-neutral-700 dark:bg-neutral-900;
+  }
+
+  .article-actions__menu > button,
+  .article-actions__menu > a {
+    @apply flex min-h-11 w-full items-center gap-2 rounded px-1.5 text-left text-neutral-700 transition-colors duration-100 hover:bg-neutral-100 hover:text-neutral-950 focus-visible:bg-primary-50 focus-visible:text-primary-800 focus-visible:outline-none dark:text-neutral-200 dark:hover:bg-neutral-800 dark:hover:text-white dark:focus-visible:bg-primary-950/50 dark:focus-visible:text-primary-200;
+  }
+
+  .article-actions__item-icon {
+    @apply flex size-7 shrink-0 items-center justify-center rounded border border-neutral-200 bg-neutral-50 text-neutral-500 dark:border-neutral-700 dark:bg-neutral-800/70 dark:text-neutral-400;
+  }
+
+  .article-actions__item-copy {
+    @apply flex min-w-0 flex-col;
+  }
+
+  .article-actions__item-copy strong {
+    @apply text-xs font-semibold leading-[15px];
+  }
+
+  .article-actions__item-copy small {
+    @apply text-[10px] leading-[14px] text-neutral-500 dark:text-neutral-400;
+  }
+
+  .article-actions__menu-button :global(svg) {
+    transition: transform 150ms ease;
+  }
+
+  .article-actions__menu > button:hover .article-actions__item-icon,
+  .article-actions__menu > a:hover .article-actions__item-icon,
+  .article-actions__menu > button:focus-visible .article-actions__item-icon,
+  .article-actions__menu > a:focus-visible .article-actions__item-icon {
+    @apply border-primary-200 bg-primary-50 text-primary-600 dark:border-primary-800 dark:bg-primary-950/50 dark:text-primary-400;
+  }
+
+  .article-actions__trigger-group :global(svg) {
+    @apply shrink-0 text-neutral-400 dark:text-neutral-500;
+  }
+
+  .article-actions__feedback {
+    @apply m-0 hidden border-t border-dashed border-neutral-200 px-2 pb-1 pt-1.5 text-[10px] leading-[14px] text-neutral-500 dark:border-neutral-700 dark:text-neutral-400;
+  }
+
+  .article-actions__feedback:not(:empty) {
+    @apply mt-1 block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .article-actions__copy-button,
+    .article-actions__menu-button,
+    .article-actions__panel,
+    .article-actions__menu > button,
+    .article-actions__menu > a {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const writeToClipboard = async (value: string) => {
+    if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+    await navigator.clipboard.writeText(value);
+  };
+
+  const initArticleActions = () => {
+    if (document.documentElement.dataset.articleActionsGlobalReady !== 'true') {
+      document.documentElement.dataset.articleActionsGlobalReady = 'true';
+      document.addEventListener('pointerdown', event => {
+        document.querySelectorAll<HTMLElement>('[data-article-actions][data-open="true"]').forEach(root => {
+          if (root.contains(event.target as Node)) return;
+          root.dataset.open = 'false';
+          root.querySelector('[data-article-actions-trigger]')?.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    document.querySelectorAll<HTMLElement>('[data-article-actions]').forEach(root => {
+      if (root.dataset.ready === 'true') return;
+      root.dataset.ready = 'true';
+
+      const trigger = root.querySelector<HTMLButtonElement>('[data-article-actions-trigger]');
+      const feedback = root.querySelector<HTMLElement>('[data-article-actions-feedback]');
+      const triggerLabel = root.querySelector<HTMLElement>('[data-article-actions-label]');
+      const title = root.dataset.title ?? document.title;
+      const url = root.dataset.url ?? window.location.href;
+      const markdownUrl = root.dataset.markdownUrl ?? `${url}.md`;
+      let feedbackTimer = 0;
+
+      const setOpen = (open: boolean) => {
+        root.dataset.open = String(open);
+        trigger?.setAttribute('aria-expanded', String(open));
+      };
+
+      const showFeedback = (message: string) => {
+        if (!feedback) return;
+        window.clearTimeout(feedbackTimer);
+        feedback.textContent = message;
+        if (triggerLabel && message.includes('已复制')) triggerLabel.textContent = '已复制';
+        feedbackTimer = window.setTimeout(() => {
+          feedback.textContent = '';
+          if (triggerLabel) triggerLabel.textContent = '复制链接';
+        }, 2400);
+      };
+
+      trigger?.addEventListener('click', () => {
+        setOpen(root.dataset.open !== 'true');
+      });
+
+      root.addEventListener('click', async event => {
+        const action = (event.target as HTMLElement).closest<HTMLElement>('[data-article-action]')?.dataset.articleAction;
+        if (!action) return;
+
+        try {
+          if (action === 'copy-link') {
+            await writeToClipboard(url);
+            showFeedback('链接已复制');
+          }
+
+          if (action === 'copy-markdown') {
+            const response = await fetch(markdownUrl);
+            if (!response.ok) throw new Error('Markdown request failed');
+            await writeToClipboard(await response.text());
+            showFeedback('Markdown 已复制');
+          }
+
+          if (action === 'ask-chatgpt') {
+            const prompt = [
+              '请阅读以下文章，并以文章内容为主要依据回答我的问题。',
+              '',
+              `文章标题：${title}`,
+              `Markdown 地址：${markdownUrl}`,
+              '',
+              '我的问题：',
+            ].join('\n');
+            const chatgptUrl = new URL('https://chatgpt.com/');
+            chatgptUrl.searchParams.set('prompt', prompt);
+            window.open(chatgptUrl, '_blank', 'noopener,noreferrer');
+          }
+        } catch {
+          showFeedback('操作失败，请重试');
+        }
+      });
+
+      root.addEventListener('keydown', event => {
+        if (event.key !== 'Escape') return;
+        setOpen(false);
+        trigger?.focus();
+      });
+    });
+  };
+
+  document.addEventListener('astro:page-load', initArticleActions);
+  initArticleActions();
+</script>
+
+<style>
+  @media (max-width: 639px) {
+    .article-actions__copy-button {
+      width: 2.25rem;
+      padding-inline: 0;
+    }
+
+    .article-actions__copy-button span {
+      display: none;
+    }
+  }
+</style>

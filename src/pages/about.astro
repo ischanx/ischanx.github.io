@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import { site } from '../config';
 import Icon from '../components/Icon.astro';
 import Giscus from '../components/Giscus.astro';
+import JournalPage from '../components/JournalPage.astro';
 
 const { author, socialLinks } = site;
 
@@ -19,6 +20,7 @@ const experiences: Experience[] = [
   {
     location: '广州',
     organization: '广东工业大学',
+    product: '计算机科学与技术',
     logo: '/img/about/gdut-logo.png',
     logoAlt: '广东工业大学校徽',
     details: [
@@ -53,75 +55,74 @@ const experiences: Experience[] = [
 ---
 
 <Layout title="关于">
-  <div class="max-w-4xl mx-auto px-4 py-8">
-    <div class="flex flex-col md:flex-row gap-8">
-      <!-- 左侧个人信息 -->
-      <div class="md:w-1/4 text-center mb-8 md:mb-0">
-        <div class="sticky top-20">
-          <img
-            src={site.avatar}
-            alt={author}
-            class="w-32 h-32 rounded-full mx-auto mb-6"
-          />
-          <h1 class="text-2xl font-bold mb-4 text-black dark:text-neutral-200">
-            {author}
-          </h1>
-          <div class="flex space-x-4 mt-6 justify-center">
-            {
-              socialLinks.map(link => (
-                <a
-                  href={link.link}
-                  class="text-neutral-600 hover:text-primary-600 dark:text-neutral-300 dark:hover:text-primary-400"
-                  target={link.target || '_blank'}
-                  rel="noopener noreferrer"
-                >
-                  <span class="sr-only">{link.icon}</span>
-                  <Icon name={link.icon} fontSize="24px" />
-                </a>
-              ))
-            }
-          </div>
+  <JournalPage
+    title="关于我"
+    description="写代码，也认真生活；这里是关于我的一些零散记录。"
+  >
+    <div class="about-layout">
+      <aside class="profile">
+        <img
+          src={site.avatar}
+          alt={author}
+          width="72"
+          height="72"
+          class="profile__avatar"
+        />
+        <div class="profile__identity">
+          <strong>{author}</strong>
+          <span>也可以叫我陈同学</span>
         </div>
-      </div>
+        <nav class="profile__socials" aria-label="社交链接">
+          {
+            socialLinks.map(link => (
+              <a
+                href={link.link}
+                target={link.target || '_blank'}
+                rel="noopener noreferrer"
+                aria-label={link.icon}
+                title={link.icon}
+              >
+                <Icon name={link.icon} fontSize="20px" />
+              </a>
+            ))
+          }
+        </nav>
+      </aside>
 
-      <!-- 右侧内容 -->
-      <div class="min-w-0 md:w-3/4">
-        <div class="prose max-w-none text-[15px] dark:prose-invert">
-          <h2 class="text-xl font-semibold text-black dark:text-neutral-200">简介</h2>
-          <p>嗨，我是 Chanx，也可以叫我陈同学，目前专注 AI 与 Web 全栈开发。</p>
-          <p>从前端出发，持续拓展 Agent 应用和业务架构方面的实践。</p>
-          <p>喜欢把有想象力的想法做成真实可用的产品，虽然 Bug 偶尔会比惊喜先上线。</p>
-          <p>保持好奇，也始终相信美好的事情正在发生。</p>
+      <div class="about-content">
+        <section class="about-section" aria-labelledby="about-intro">
+          <h2 id="about-intro">简介</h2>
+          <div class="about-copy">
+            <p>嗨，我是 Chanx，也可以叫我陈同学，目前专注 AI 与 Web 全栈开发。</p>
+            <p>从前端出发，持续拓展 Agent 应用和业务架构方面的实践。</p>
+            <p>喜欢把有想象力的想法做成真实可用的产品，虽然 Bug 偶尔会比惊喜先上线。</p>
+            <p>保持好奇，也始终相信美好的事情正在发生。</p>
+          </div>
+        </section>
 
-          <h2 class="text-xl font-semibold text-black dark:text-neutral-200">个人经历</h2>
-          <ol class="not-prose mt-6 space-y-5">
+        <section class="about-section" aria-labelledby="about-experience">
+          <h2 id="about-experience">经历</h2>
+          <ol class="experience-list">
             {
               experiences.map(experience => (
-                <li>
-                  <article
-                    class="rounded-md border border-neutral-200 bg-neutral-50/80 p-4 shadow-sm shadow-neutral-900/[0.03] dark:border-neutral-700 dark:bg-neutral-800/55 dark:shadow-black/20 sm:p-5"
-                  >
-                    <header class="flex items-center gap-3">
-                      <span class="flex h-7 w-7 shrink-0 items-center justify-center">
-                        <img
-                          src={experience.logo}
-                          alt={experience.logoAlt}
-                          width="28"
-                          height="28"
-                          class="h-full w-full object-contain"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </span>
-                      <h3 class="m-0 min-w-0 text-base font-semibold leading-6 text-neutral-900 dark:text-neutral-100">
+                <li class="experience-item">
+                  <article>
+                    <header>
+                      <img
+                        src={experience.logo}
+                        alt={experience.logoAlt}
+                        width="28"
+                        height="28"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <h3>
                         {experience.organization}
-                        {experience.product && ` · ${experience.product}`}
-                        <span class="font-normal text-neutral-500 dark:text-neutral-400">
-                          {' · '}{experience.location}
-                        </span>
+                        {experience.product && <span> · {experience.product}</span>}
                       </h3>
+                      <span class="experience-location">{experience.location}</span>
                     </header>
-                    <ul class="mt-4 list-disc space-y-2 pl-5 text-[15px] leading-6 text-neutral-600 marker:text-neutral-400 dark:text-neutral-300 dark:marker:text-neutral-600">
+                    <ul>
                       {experience.details.map(detail => <li>{detail}</li>)}
                     </ul>
                   </article>
@@ -129,28 +130,324 @@ const experiences: Experience[] = [
               ))
             }
           </ol>
+        </section>
 
-          <h2 class="text-xl font-semibold text-black dark:text-neutral-200">联系我</h2>
-          <p>欢迎聊聊前端、AI 和产品，也欢迎分享那些值得动手试试的新想法。</p>
-          <p>
-            技术交流、项目合作或内容勘误，都可以通过 <a
-              href="https://github.com/ischanx"
-              target="_blank"
-              rel="noopener">GitHub</a
-            > 或<a href="mailto:ischanx@foxmail.com">邮件</a>联系我。
-          </p>
-
-          <div
-            class="mt-8 rounded-md border-l-4 border-green-500 bg-green-50 px-3 py-1.5 dark:bg-green-900/20"
-          >
-            <p class="m-0 text-[14px] leading-5 text-green-800 dark:text-green-300">
-              点了一碗鸽子汤，里面却没有鸽子。想了想，也挺正宗，毕竟鸽子真的鸽了。
+        <section class="about-section" aria-labelledby="about-contact">
+          <h2 id="about-contact">联系我</h2>
+          <div class="about-copy">
+            <p>欢迎聊聊前端、AI 和产品，也欢迎分享那些值得动手试试的新想法。</p>
+            <p>
+              技术交流、项目合作或内容勘误，都可以通过
+              <a href="https://github.com/ischanx" target="_blank" rel="noopener noreferrer">GitHub</a>
+              或 <a href="mailto:ischanx@foxmail.com">邮件</a> 联系我。
             </p>
           </div>
-        </div>
+        </section>
 
-        <Giscus />
+        <aside class="margin-note" aria-label="一个冷笑话">
+          <span aria-hidden="true">有意思</span>
+          <p>点了一碗鸽子汤，里面却没有鸽子。想了想，也挺正宗，毕竟鸽子真的鸽了。</p>
+        </aside>
+
+        <div class="comments">
+          <Giscus />
+        </div>
       </div>
     </div>
-  </div>
+  </JournalPage>
 </Layout>
+
+<style>
+  .about-layout {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr);
+    align-items: start;
+    gap: 4rem;
+  }
+
+  .profile {
+    display: flex;
+    position: sticky;
+    top: 6rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .profile__avatar {
+    width: 4.5rem;
+    height: 4.5rem;
+    flex: none;
+    border: 1px solid rgb(212 212 212 / 0.72);
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1.1rem;
+  }
+
+  :global(.dark) .profile__avatar {
+    border-color: rgb(82 82 82 / 0.75);
+  }
+
+  .profile__identity {
+    min-width: 0;
+  }
+
+  .profile__identity strong,
+  .profile__identity span {
+    display: block;
+  }
+
+  .profile__identity strong {
+    color: rgb(38 38 38);
+    font-size: 1rem;
+    font-weight: 650;
+  }
+
+  .profile__identity span {
+    margin-top: 0.22rem;
+    color: rgb(115 115 115);
+    font-size: 0.78rem;
+  }
+
+  :global(.dark) .profile__identity strong {
+    color: rgb(229 229 229);
+  }
+
+  :global(.dark) .profile__identity span {
+    color: rgb(163 163 163);
+  }
+
+  .profile__socials {
+    display: flex;
+    gap: 0.25rem;
+    margin-top: 1.1rem;
+  }
+
+  .profile__socials a {
+    display: grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    place-items: center;
+    border-radius: 50%;
+    color: rgb(115 115 115);
+    transition: color 160ms ease, background-color 160ms ease;
+  }
+
+  .profile__socials a:hover {
+    color: hsl(var(--primary));
+    background: rgb(245 245 245 / 0.72);
+  }
+
+  .profile__socials a:focus-visible,
+  .about-copy a:focus-visible {
+    outline: 2px solid hsl(var(--primary) / 0.75);
+    outline-offset: 3px;
+  }
+
+  :global(.dark) .profile__socials a {
+    color: rgb(163 163 163);
+  }
+
+  :global(.dark) .profile__socials a:hover {
+    color: hsl(var(--primary));
+    background: rgb(38 38 38 / 0.72);
+  }
+
+  .about-content {
+    width: 100%;
+  }
+
+  .about-section + .about-section {
+    margin-top: 3.75rem;
+  }
+
+  .about-section > h2 {
+    margin: 0 0 1.5rem;
+    color: rgb(38 38 38);
+    font-size: 1.06rem;
+    font-weight: 680;
+    letter-spacing: 0;
+  }
+
+  :global(.dark) .about-section > h2 {
+    color: rgb(229 229 229);
+  }
+
+  .about-copy {
+    color: rgb(82 82 82);
+    font-size: 0.94rem;
+    line-height: 1.9;
+  }
+
+  .about-copy p {
+    margin: 0.6rem 0;
+  }
+
+  .about-copy a {
+    color: hsl(var(--primary));
+    text-decoration: underline;
+    text-decoration-color: hsl(var(--primary) / 0.28);
+    text-underline-offset: 0.22rem;
+  }
+
+  .about-copy a:hover {
+    text-decoration-color: hsl(var(--primary) / 0.8);
+  }
+
+  :global(.dark) .about-copy {
+    color: rgb(190 190 190);
+  }
+
+  .experience-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .experience-item {
+    padding: 1.15rem 0.35rem 1.4rem;
+    border-bottom: 1px dashed rgb(212 212 212 / 0.72);
+  }
+
+  .experience-item article > header {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .experience-item header img {
+    width: 1.7rem;
+    height: 1.7rem;
+    flex: none;
+    object-fit: contain;
+  }
+
+  .experience-item h3 {
+    margin: 0;
+    color: rgb(38 38 38);
+    font-size: 0.94rem;
+    font-weight: 650;
+    line-height: 1.5;
+  }
+
+  .experience-item h3 span {
+    color: rgb(115 115 115);
+    font-weight: 500;
+  }
+
+  .experience-location {
+    flex: none;
+    margin-left: auto;
+    color: rgb(163 163 163);
+    font-size: 0.7rem;
+    font-weight: 500;
+  }
+
+  .experience-item ul {
+    margin: 0.85rem 0 0;
+    padding-left: 1.05rem;
+    color: rgb(82 82 82);
+    font-size: 0.86rem;
+    line-height: 1.85;
+  }
+
+  .experience-item li + li {
+    margin-top: 0.42rem;
+  }
+
+  .experience-item li::marker {
+    color: rgb(163 163 163);
+  }
+
+  :global(.dark) .experience-item {
+    border-color: rgb(64 64 64 / 0.9);
+  }
+
+  :global(.dark) .experience-item h3 {
+    color: rgb(229 229 229);
+  }
+
+  :global(.dark) .experience-item h3 span,
+  :global(.dark) .experience-item ul,
+  :global(.dark) .experience-location {
+    color: rgb(163 163 163);
+  }
+
+  .margin-note {
+    display: grid;
+    grid-template-columns: 3.8rem minmax(0, 1fr);
+    gap: 1rem;
+    margin-top: 3.5rem;
+    padding: 1rem 0;
+    border-block: 1px solid rgb(212 212 212 / 0.7);
+  }
+
+  .margin-note span {
+    color: hsl(var(--primary) / 0.76);
+    font-size: 0.7rem;
+    font-weight: 650;
+  }
+
+  .margin-note p {
+    margin: 0;
+    color: rgb(115 115 115);
+    font-size: 0.8rem;
+    line-height: 1.75;
+  }
+
+  :global(.dark) .margin-note {
+    border-color: rgb(64 64 64 / 0.9);
+  }
+
+  :global(.dark) .margin-note p {
+    color: rgb(163 163 163);
+  }
+
+  .comments {
+    margin-top: 3.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .about-layout {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .profile {
+      position: static;
+      flex-direction: row;
+      gap: 0.9rem;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .profile__avatar {
+      width: 3.75rem;
+      height: 3.75rem;
+      margin-bottom: 0;
+    }
+
+    .profile__socials {
+      width: 100%;
+      margin: 0.25rem 0 0 -0.45rem;
+    }
+
+    .about-section + .about-section {
+      margin-top: 3rem;
+    }
+
+    .experience-item ul {
+      font-size: 0.82rem;
+    }
+
+    .margin-note {
+      grid-template-columns: 1fr;
+      gap: 0.45rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .profile__socials a {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,238 @@
+---
+import { Send } from 'lucide-react';
+---
+
+<div class="paper-plane-cursor" data-paper-plane-cursor aria-hidden="true">
+  <span class="paper-plane-cursor__trail"></span>
+  <span class="paper-plane-cursor__icon">
+    <Send size={20} strokeWidth={1.65} />
+  </span>
+</div>
+
+<style>
+  .paper-plane-cursor {
+    --plane-fill: rgb(255 255 255 / 0.9);
+    --plane-scale: 1;
+    color: rgb(82 82 82);
+    display: none;
+    height: 1.25rem;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    transform: translate3d(-2rem, -2rem, 0);
+    transition:
+      color 160ms ease,
+      opacity 120ms ease;
+    width: 1.25rem;
+    will-change: transform;
+    z-index: 9999;
+  }
+
+  .paper-plane-cursor.is-visible {
+    opacity: 1;
+  }
+
+  .paper-plane-cursor.is-hidden {
+    opacity: 0;
+  }
+
+  .paper-plane-cursor.is-interactive {
+    color: hsl(var(--primary));
+  }
+
+  .paper-plane-cursor__icon {
+    display: block;
+    filter: drop-shadow(0 1px 1px rgb(23 23 23 / 0.12));
+    height: 100%;
+    opacity: 1;
+    transform: rotate(45deg) scale(var(--plane-scale));
+    transition:
+      opacity 120ms ease,
+      transform 90ms ease-out;
+    width: 100%;
+  }
+
+  .paper-plane-cursor__icon :global(svg) {
+    fill: var(--plane-fill);
+    height: 100%;
+    stroke: currentColor;
+    width: 100%;
+  }
+
+  .paper-plane-cursor.is-pressed .paper-plane-cursor__icon {
+    opacity: 0.7;
+  }
+
+  .paper-plane-cursor__trail {
+    border-top: 1px dashed currentColor;
+    height: 1px;
+    opacity: 0.55;
+    position: absolute;
+    right: calc(100% - 0.08rem);
+    top: 50%;
+    transition: opacity 180ms ease;
+    width: 0.7rem;
+  }
+
+  .paper-plane-cursor.is-idle .paper-plane-cursor__trail {
+    opacity: 0;
+  }
+
+  :global(.dark) .paper-plane-cursor {
+    --plane-fill: rgb(25 25 25 / 0.92);
+    color: rgb(212 212 212);
+  }
+
+  :global(.dark) .paper-plane-cursor.is-interactive {
+    color: hsl(var(--primary));
+  }
+
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .paper-plane-cursor {
+      display: block;
+    }
+
+    :global(html.has-paper-plane-cursor),
+    :global(html.has-paper-plane-cursor body),
+    :global(html.has-paper-plane-cursor a),
+    :global(html.has-paper-plane-cursor button),
+    :global(html.has-paper-plane-cursor [role='button']),
+    :global(html.has-paper-plane-cursor summary),
+    :global(html.has-paper-plane-cursor label) {
+      cursor: none !important;
+    }
+
+    :global(html.has-paper-plane-cursor input),
+    :global(html.has-paper-plane-cursor textarea),
+    :global(html.has-paper-plane-cursor select),
+    :global(html.has-paper-plane-cursor [contenteditable='true']) {
+      cursor: auto !important;
+    }
+  }
+</style>
+
+<script>
+  interface PaperPlaneCursorWindow extends Window {
+    paperPlaneCursorCleanup?: () => void;
+  }
+
+  const initializePaperPlaneCursor = () => {
+    const cursorWindow = window as PaperPlaneCursorWindow;
+    cursorWindow.paperPlaneCursorCleanup?.();
+
+    const cursor = document.querySelector<HTMLElement>(
+      '[data-paper-plane-cursor]'
+    );
+    const mediaQuery = window.matchMedia(
+      '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)'
+    );
+
+    if (!cursor || !mediaQuery.matches) {
+      document.documentElement.classList.remove('has-paper-plane-cursor');
+      return;
+    }
+
+    const interactiveSelector =
+      'a, button, [role="button"], summary, label, [data-cursor-interactive]';
+    const nativeCursorSelector =
+      'input, textarea, select, [contenteditable="true"]';
+    let x = -32;
+    let y = -32;
+    let lastX = x;
+    let lastY = y;
+    let lastTimestamp = 0;
+    let angle = -8;
+    let scale = 1;
+    let animationFrame = 0;
+    let idleTimer = 0;
+
+    const render = () => {
+      cursor.style.transform = `translate3d(${x - 10}px, ${y - 10}px, 0) rotate(${angle}deg)`;
+      animationFrame = 0;
+    };
+    const requestRender = () => {
+      if (!animationFrame) {
+        animationFrame = window.requestAnimationFrame(render);
+      }
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const usesNativeCursor = Boolean(target?.closest(nativeCursorSelector));
+      const deltaX = event.clientX - lastX;
+      const deltaY = event.clientY - lastY;
+      const distance = Math.hypot(deltaX, deltaY);
+      const elapsed = lastTimestamp
+        ? Math.max(event.timeStamp - lastTimestamp, 1)
+        : 16;
+      const speed = distance / elapsed;
+      const nextScale = 1 + Math.min(speed / 1.6, 1) * 2;
+
+      x = event.clientX;
+      y = event.clientY;
+      scale += (nextScale - scale) * 0.38;
+      cursor.style.setProperty('--plane-scale', scale.toFixed(3));
+
+      if (distance > 1.5 && lastX >= 0 && lastY >= 0) {
+        const nextAngle = (Math.atan2(deltaY, deltaX) * 180) / Math.PI;
+        const angleDelta = ((nextAngle - angle + 540) % 360) - 180;
+        angle += angleDelta * 0.42;
+      }
+
+      lastX = event.clientX;
+      lastY = event.clientY;
+      lastTimestamp = event.timeStamp;
+      cursor.classList.toggle(
+        'is-interactive',
+        Boolean(target?.closest(interactiveSelector)) && !usesNativeCursor
+      );
+      cursor.classList.toggle('is-hidden', usesNativeCursor);
+      cursor.classList.toggle('is-visible', !usesNativeCursor);
+      cursor.classList.remove('is-idle');
+      window.clearTimeout(idleTimer);
+      idleTimer = window.setTimeout(() => {
+        cursor.classList.add('is-idle');
+        scale = 1;
+        cursor.style.setProperty('--plane-scale', '1');
+      }, 110);
+      requestRender();
+    };
+
+    const handlePointerDown = () => cursor.classList.add('is-pressed');
+    const handlePointerUp = () => cursor.classList.remove('is-pressed');
+    const handlePointerLeave = (event: PointerEvent) => {
+      if (
+        !event.relatedTarget ||
+        event.relatedTarget instanceof HTMLIFrameElement
+      ) {
+        cursor.classList.remove('is-visible');
+        cursor.classList.add('is-hidden');
+      }
+    };
+
+    document.documentElement.classList.add('has-paper-plane-cursor');
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    window.addEventListener('pointerdown', handlePointerDown, { passive: true });
+    window.addEventListener('pointerup', handlePointerUp, { passive: true });
+    window.addEventListener('pointercancel', handlePointerUp, { passive: true });
+    document.addEventListener('pointerout', handlePointerLeave, {
+      passive: true,
+    });
+
+    cursorWindow.paperPlaneCursorCleanup = () => {
+      document.documentElement.classList.remove('has-paper-plane-cursor');
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('pointercancel', handlePointerUp);
+      document.removeEventListener('pointerout', handlePointerLeave);
+      window.cancelAnimationFrame(animationFrame);
+      window.clearTimeout(idleTimer);
+    };
+  };
+
+  initializePaperPlaneCursor();
+  document.addEventListener('astro:page-load', initializePaperPlaneCursor);
+</script>

@@ -10,7 +10,7 @@ import ArticleContent from '../../components/ArticleContent.astro';
 import { site } from '../../config';
 import { countWords, readingTime } from '../../utils/content';
 import { getLastModifiedDateFromGit } from '../../utils/git';
-import { getPostPath } from '../../utils/route';
+import { getPostPath, getPostUrl } from '../../utils/route';
 import {
   getCategoryLabel,
   getCategorySlugFromPost,
@@ -81,19 +81,21 @@ if (!lastUpdateDate) {
 }
 ---
 
-<Layout title={title} description={description}>
+<Layout
+  title={title}
+  description={description}
+  markdownAlternate={`${getPostUrl(post)}.md`}
+>
   <ReadingProgress />
 
   <div
-    class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in relative"
+    class="w-full max-w-4xl mx-auto px-4 animate-fade-in relative"
   >
-    <div
-      class="flex flex-col lg:grid lg:grid-cols-[3rem_minmax(0,46rem)_3rem] lg:justify-center lg:gap-x-6"
-    >
+    <div class="article-layout flex flex-col lg:grid">
       <TableOfContents />
 
       <!-- 主内容区 -->
-      <article class="flex-1 w-full lg:max-w-3xl">
+      <article class="min-w-0 w-full">
         <ArticleHeader
           title={title}
           createDate={createDate}
@@ -103,6 +105,8 @@ if (!lastUpdateDate) {
           categorySlug={categorySlug}
           wordCount={wordCount}
           readTime={readTime}
+          url={getPostUrl(post)}
+          markdownUrl={`${getPostUrl(post)}.md`}
         />
 
         <ArticleTags tags={tags} />
@@ -122,3 +126,15 @@ if (!lastUpdateDate) {
     </div>
   </div>
 </Layout>
+
+<style>
+  @media (min-width: 1024px) {
+    .article-layout {
+      grid-template-columns: 0 minmax(0, 1fr);
+    }
+
+    .article-layout :global(#toc-container) {
+      margin-left: -4rem;
+    }
+  }
+</style>

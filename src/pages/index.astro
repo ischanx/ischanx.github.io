@@ -6,6 +6,7 @@ import { site } from '../config';
 import { sortPosts } from '../utils/posts';
 
 const { hero } = site.home;
+const heroHeadingParts = hero.heading.match(/^(.*?)(好奇)(，)(.+)$/);
 
 // 获取文章
 const posts = await getCollection('blog', ({ data }) => {
@@ -19,6 +20,18 @@ const recentPosts = sortedPosts.slice(0, 10);
 
 <Layout>
   <div class="home-content mx-auto max-w-6xl px-3 sm:px-4">
+    <div class="home-backdrop" aria-hidden="true">
+      <img
+        src="/img/home-hero.webp"
+        alt=""
+        width="1672"
+        height="941"
+        loading="eager"
+        decoding="async"
+        fetchpriority="low"
+      />
+    </div>
+
     <section class="blog-hero" aria-labelledby="hero-title">
       <div class="blog-hero__copy">
         <div class="blog-hero__identity" data-home-enter>
@@ -36,48 +49,57 @@ const recentPosts = sortedPosts.slice(0, 10);
           </p>
         </div>
 
-        <h1 id="hero-title" class="blog-hero__title" data-home-enter>
-          {hero.headingPrefix}
-          <span>
-            {hero.headingHighlight}
-            <svg viewBox="0 0 520 24" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M4 15c87-7 176-9 261-7 91 2 166 7 251 3"></path>
-              <path d="M9 19c105-5 211-5 315-3 63 1 126 1 187-2"></path>
-            </svg>
-          </span>
+        <h1
+          id="hero-title"
+          class="blog-hero__title"
+          aria-label={hero.heading}
+          data-home-enter
+        >
+          {
+            heroHeadingParts ? (
+              <>
+                <span class="blog-hero__title-clause">
+                  <span>{heroHeadingParts[1]}</span>
+                  <span class="blog-hero__circled">
+                    {heroHeadingParts[2]}
+                    <svg
+                      class="blog-hero__circle"
+                      viewBox="0 0 200 100"
+                      preserveAspectRatio="none"
+                      aria-hidden="true"
+                    >
+                      <path d="M6 52C8 18 52 5 101 8c50 3 91 16 94 43 3 28-40 43-94 43C48 94 4 80 6 52Z" />
+                      <path d="M10 56C8 29 47 11 105 10c55-1 88 16 88 43 0 25-36 38-91 40C44 95 12 82 10 56Z" />
+                    </svg>
+                  </span>
+                  <span>{heroHeadingParts[3]}</span>
+                </span>
+                <span class="blog-hero__highlight">
+                  {heroHeadingParts[4]}
+                  <svg
+                    class="blog-hero__underline"
+                    viewBox="0 0 520 24"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                  >
+                    <path d="M4 15c87-7 176-9 261-7 91 2 166 7 251 3" />
+                    <path d="M9 19c105-5 211-5 315-3 63 1 126 1 187-2" />
+                  </svg>
+                </span>
+              </>
+            ) : (
+              hero.heading
+            )
+          }
         </h1>
 
         <p class="blog-hero__intro" data-home-enter>
           {hero.summary}
         </p>
       </div>
-
-      <aside
-        class="blog-hero__dialogue"
-        data-hero-dialogues={JSON.stringify(hero.conversations)}
-        data-hero-dialogue
-      >
-        <div class="blog-hero__turn">
-          <p data-hero-question>{hero.conversations[0].question}</p>
-        </div>
-        <div class="blog-hero__turn is-answer">
-          <p>
-            <span
-              data-hero-stream
-            >
-              {hero.conversations[0].answer}
-            </span>
-            <i class="blog-hero__cursor" aria-hidden="true"></i>
-          </p>
-        </div>
-      </aside>
     </section>
 
-    <section class="home-feed" aria-labelledby="latest-notes">
-      <header class="home-feed__header" data-home-reveal>
-        <h2 id="latest-notes">最近写下的东西</h2>
-      </header>
-
+    <section class="home-feed" aria-label="最近文章">
       <div class="home-post-list">
       {
         recentPosts.map(post => (
@@ -90,7 +112,7 @@ const recentPosts = sortedPosts.slice(0, 10);
 
       <div class="home-feed__archive">
         <a href="/archives">
-          前往归档
+          查看更多
           <span aria-hidden="true">→</span>
         </a>
       </div>
@@ -101,12 +123,15 @@ const recentPosts = sortedPosts.slice(0, 10);
 <style>
   .home-content {
     --home-accent: #525252;
+    --home-surface-rgb: 255 255 255;
+    isolation: isolate;
     position: relative;
     z-index: 1;
   }
 
   :global(.dark) .home-content {
     --home-accent: #a3a3a3;
+    --home-surface-rgb: 25 25 25;
   }
 
   .blog-hero {
@@ -114,34 +139,81 @@ const recentPosts = sortedPosts.slice(0, 10);
     --blog-hero-muted: #5f5f5f;
     --blog-hero-line: rgb(23 23 23 / 0.15);
     --blog-hero-sketch: #3157d5;
-    --blog-hero-question-background: rgb(245 245 245 / 0.82);
-    --blog-hero-question-border: rgb(115 115 115 / 0.28);
-    --blog-hero-answer-background: hsl(var(--primary) / 0.08);
-    --blog-hero-answer-border: hsl(var(--primary) / 0.32);
-    --blog-hero-answer-ink: hsl(var(--primary));
-    margin: 1.25rem auto 4.5rem;
-    min-height: 28rem;
-    padding: clamp(4rem, 9vw, 7rem) 0 5rem;
+    --blog-hero-avatar-glow: hsl(var(--primary) / 0.14);
+    margin: 0 auto 3.5rem;
+    max-width: 56rem;
+    padding: clamp(2.25rem, 5vw, 3.75rem) 0 1.5rem;
     position: relative;
   }
 
+  .home-backdrop {
+    height: clamp(22rem, 38vw, 31rem);
+    inset: -2rem 0 auto;
+    mask-image: linear-gradient(to bottom, #000 0%, #000 68%, transparent 100%);
+    overflow: hidden;
+    pointer-events: none;
+    position: absolute;
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 68%,
+      transparent 100%
+    );
+    z-index: -1;
+  }
+
+  .home-backdrop img {
+    height: 100%;
+    object-fit: cover;
+    object-position: 55% 52%;
+    opacity: 0.4;
+    width: 100%;
+  }
+
+  .home-backdrop::after {
+    background: linear-gradient(
+      90deg,
+      rgb(var(--home-surface-rgb) / 0.99) 0%,
+      rgb(var(--home-surface-rgb) / 0.94) 36%,
+      rgb(var(--home-surface-rgb) / 0.5) 68%,
+      rgb(var(--home-surface-rgb) / 0.12) 88%,
+      rgb(var(--home-surface-rgb) / 0.99) 100%
+    );
+    content: '';
+    inset: 0;
+    position: absolute;
+  }
+
   .blog-hero__copy {
-    max-width: 52rem;
+    max-width: 48rem;
+    position: relative;
+    z-index: 1;
   }
 
   .blog-hero__identity {
     align-items: center;
     display: flex;
     gap: 0.9rem;
-    margin-bottom: 1.8rem;
+    margin-bottom: 1.5rem;
   }
 
   .blog-hero__identity img {
+    animation: hero-avatar-breathe 4.2s ease-in-out infinite;
     border-radius: 999px;
-    box-shadow: 0 0 0 1px var(--blog-hero-line);
-    height: 3.25rem;
+    box-shadow:
+      0 0 0 1px var(--blog-hero-line),
+      0 0 0 0 var(--blog-hero-avatar-glow);
+    height: 3rem;
     object-fit: cover;
-    width: 3.25rem;
+    width: 3rem;
+  }
+
+  @keyframes hero-avatar-breathe {
+    50% {
+      box-shadow:
+        0 0 0 1px var(--blog-hero-line),
+        0 0 0 0.45rem var(--blog-hero-avatar-glow);
+    }
   }
 
   .blog-hero__hello {
@@ -160,21 +232,51 @@ const recentPosts = sortedPosts.slice(0, 10);
   }
 
   .blog-hero__title {
+    align-items: baseline;
     color: var(--blog-hero-ink);
-    font-size: clamp(3.4rem, 7.4vw, 6.3rem);
-    font-weight: 740;
-    letter-spacing: -0.075em;
-    line-height: 1.02;
+    column-gap: 0.08em;
+    display: flex;
+    font-size: clamp(2.55rem, 4vw, 3.6rem);
+    flex-wrap: wrap;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.12;
     margin: 0;
+    row-gap: 0.08em;
     text-wrap: balance;
   }
 
-  .blog-hero__title > span {
+  .blog-hero__title-clause {
+    display: inline-flex;
+  }
+
+  .blog-hero__circled,
+  .blog-hero__highlight {
     display: inline-block;
     position: relative;
   }
 
-  .blog-hero__title svg {
+  .blog-hero__circle {
+    fill: none;
+    height: 1.22em;
+    left: 50%;
+    overflow: visible;
+    pointer-events: none;
+    position: absolute;
+    stroke: var(--blog-hero-sketch);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+    top: 50%;
+    transform: translate(-50%, -48%) rotate(-2deg);
+    width: 2.28em;
+  }
+
+  .blog-hero__circle path:last-child {
+    opacity: 0.34;
+  }
+
+  .blog-hero__underline {
     bottom: -0.06em;
     fill: none;
     height: 0.2em;
@@ -188,82 +290,17 @@ const recentPosts = sortedPosts.slice(0, 10);
     width: 100%;
   }
 
-  .blog-hero__title path:last-child {
+  .blog-hero__underline path:last-child {
     opacity: 0.38;
   }
 
   .blog-hero__intro {
     color: var(--blog-hero-muted);
-    font-size: clamp(1rem, 1.5vw, 1.12rem);
-    line-height: 1.85;
-    margin: 2.2rem 0 0;
-    max-width: 40rem;
+    font-size: clamp(0.98rem, 1.4vw, 1.08rem);
+    line-height: 1.8;
+    margin: 1.5rem 0 0;
+    max-width: 46rem;
     text-wrap: pretty;
-  }
-
-  .blog-hero__dialogue {
-    display: flex;
-    flex-direction: column;
-    gap: 1.15rem;
-    position: absolute;
-    right: 0.75rem;
-    top: 10rem;
-    width: 20rem;
-    transition:
-      opacity 360ms ease,
-      transform 360ms ease;
-  }
-
-  .blog-hero__dialogue.is-changing {
-    opacity: 0;
-    transform: translateY(0.35rem);
-  }
-
-  .blog-hero__turn {
-    align-items: flex-end;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .blog-hero__turn.is-answer {
-    align-items: flex-start;
-  }
-
-  .blog-hero__turn p {
-    background: var(--blog-hero-question-background);
-    border: 1px solid var(--blog-hero-question-border);
-    border-radius: 0.95rem 0.95rem 0.2rem 0.95rem;
-    box-shadow: 2px 2px 0 rgb(23 23 23 / 0.035);
-    color: var(--blog-hero-ink);
-    font-size: 0.82rem;
-    line-height: 1.65;
-    margin: 0;
-    max-width: 92%;
-    padding: 0.65rem 0.85rem;
-  }
-
-  .blog-hero__turn.is-answer p {
-    background: var(--blog-hero-answer-background);
-    border-color: var(--blog-hero-answer-border);
-    border-radius: 0.95rem 0.95rem 0.95rem 0.2rem;
-    box-shadow: -2px 2px 0 rgb(49 87 213 / 0.05);
-    color: var(--blog-hero-answer-ink);
-  }
-
-  .blog-hero__cursor {
-    animation: cursor-blink 0.8s steps(1) infinite;
-    background: var(--blog-hero-answer-ink);
-    display: inline-block;
-    height: 0.95em;
-    margin-left: 0.18rem;
-    vertical-align: -0.08em;
-    width: 1px;
-  }
-
-  @keyframes cursor-blink {
-    50% {
-      opacity: 0;
-    }
   }
 
   .home-feed {
@@ -271,21 +308,8 @@ const recentPosts = sortedPosts.slice(0, 10);
     max-width: 56rem;
   }
 
-  .home-feed__header {
-    align-items: end;
-    display: flex;
-    margin-bottom: 1.5rem;
-  }
-
-  .home-feed__header h2 {
-    color: #171717;
-    font-size: clamp(1.55rem, 3vw, 2.1rem);
-    font-weight: 720;
-    letter-spacing: -0.04em;
-  }
-
   .home-post-list {
-    border-top: 1px solid rgb(212 212 212 / 0.95);
+    border-top: 1px dashed rgb(212 212 212 / 0.55);
   }
 
   .home-feed__archive {
@@ -299,10 +323,10 @@ const recentPosts = sortedPosts.slice(0, 10);
 
   .home-feed__archive a {
     align-items: center;
-    background: #171717;
-    border: 1px solid #171717;
-    border-radius: 999px;
-    color: #fff;
+    position: relative;
+    background: transparent;
+    border: 0;
+    color: #404040;
     display: inline-flex;
     font-weight: 650;
     gap: 0.65rem;
@@ -316,11 +340,36 @@ const recentPosts = sortedPosts.slice(0, 10);
       transform 180ms ease;
   }
 
+  .home-feed__archive a::before,
+  .home-feed__archive a::after {
+    position: absolute;
+    pointer-events: none;
+    border: 1.5px solid rgb(115 115 115 / 0.72);
+    content: '';
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .home-feed__archive a::before {
+    inset: 0.08rem -0.2rem;
+    border-radius: 48% 52% 46% 54% / 53% 47% 55% 45%;
+    transform: rotate(0.7deg);
+  }
+
+  .home-feed__archive a::after {
+    inset: 0.14rem -0.14rem 0.04rem -0.25rem;
+    border-radius: 52% 48% 54% 46% / 46% 54% 45% 55%;
+    opacity: 0.34;
+    transform: rotate(-0.9deg);
+  }
+
   .home-feed__archive a:hover {
-    background: var(--home-accent);
-    border-color: var(--home-accent);
-    color: #fff;
-    transform: translateY(-2px);
+    color: hsl(var(--primary));
+    transform: translateY(-1px);
+  }
+
+  .home-feed__archive a:hover::before,
+  .home-feed__archive a:hover::after {
+    border-color: hsl(var(--primary) / 0.82);
   }
 
   .home-feed__archive a span {
@@ -332,8 +381,12 @@ const recentPosts = sortedPosts.slice(0, 10);
   }
 
   .home-feed__archive a:focus-visible {
-    outline: 2px solid var(--home-accent);
-    outline-offset: 4px;
+    outline: none;
+  }
+
+  .home-feed__archive a:focus-visible::before {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.18);
   }
 
   :global(.dark) .blog-hero {
@@ -341,66 +394,95 @@ const recentPosts = sortedPosts.slice(0, 10);
     --blog-hero-muted: #ababab;
     --blog-hero-line: rgb(255 255 255 / 0.13);
     --blog-hero-sketch: #7e9eff;
-    --blog-hero-question-background: rgb(48 48 48 / 0.78);
-    --blog-hero-question-border: rgb(212 212 212 / 0.22);
-    --blog-hero-answer-background: hsl(var(--primary) / 0.17);
-    --blog-hero-answer-border: hsl(var(--primary) / 0.52);
+    --blog-hero-avatar-glow: hsl(var(--primary) / 0.2);
   }
 
-  :global(.dark) .blog-hero__turn p {
-    box-shadow: 2px 2px 0 rgb(255 255 255 / 0.035);
+  :global(.dark) .home-backdrop img {
+    filter: brightness(0.55) saturate(0.72);
+    opacity: 0.24;
   }
 
-  :global(.dark) .blog-hero__turn.is-answer p {
-    box-shadow: -2px 2px 0 rgb(126 158 255 / 0.065);
-  }
-
-  :global(.dark) .home-feed__header h2 {
-    color: var(--theme-dark-page-title);
+  :global(.dark) .home-backdrop::after {
+    background: linear-gradient(
+      90deg,
+      rgb(var(--home-surface-rgb) / 0.99) 0%,
+      rgb(var(--home-surface-rgb) / 0.96) 42%,
+      rgb(var(--home-surface-rgb) / 0.64) 72%,
+      rgb(var(--home-surface-rgb) / 0.38) 88%,
+      rgb(var(--home-surface-rgb) / 0.98) 100%
+    );
   }
 
   :global(.dark) .home-post-list {
-    border-top-color: rgb(82 82 82 / 0.9);
+    border-top-color: rgb(82 82 82 / 0.58);
   }
 
   :global(.dark) .home-feed__archive a {
-    background: var(--theme-dark-page-title);
-    border-color: var(--theme-dark-page-title);
-    color: var(--theme-dark-page-bg);
+    color: rgb(212 212 212);
+  }
+
+  :global(.dark) .home-feed__archive a::before,
+  :global(.dark) .home-feed__archive a::after {
+    border-color: rgb(163 163 163 / 0.68);
   }
 
   :global(.dark) .home-feed__archive a:hover {
-    background: var(--home-accent);
-    border-color: var(--home-accent);
-    color: #171717;
+    color: hsl(var(--primary));
+  }
+
+  :global(.dark) .home-feed__archive a:hover::before,
+  :global(.dark) .home-feed__archive a:hover::after {
+    border-color: hsl(var(--primary) / 0.9);
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .blog-hero__identity img {
+      animation: none;
+    }
+
     .home-feed__archive a,
     .home-feed__archive a span {
       transition: none;
-    }
-
-    .blog-hero__cursor {
-      animation: none;
-    }
-  }
-
-  @media (max-width: 1100px) {
-    .blog-hero__dialogue {
-      margin-top: 2.5rem;
-      max-width: 21rem;
-      position: relative;
-      right: auto;
-      top: auto;
     }
   }
 
   @media (max-width: 767px) {
     .blog-hero {
-      margin: -0.25rem auto 2.25rem;
-      min-height: auto;
-      padding: 3.5rem 0 2.75rem;
+      margin: -0.25rem auto 2.5rem;
+      padding: 2rem 0 0.5rem;
+    }
+
+    .home-backdrop {
+      inset-inline: -0.25rem;
+    }
+
+    .home-backdrop img {
+      object-position: 62% 52%;
+      opacity: 0.18;
+    }
+
+    .home-backdrop::after {
+      background: linear-gradient(
+        90deg,
+        rgb(var(--home-surface-rgb) / 0.92) 0%,
+        rgb(var(--home-surface-rgb) / 0.76) 58%,
+        rgb(var(--home-surface-rgb) / 0.5) 86%,
+        rgb(var(--home-surface-rgb) / 0.92) 100%
+      );
+    }
+
+    :global(.dark) .home-backdrop img {
+      opacity: 0.14;
+    }
+
+    :global(.dark) .home-backdrop::after {
+      background: linear-gradient(
+        90deg,
+        rgb(var(--home-surface-rgb) / 0.9) 0%,
+        rgb(var(--home-surface-rgb) / 0.7) 20%,
+        rgb(var(--home-surface-rgb) / 0.7) 80%,
+        rgb(var(--home-surface-rgb) / 0.9) 100%
+      );
     }
 
     .blog-hero__hello {
@@ -408,7 +490,7 @@ const recentPosts = sortedPosts.slice(0, 10);
     }
 
     .blog-hero__identity {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .blog-hero__identity img {
@@ -417,24 +499,23 @@ const recentPosts = sortedPosts.slice(0, 10);
     }
 
     .blog-hero__title {
-      font-size: clamp(3rem, 15vw, 4.4rem);
-      letter-spacing: -0.08em;
-      line-height: 1.06;
+      font-size: clamp(2.35rem, 10.5vw, 2.85rem);
+      letter-spacing: 0;
+      line-height: 1.14;
     }
 
     .blog-hero__intro {
       font-size: 0.94rem;
       line-height: 1.75;
-      margin-top: 1.6rem;
-    }
-
-    .blog-hero__dialogue {
-      margin: 2.25rem auto 0;
-      width: calc(100% - 0.35rem);
+      margin-top: 1.25rem;
     }
 
     .home-feed__header {
       align-items: center;
+    }
+
+    .home-feed__header h2 {
+      font-size: 1.125rem;
     }
 
   }
@@ -444,7 +525,6 @@ const recentPosts = sortedPosts.slice(0, 10);
   import { animate, inView, stagger } from 'motion';
 
   interface WindowWithHomeEffects extends Window {
-    homeStreamAbortController?: AbortController;
     homeMotionCleanup?: () => void;
   }
 
@@ -531,85 +611,6 @@ const recentPosts = sortedPosts.slice(0, 10);
     };
   };
 
-  const initializeHomeStream = () => {
-    const dialogue = document.querySelector<HTMLElement>(
-      '[data-hero-dialogue]'
-    );
-    const question = document.querySelector<HTMLElement>(
-      '[data-hero-question]'
-    );
-    const output = document.querySelector<HTMLElement>('[data-hero-stream]');
-    const windowWithStream = window as WindowWithHomeEffects;
-
-    windowWithStream.homeStreamAbortController?.abort();
-    if (!dialogue || !question || !output) return;
-
-    const controller = new AbortController();
-    const conversations = JSON.parse(
-      dialogue.dataset.heroDialogues ?? '[]'
-    ) as Array<{ question: string; answer: string }>;
-    if (conversations.length === 0) return;
-    const reduceMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
-
-    if (reduceMotion) {
-      question.textContent = conversations[0].question;
-      output.textContent = conversations[0].answer;
-      windowWithStream.homeStreamAbortController = controller;
-      return;
-    }
-
-    let conversationIndex = 0;
-    let characterIndex = 0;
-    let timer = 0;
-
-    const schedule = (callback: () => void, delay: number) => {
-      timer = window.setTimeout(callback, delay);
-    };
-
-    const showNextConversation = () => {
-      if (controller.signal.aborted) return;
-
-      dialogue.classList.add('is-changing');
-      schedule(() => {
-        conversationIndex = (conversationIndex + 1) % conversations.length;
-        characterIndex = 0;
-        question.textContent = conversations[conversationIndex].question;
-        output.textContent = '';
-        dialogue.classList.remove('is-changing');
-        schedule(writeNextCharacter, 620);
-      }, 380);
-    };
-
-    const writeNextCharacter = () => {
-      if (controller.signal.aborted) return;
-
-      const answer = conversations[conversationIndex].answer;
-      characterIndex += 1;
-      output.textContent = answer.slice(0, characterIndex);
-      if (characterIndex >= answer.length) {
-        schedule(showNextConversation, 4000);
-        return;
-      }
-
-      const currentCharacter = answer[characterIndex - 1];
-      const delay = /[，。！？]/.test(currentCharacter) ? 260 : 78;
-      schedule(writeNextCharacter, delay);
-    };
-
-    controller.signal.addEventListener('abort', () => {
-      window.clearTimeout(timer);
-    });
-
-    windowWithStream.homeStreamAbortController = controller;
-    question.textContent = conversations[0].question;
-    output.textContent = '';
-    schedule(writeNextCharacter, 1900);
-  };
-
   initializeHomeMotion();
-  initializeHomeStream();
   document.addEventListener('astro:page-load', initializeHomeMotion);
-  document.addEventListener('astro:page-load', initializeHomeStream);
 </script>

@@ -68,7 +68,6 @@ const isActiveNavItem = (link: string) =>
                     'text-primary dark:text-primary after:scale-x-100',
                 ]}
                 style={`animation-delay: ${index * 100}ms`}
-                target={item.target}
                 aria-current={
                   isActiveNavItem(item.link) ? 'page' : undefined
                 }
@@ -162,7 +161,6 @@ const isActiveNavItem = (link: string) =>
               isActiveNavItem(item.link) &&
                 'text-primary dark:text-primary bg-neutral-200/60 dark:bg-neutral-800/60 after:scale-x-100',
             ]}
-            target={item.target}
             aria-current={
               isActiveNavItem(item.link) ? 'page' : undefined
             }

@@ -4,6 +4,7 @@ import Footer from '../components/Footer.astro';
 import SEO from '../components/SEO.astro';
 import GlobalSearch from '../components/GlobalSearch.astro';
 import Analytics from '../components/Analytics.astro';
+import PaperPlaneCursor from '../components/PaperPlaneCursor.astro';
 import { site } from '../config';
 import '../styles/global.css';
 import '../styles/rehype-pretty-code.css';
@@ -15,6 +16,7 @@ interface Props {
   image?: string;
   type?: 'website' | 'article';
   canonical?: string;
+  markdownAlternate?: string;
   publishDate?: Date;
   modifiedDate?: Date;
   author?: string;
@@ -29,6 +31,7 @@ const {
   image = site.avatar,
   type = 'website',
   canonical,
+  markdownAlternate,
   publishDate,
   modifiedDate,
   author = site.author,
@@ -72,6 +75,7 @@ const {
       image={image}
       type={type}
       canonical={canonical}
+      markdownAlternate={markdownAlternate}
       publishDate={publishDate}
       modifiedDate={modifiedDate}
       author={author}
@@ -90,6 +94,8 @@ const {
 
     <!-- 全局搜索 -->
     <GlobalSearch />
+
+    <PaperPlaneCursor />
 
     <!-- 搜索快捷键提示 -->
     <div

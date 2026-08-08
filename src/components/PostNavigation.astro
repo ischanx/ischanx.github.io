@@ -11,33 +11,23 @@ interface Props {
 const { prevPost, nextPost } = Astro.props;
 ---
 
-<nav
-  class="mt-6 md:mt-8 flex flex-col sm:flex-row justify-between gap-3 md:gap-4 animate-fade-in"
-  style="animation-delay: 500ms;"
->
+<nav class="post-navigation" aria-label="文章导航">
   {
     prevPost ? (
-      <a
-        href={getPostUrl(prevPost)}
-        class="flex-1 p-3 md:p-4 bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-700 flex flex-col hover:bg-primary-50/70 dark:hover:bg-primary-950/20 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-md transition-all duration-300 group cursor-pointer"
-      >
-        <span class="text-xs md:text-sm text-neutral-500 dark:text-neutral-400 flex items-center mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-          <Icon name="arrow-left" fontSize="14px" class="mr-1" />
+      <a class="post-navigation__item" href={getPostUrl(prevPost)}>
+        <span class="post-navigation__direction">
+          <Icon name="arrow-left" fontSize="14px" />
           上一篇
         </span>
-        <span class="font-medium text-sm md:text-base text-neutral-900 dark:text-neutral-200 group-hover:text-primary-700 dark:group-hover:text-primary-300 line-clamp-2 transition-colors">
-          {prevPost.data.title}
-        </span>
+        <span class="post-navigation__title">{prevPost.data.title}</span>
       </a>
     ) : (
-      <div class="flex-1 p-3 md:p-4 bg-neutral-50 dark:bg-neutral-900/50 rounded-xl border border-neutral-200 dark:border-neutral-800 flex flex-col opacity-40 cursor-not-allowed">
-        <span class="text-xs md:text-sm text-neutral-400 dark:text-neutral-500 flex items-center mb-1">
-          <Icon name="arrow-left" fontSize="14px" class="mr-1" />
+      <div class="post-navigation__item is-disabled" aria-disabled="true">
+        <span class="post-navigation__direction">
+          <Icon name="arrow-left" fontSize="14px" />
           上一篇
         </span>
-        <span class="font-medium text-sm md:text-base line-clamp-2 text-neutral-400 dark:text-neutral-600">
-          没有更多文章
-        </span>
+        <span class="post-navigation__title">没有更多文章</span>
       </div>
     )
   }
@@ -45,27 +35,133 @@ const { prevPost, nextPost } = Astro.props;
   {
     nextPost ? (
       <a
+        class="post-navigation__item post-navigation__item--next"
         href={getPostUrl(nextPost)}
-        class="flex-1 p-3 md:p-4 bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-700 flex flex-col text-right hover:bg-primary-50/70 dark:hover:bg-primary-950/20 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-md transition-all duration-300 group cursor-pointer"
       >
-        <span class="text-xs md:text-sm text-neutral-500 dark:text-neutral-400 flex items-center justify-end mb-1 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+        <span class="post-navigation__direction">
           下一篇
-          <Icon name="arrow-right" fontSize="14px" class="ml-1" />
+          <Icon name="arrow-right" fontSize="14px" />
         </span>
-        <span class="font-medium text-sm md:text-base text-neutral-900 dark:text-neutral-200 group-hover:text-primary-700 dark:group-hover:text-primary-300 line-clamp-2 transition-colors">
-          {nextPost.data.title}
-        </span>
+        <span class="post-navigation__title">{nextPost.data.title}</span>
       </a>
     ) : (
-      <div class="flex-1 p-3 md:p-4 bg-neutral-50 dark:bg-neutral-900/50 rounded-xl border border-neutral-200 dark:border-neutral-800 flex flex-col text-right opacity-40 cursor-not-allowed">
-        <span class="text-xs md:text-sm text-neutral-400 dark:text-neutral-500 flex items-center justify-end mb-1">
+      <div
+        class="post-navigation__item post-navigation__item--next is-disabled"
+        aria-disabled="true"
+      >
+        <span class="post-navigation__direction">
           下一篇
-          <Icon name="arrow-right" fontSize="14px" class="ml-1" />
+          <Icon name="arrow-right" fontSize="14px" />
         </span>
-        <span class="font-medium text-sm md:text-base line-clamp-2 text-neutral-400 dark:text-neutral-600">
-          没有更多文章
-        </span>
+        <span class="post-navigation__title">没有更多文章</span>
       </div>
     )
   }
 </nav>
+
+<style>
+  .post-navigation {
+    border-top: 1px solid rgb(23 23 23 / 0.08);
+    display: grid;
+    gap: clamp(2rem, 6vw, 5rem);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 2.5rem;
+    padding-top: 1.35rem;
+  }
+
+  .post-navigation__item {
+    color: rgb(64 64 64);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding-block: 0.35rem;
+    text-decoration: none;
+  }
+
+  .post-navigation__item--next {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .post-navigation__direction {
+    align-items: center;
+    color: rgb(148 148 148);
+    display: inline-flex;
+    font-size: 0.72rem;
+    gap: 0.4rem;
+    line-height: 1.5;
+    margin-bottom: 0.45rem;
+  }
+
+  .post-navigation__direction :global(svg) {
+    transition: transform 180ms ease;
+  }
+
+  .post-navigation__title {
+    display: -webkit-box;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.55;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 180ms ease;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  a.post-navigation__item:hover .post-navigation__title {
+    color: hsl(var(--primary));
+  }
+
+  a.post-navigation__item:hover .post-navigation__direction :global(svg) {
+    transform: translateX(-0.18rem);
+  }
+
+  a.post-navigation__item--next:hover
+    .post-navigation__direction
+    :global(svg) {
+    transform: translateX(0.18rem);
+  }
+
+  a.post-navigation__item:focus-visible {
+    border-radius: 2px;
+    outline: 2px solid hsl(var(--primary) / 0.68);
+    outline-offset: 4px;
+  }
+
+  .post-navigation__item.is-disabled {
+    color: rgb(163 163 163);
+    opacity: 0.58;
+  }
+
+  :global(.dark) .post-navigation {
+    border-top-color: rgb(255 255 255 / 0.09);
+  }
+
+  :global(.dark) .post-navigation__item {
+    color: rgb(212 212 212);
+  }
+
+  :global(.dark) .post-navigation__direction {
+    color: rgb(115 115 115);
+  }
+
+  :global(.dark) .post-navigation__item.is-disabled {
+    color: rgb(115 115 115);
+  }
+
+  @media (max-width: 640px) {
+    .post-navigation {
+      gap: 1.35rem;
+      grid-template-columns: 1fr;
+      margin-top: 2rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .post-navigation__direction :global(svg),
+    .post-navigation__title {
+      transition: none;
+    }
+  }
+</style>

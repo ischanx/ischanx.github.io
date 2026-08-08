@@ -15,62 +15,160 @@ interface Props {
 const { posts } = Astro.props;
 ---
 
-<div class="overflow-hidden">
-  <table class="w-full">
-    <thead>
-      <tr class="border-b border-neutral-200 dark:border-neutral-700">
-        <th
-          class="text-left py-3 px-4 font-semibold text-neutral-700 dark:text-neutral-300"
-          >标题</th
-        >
-        <th
-          class="text-right py-3 px-4 font-semibold text-neutral-700 dark:text-neutral-300"
-          >标签</th
-        >
-      </tr>
-    </thead>
-    <tbody>
-      {
-        posts.map(post => (
-          <tr
-            class="border-b border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
-          >
-            <td class="py-3 px-4">
-              <a
-                href={getPostUrl(post)}
-                class="text-neutral-900 dark:text-neutral-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium"
-              >
-                {post.data.title}
-              </a>
-            </td>
-            <td class="py-3 px-4 text-right">
-              <div class="flex gap-2 justify-end flex-wrap">
-                {normalizeTags(post.data.tags).length > 0 ? (
-                  normalizeTags(post.data.tags).map((tag: string) => {
-                    const slug = getTagSlug(tag);
-                    const label = getTagLabel(tag);
-                    const className = 'text-xs px-2 py-1 bg-neutral-100 dark:bg-neutral-700 rounded text-neutral-700 dark:text-neutral-300 hover:bg-primary-50 dark:hover:bg-primary-950/40 hover:text-primary-700 dark:hover:text-primary-300 transition-colors';
+<ol class="compact-posts">
+  {
+    posts.map(post => {
+      const tags = normalizeTags(post.data.tags);
+      const date = post.data.createDate;
 
-                    return slug ? (
-                      <a
-                        href={createTagUrl(tag)}
-                        class={className}
-                        onclick="event.stopPropagation()"
-                      >
-                        #{label}
-                      </a>
-                    ) : (
-                      <span class={className}>#{label}</span>
-                    );
-                  })
-                ) : (
-                  <span class="text-sm text-neutral-400 dark:text-neutral-500">-</span>
-                )}
+      return (
+        <li class="compact-posts__item">
+          <time datetime={date.toISOString()}>
+            {date.toLocaleDateString('zh-CN', {
+              month: '2-digit',
+              day: '2-digit',
+            })}
+          </time>
+          <div class="compact-posts__content">
+            <a class="compact-posts__title" href={getPostUrl(post)}>
+              {post.data.title}
+            </a>
+            {tags.length > 0 && (
+              <div class="compact-posts__tags" aria-label="文章标签">
+                {tags.map((tag: string) => {
+                  const slug = getTagSlug(tag);
+                  const label = getTagLabel(tag);
+
+                  return slug ? (
+                    <a href={createTagUrl(tag)}>#{label}</a>
+                  ) : (
+                    <span>#{label}</span>
+                  );
+                })}
               </div>
-            </td>
-          </tr>
-        ))
-      }
-    </tbody>
-  </table>
-</div>
+            )}
+          </div>
+        </li>
+      );
+    })
+  }
+</ol>
+
+<style>
+  .compact-posts {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px dashed rgb(212 212 212 / 0.72);
+  }
+
+  .compact-posts__item {
+    display: grid;
+    grid-template-columns: 3.4rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1rem 0.4rem;
+    border-bottom: 1px dashed rgb(212 212 212 / 0.72);
+    transition: background-color 160ms ease;
+  }
+
+  .compact-posts__item:hover {
+    background: rgb(245 245 245 / 0.58);
+  }
+
+  .compact-posts time {
+    padding-top: 0.15rem;
+    color: rgb(163 163 163);
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
+  }
+
+  .compact-posts__content {
+    min-width: 0;
+  }
+
+  .compact-posts__title {
+    color: rgb(38 38 38);
+    font-size: 0.96rem;
+    font-weight: 580;
+    line-height: 1.55;
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+
+  .compact-posts__title:hover {
+    color: hsl(var(--primary));
+  }
+
+  .compact-posts__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+    margin-top: 0.45rem;
+    color: rgb(163 163 163);
+    font-size: 0.72rem;
+    line-height: 1.45;
+  }
+
+  .compact-posts__tags a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+
+  .compact-posts__tags a:hover {
+    color: hsl(var(--primary));
+  }
+
+  .compact-posts a:focus-visible {
+    border-radius: 2px;
+    outline: 2px solid hsl(var(--primary) / 0.55);
+    outline-offset: 3px;
+  }
+
+  :global(.dark) .compact-posts {
+    border-color: rgb(82 82 82 / 0.7);
+  }
+
+  :global(.dark) .compact-posts__item {
+    border-color: rgb(82 82 82 / 0.7);
+  }
+
+  :global(.dark) .compact-posts__item:hover {
+    background: rgb(38 38 38 / 0.45);
+  }
+
+  :global(.dark) .compact-posts time,
+  :global(.dark) .compact-posts__tags {
+    color: rgb(115 115 115);
+  }
+
+  :global(.dark) .compact-posts__title {
+    color: rgb(229 229 229);
+  }
+
+  :global(.dark) .compact-posts__title:hover,
+  :global(.dark) .compact-posts__tags a:hover {
+    color: hsl(var(--primary));
+  }
+
+  @media (max-width: 640px) {
+    .compact-posts__item {
+      grid-template-columns: 3rem minmax(0, 1fr);
+      gap: 0.65rem;
+      padding-block: 0.9rem;
+    }
+
+    .compact-posts__title {
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .compact-posts__item,
+    .compact-posts__title,
+    .compact-posts__tags a {
+      transition: none;
+    }
+  }
+</style>

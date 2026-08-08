@@ -38,6 +38,7 @@
     "@astrojs/react": "^5.0.7",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.3",
+    "@lobehub/icons-static-svg": "^1.94.0",
     "@openpanel/astro": "^1.4.1",
     "astro": "^6.4.7",
     "date-fns": "^4.4.0",

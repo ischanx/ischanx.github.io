@@ -37,32 +37,8 @@ export const site = {
   home: {
     hero: {
       greeting: '嗨，我是陈同学。',
-      headingPrefix: '在 AI 时代，',
-      headingHighlight: '保持好奇心。',
-      summary:
-        '这里记录我和 AI 一起探索、一起进步的过程',
-      conversations: [
-        {
-          question: '为什么写博客？',
-          answer: '因为我想留下的，不只是答案，还有一个问题被想清楚的过程。',
-        },
-        {
-          question: '这里会写些什么？',
-          answer: '前端、后端、AI，也写一些技术之外的经历和思考。',
-        },
-        {
-          question: '这个博客写给谁？',
-          answer: '先写给自己，也写给刚好在思考同一个问题的人。',
-        },
-        {
-          question: '怎么看待 AI？',
-          answer: 'AI 是能力的放大器，而不是人的替代，最终能走多远仍取决于自身的能力和判断。',
-        },
-        {
-          question: 'AI 时代的工程师需要什么？',
-          answer: '技术上要有自己的深度，认知上也要有足够的广度，理解上下游链路和整个系统。',
-        },
-      ],
+      heading: '保持好奇，继续探索',
+      summary: '写代码，玩游戏，看剧，吃好吃的，偶尔也折腾 AI。',
     },
   },
   keywords: "chanx, ischanx, chanxblog, 前端开发, web, tech, blog, astro, 程序员, 技术博客, 个人博客",
@@ -89,14 +65,9 @@ export const site = {
     { text: "归档", link: "/archives", icon: "clock" },
     { text: "分类", link: "/categories", icon: "category" },
     { text: "标签", link: "/tags", icon: "tags" },
+    { text: "项目", link: "/projects", icon: "grid" },
     { text: "关于", link: "/about", icon: "user" },
-    { text: "友链", link: "/links", icon: "link" },
-    {
-      text: "RSS",
-      icon: "rss",
-      link: "/atom.xml",
-      target: "_blank"
-    }
+    { text: "友链", link: "/links", icon: "link" }
   ],
   footer: {
     copyright: '© 2019 - {currentYear} Chanx | Powered by Astro',
@@ -104,7 +75,8 @@ export const site = {
     showUptime: true,
     text: {
       statementTitle: '持续探索，不断记录',
-      statementDescription: '这里记录我和 AI 一起探索、一起进步的过程',
+      statementDescription:
+        '写代码，玩游戏，看剧，吃好吃的，偶尔也折腾 AI。',
       navigationLabel: '页脚导航',
       browseLabel: '浏览',
       connectLabel: '连接',
@@ -212,6 +184,12 @@ export const links = {
       intro: "某不知名后端工程师",
       link: "https://panyc0217.github.io",
       avatar: "https://panyc0217.github.io/assets/img/avatar.jpg"
+    },
+    {
+      title: "刷新",
+      intro: "前端开发者、摄影爱好者、明日方舟玩家",
+      link: "https://home.shuaxinjs.cn/",
+      avatar: "https://avatars.githubusercontent.com/u/32100575?v=4"
     },
   ],
   custom: {

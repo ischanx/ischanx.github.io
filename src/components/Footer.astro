@@ -27,7 +27,6 @@ if (footer.showUptime && footer.launchedAt) {
   <div class="site-footer__inner">
     <div class="site-footer__main">
       <div class="site-footer__statement">
-        <i aria-hidden="true"></i>
         <p>{footer.text.statementTitle}</p>
         <span>{footer.text.statementDescription}</span>
       </div>
@@ -127,23 +126,22 @@ if (footer.showUptime && footer.launchedAt) {
     --footer-line: rgb(23 23 23 / 0.13);
     --footer-accent: #525252;
     background: #fff;
-    border-top: 1px solid var(--footer-line);
     color: var(--footer-muted);
     position: relative;
   }
 
   .site-footer__inner {
     margin: 0 auto;
-    max-width: 72rem;
-    padding: clamp(3rem, 5vw, 4.5rem) 1rem 1.6rem;
+    max-width: 56rem;
+    padding: 2.5rem 1rem 1.25rem;
   }
 
   .site-footer__main {
     align-items: start;
     display: grid;
-    gap: 4rem;
+    gap: 3rem;
     grid-template-columns: minmax(0, 1fr) auto;
-    padding-bottom: clamp(3rem, 5vw, 4rem);
+    padding-bottom: 2rem;
   }
 
   .site-footer__statement {
@@ -151,32 +149,23 @@ if (footer.showUptime && footer.launchedAt) {
     position: relative;
   }
 
-  .site-footer__statement i {
-    background: var(--footer-accent);
-    display: block;
-    height: 1px;
-    margin-bottom: 1.6rem;
-    transform: rotate(-1deg);
-    width: 2.75rem;
-  }
-
   .site-footer__statement p {
     color: var(--footer-ink);
-    font-size: clamp(1.2rem, 2vw, 1.5rem);
-    font-weight: 680;
-    letter-spacing: -0.035em;
+    font-size: 1rem;
+    font-weight: 650;
+    letter-spacing: 0;
     line-height: 1.35;
-    margin: 0 0 0.7rem;
+    margin: 0 0 0.45rem;
   }
 
   .site-footer__statement > span {
-    font-size: 0.9rem;
-    line-height: 1.8;
+    font-size: 0.78rem;
+    line-height: 1.65;
   }
 
   .site-footer__nav {
     display: grid;
-    gap: clamp(3rem, 7vw, 5.5rem);
+    gap: 3.5rem;
     grid-template-columns: repeat(2, minmax(5rem, 1fr));
   }
 
@@ -184,19 +173,19 @@ if (footer.showUptime && footer.launchedAt) {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
-    gap: 0.78rem;
+    gap: 0.55rem;
   }
 
   .site-footer__label {
     color: var(--footer-faint);
     font-size: 0.66rem;
-    letter-spacing: 0.18em;
-    margin-bottom: 0.35rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.2rem;
   }
 
   .site-footer__nav a {
-    color: var(--footer-ink);
-    font-size: 0.82rem;
+    color: var(--footer-muted);
+    font-size: 0.76rem;
     line-height: 1.5;
     text-decoration: none;
     text-underline-offset: 0.3em;
@@ -204,24 +193,25 @@ if (footer.showUptime && footer.launchedAt) {
   }
 
   .site-footer__nav a:hover {
-    color: var(--footer-accent);
+    color: hsl(var(--primary));
   }
 
   .site-footer__nav a:focus-visible,
   .site-footer__meta a:focus-visible {
-    outline: 1px dashed var(--footer-accent);
-    outline-offset: 0.25rem;
+    border-radius: 2px;
+    outline: 2px solid hsl(var(--primary) / 0.68);
+    outline-offset: 3px;
   }
 
   .site-footer__meta {
     align-items: center;
-    border-top: 1px solid var(--footer-line);
+    border-top: 1px dashed var(--footer-line);
     display: flex;
     font-size: 0.68rem;
-    gap: 1.5rem;
+    gap: 1rem;
     justify-content: space-between;
     line-height: 1.7;
-    padding-top: 1.35rem;
+    padding-top: 1rem;
   }
 
   .site-footer__copyright {
@@ -291,8 +281,8 @@ if (footer.showUptime && footer.launchedAt) {
   }
 
   .back-to-top:focus-visible {
-    outline: 1px dashed #737373;
-    outline-offset: 0.25rem;
+    outline: 2px solid hsl(var(--primary) / 0.68);
+    outline-offset: 3px;
   }
 
   :global(.dark) .site-footer {
@@ -317,21 +307,17 @@ if (footer.showUptime && footer.launchedAt) {
 
   @media (max-width: 767px) {
     .site-footer__inner {
-      padding: 3.5rem 1.25rem 1.4rem;
+      padding: 2.5rem 1.25rem 1.25rem;
     }
 
     .site-footer__main {
-      gap: 3.5rem;
+      gap: 2.5rem;
       grid-template-columns: 1fr;
-      padding-bottom: 3.5rem;
-    }
-
-    .site-footer__statement p {
-      font-size: 1.3rem;
+      padding-bottom: 2rem;
     }
 
     .site-footer__nav {
-      gap: 3.5rem;
+      gap: 2.5rem;
       grid-template-columns: repeat(2, 1fr);
     }
 

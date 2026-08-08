@@ -53,7 +53,10 @@ const readTime = readingTime(rawContent);
     <!-- 标题 -->
     <h2
       class:list={[
-        'text-base md:text-xl font-bold mb-2 relative',
+        'font-bold mb-2 relative',
+        variant === 'list'
+          ? 'text-[15px] md:text-lg'
+          : 'text-base md:text-xl',
         displayImage && 'md:pr-[205px]',
       ]}
     >
@@ -91,7 +94,12 @@ const readTime = readingTime(rawContent);
           <img
             src={displayImage}
             alt=""
-            class="absolute inset-0 h-full w-full object-cover opacity-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-[1.025]"
+            class:list={[
+              'absolute inset-0 h-full w-full object-cover transition-opacity duration-300',
+              variant === 'list'
+                ? 'opacity-[0.86] group-hover:opacity-95'
+                : 'opacity-90 group-hover:opacity-100',
+            ]}
           />
         </div>
       )
@@ -174,7 +182,7 @@ const readTime = readingTime(rawContent);
   }
 
   .post-card--list {
-    border-bottom: 1px solid rgb(212 212 212 / 0.95);
+    border-bottom: 1px dashed rgb(212 212 212 / 0.55);
     transition:
       background-color 220ms ease,
       transform 300ms ease;
@@ -186,7 +194,7 @@ const readTime = readingTime(rawContent);
 
   .post-card--list:hover,
   .post-card--list:focus-within {
-    background-color: rgb(229 229 229 / 0.88);
+    background-color: rgb(229 229 229 / 0.42);
   }
 
   .post-card--list:hover .post-title,
@@ -202,7 +210,7 @@ const readTime = readingTime(rawContent);
   }
 
   :global(.dark) .post-card--list {
-    border-bottom-color: rgb(82 82 82 / 0.9);
+    border-bottom-color: rgb(82 82 82 / 0.58);
   }
 
   :global(.dark) .post-card--list .post-title {
@@ -211,7 +219,7 @@ const readTime = readingTime(rawContent);
 
   :global(.dark) .post-card--list:hover,
   :global(.dark) .post-card--list:focus-within {
-    background-color: rgb(50 50 50 / 0.96);
+    background-color: rgb(50 50 50 / 0.52);
   }
 
   :global(.dark) .post-card--list:hover .post-title,

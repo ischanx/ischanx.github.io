@@ -1,0 +1,75 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<div class="journal-page">
+  <slot name="before" />
+  <header class="journal-page__header">
+    <h1 class="journal-page__title">{title}</h1>
+    {description && <p class="journal-page__description">{description}</p>}
+    <slot name="meta" />
+  </header>
+  <slot />
+</div>
+
+<style>
+  .journal-page {
+    width: min(100%, 56rem);
+    margin-inline: auto;
+    padding: 3.5rem 1rem 5rem;
+  }
+
+  .journal-page__header {
+    max-width: 42rem;
+    margin-bottom: 3.75rem;
+  }
+
+  .journal-page__title {
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    color: rgb(23 23 23);
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 750;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+
+  :global(.dark) .journal-page__title {
+    color: rgb(229 229 229);
+  }
+
+  .journal-page__description {
+    margin: 1.35rem 0 0;
+    color: rgb(115 115 115);
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+
+  :global(.dark) .journal-page__description {
+    color: rgb(163 163 163);
+  }
+
+  @media (max-width: 640px) {
+    .journal-page {
+      padding: 2.5rem 0.75rem 4rem;
+    }
+
+    .journal-page__header {
+      margin-bottom: 3rem;
+    }
+
+    .journal-page__title {
+      font-size: 2rem;
+    }
+
+    .journal-page__description {
+      font-size: 0.82rem;
+    }
+  }
+</style>

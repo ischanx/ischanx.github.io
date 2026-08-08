@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import ArticleActions from './ArticleActions.astro';
 import { formatDate } from '../utils/date';
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
   categorySlug?: string;
   wordCount: number;
   readTime: number;
+  url: string;
+  markdownUrl: string;
 }
 
 const {
@@ -22,10 +25,12 @@ const {
   categorySlug,
   wordCount,
   readTime,
+  url,
+  markdownUrl,
 } = Astro.props;
 ---
 
-<header class="mb-3 md:mb-4 animate-slide-down">
+<header class="relative z-40 mb-3 md:mb-4 animate-slide-down">
   {
     category && (
       <nav class="article-breadcrumb" aria-label="文章分类">
@@ -40,11 +45,14 @@ const {
     )
   }
 
-  <h1
-    class="text-2xl md:text-3xl font-bold mt-4 md:mt-5 mb-4 md:mb-5 text-[#20242b] dark:text-[var(--theme-dark-page-title)] leading-tight"
-  >
-    {title}
-  </h1>
+  <div class="article-title-row">
+    <h1
+      class="min-w-0 text-2xl md:text-3xl font-bold text-[#20242b] dark:text-[var(--theme-dark-page-title)] leading-tight"
+    >
+      {title}
+    </h1>
+    <ArticleActions title={title} url={url} markdownUrl={markdownUrl} />
+  </div>
 
   <div class="article-meta">
     <time datetime={createDate.toISOString()} class="article-meta-item">
@@ -103,6 +111,10 @@ const {
 
   .article-meta {
     @apply flex flex-wrap items-center gap-x-3 gap-y-2 text-[13px] leading-6 text-neutral-500 dark:text-neutral-400;
+  }
+
+  .article-title-row {
+    @apply mt-4 mb-4 flex items-start justify-between gap-3 md:mt-5 md:mb-5 md:gap-5;
   }
 
   .article-meta-item {

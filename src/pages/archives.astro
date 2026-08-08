@@ -28,12 +28,6 @@ const posts = [...allPosts].sort(
 const totalPosts = posts.length;
 const totalWords = posts.reduce((sum, post) => sum + countWords(post.body ?? ''), 0);
 
-const monthKey = (date: Date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  return `${year}-${month}`;
-};
-
 const formatHeatmapDate = (date: Date) =>
   date.toLocaleDateString('zh-CN', {
     year: 'numeric',
@@ -142,134 +136,126 @@ const years = Object.keys(postsByYearMonth)
 ---
 
 <Layout title="归档">
-  <div class="max-w-4xl mx-auto px-2 sm:px-4 py-6 md:py-8">
-    <!-- 统计信息 -->
-    <div class="mb-8 rounded-xl border border-neutral-200 border-l-4 border-l-primary-500 bg-neutral-100/90 p-4 md:mb-12 md:p-6 dark:border-neutral-800 dark:border-l-primary-400 dark:bg-neutral-900/90">
-      <p class="text-sm leading-relaxed text-neutral-700 md:text-base dark:text-neutral-300">
-        过去 <span class="font-bold text-primary-700 dark:text-primary-300">{runningTime}</span>，
-        总共有 <span class="font-bold text-primary-700 dark:text-primary-300">{totalPosts}</span> 篇文章，
-        累计 <span class="font-bold text-primary-700 dark:text-primary-300">{totalWords.toLocaleString()}</span> 字
+  <div class="archive-page">
+    <header class="archive-intro">
+      <h1 class="archive-title">写过的这些年</h1>
+      <p class="archive-summary">
+        从第一篇到现在，已经写了 <strong>{runningTime}</strong>
+        <span aria-hidden="true">·</span>
+        <strong>{totalPosts}</strong> 篇文章
+        <span aria-hidden="true">·</span>
+        <strong>{totalWords.toLocaleString()}</strong> 字
       </p>
-    </div>
+    </header>
 
-    <section class="mb-10 md:mb-12" aria-label="过去五年文章周热力图">
-      <div class="mb-2 flex items-center justify-between text-xs font-medium text-neutral-400 dark:text-neutral-500">
-        <span>{heatmapStartYear}</span>
-        <span>{heatmapEndYear}</span>
-      </div>
-      <div class="grid grid-flow-col grid-rows-[repeat(5,minmax(0,1fr))] gap-0.5 sm:gap-1">
+    <section class="archive-trace" aria-label="文章发布热力图">
+      <p class="archive-trace__range">
+        {heatmapStartYear} - {heatmapEndYear}
+      </p>
+      <div class="archive-heatmap-scroll">
+        <div class="archive-heatmap-grid">
         {archiveHeatmapWeeks.map(week => (
-          <span
-            class={`archive-heatmap-cell aspect-square rounded-[2px] ring-primary-300/0 transition duration-150 hover:z-10 hover:scale-125 hover:ring-2 dark:ring-primary-500/0 dark:hover:ring-primary-500/70 ${
-              week.level === 0
-              ? 'bg-neutral-200 dark:bg-neutral-800'
-                : week.level === 1
-                  ? 'bg-primary-100 dark:bg-primary-950/80'
-                : week.level === 2
-                    ? 'bg-primary-300 dark:bg-primary-800'
-                : week.level === 3
-                      ? 'bg-primary-500 dark:bg-primary-600'
-                      : 'bg-primary-700 dark:bg-primary-400'
-            }`}
+          <button
+            type="button"
+            class="archive-heatmap-cell"
+            data-level={week.level}
             aria-label={week.label}
+            aria-hidden={week.count === 0 ? 'true' : undefined}
+            tabindex={week.count === 0 ? -1 : 0}
             data-heatmap-cell
           >
             <template data-heatmap-tooltip>
-              <div class="w-72 overflow-hidden rounded-md border border-slate-200 bg-white text-left shadow-[0_18px_45px_rgba(15,23,42,0.18)] ring-1 ring-slate-900/5 dark:border-slate-700 dark:bg-slate-950 dark:shadow-[0_18px_45px_rgba(0,0,0,0.45)] dark:ring-white/10">
-                <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-3 py-2 dark:border-slate-800">
-                  <div class="min-w-0 truncate text-xs font-medium text-slate-700 dark:text-slate-200">
+              <div class="archive-tooltip">
+                <div class="archive-tooltip__header">
+                  <div class="archive-tooltip__date">
                   {week.dateRange}
                   </div>
-                  <div class="shrink-0 rounded bg-neutral-50 px-1.5 py-0.5 text-[10px] font-semibold text-neutral-700 dark:bg-neutral-400/10 dark:text-neutral-300">
+                  <div class="archive-tooltip__words">
                   {week.words.toLocaleString()} 字
                   </div>
                 </div>
-                <div class="border-b border-slate-100 px-3 py-1.5 text-[11px] text-slate-400 dark:border-slate-800 dark:text-slate-500">
+                <div class="archive-tooltip__count">
                 {week.count} 篇文章
                 </div>
-                <div class="px-3 py-2">
+                <div class="archive-tooltip__posts">
                 {week.posts.length > 0 ? (
                   week.posts.slice(0, 4).map(post => (
                     <a
                       href={post.url}
-                      class="block truncate rounded-sm py-0.5 text-xs text-slate-600 transition-colors hover:text-primary-600 dark:text-slate-300 dark:hover:text-primary-400"
+                      class="archive-tooltip__link"
                     >
                       {post.title}
                     </a>
                   ))
                 ) : (
-                  <div class="text-xs text-slate-400 dark:text-slate-500">
+                  <div class="archive-tooltip__empty">
                     暂无文章
                   </div>
                 )}
                 {week.posts.length > 4 && (
-                  <div class="mt-1 text-[10px] font-medium text-neutral-600 dark:text-neutral-300">
+                  <div class="archive-tooltip__more">
                     还有 {week.posts.length - 4} 篇
                   </div>
                 )}
                 </div>
               </div>
             </template>
-          </span>
+          </button>
         ))}
+        </div>
       </div>
     </section>
 
-    <div class="space-y-12">
+    <div class="archive-years">
       {
         years.map(year => {
           const months = Object.keys(postsByYearMonth[year]).sort((a, b) => b.localeCompare(a));
           const yearPosts = months.flatMap(month => postsByYearMonth[year][month]);
 
           return (
-            <div>
-              <div class="mb-4">
-                <h2 class="border-l-4 border-primary-500 pl-3 text-2xl font-bold text-neutral-900 dark:border-primary-400 dark:text-neutral-200">
-                  {year}
-                </h2>
-              </div>
+            <section class="archive-year" aria-labelledby={`archive-year-${year}`}>
+              <header class="archive-year-heading">
+                <h2 id={`archive-year-${year}`}>{year}</h2>
+                <span>{yearPosts.length} 篇</span>
+              </header>
 
-              <div class="divide-y divide-neutral-200 dark:divide-neutral-800">
+              <ol class="archive-list">
                 {yearPosts.map(post => {
                   const postDate = new Date(post.data.createDate);
 
                   return (
-                    <div class="flex flex-wrap items-center gap-x-3 gap-y-2 py-3 first:pt-0 last:pb-0">
+                    <li class="archive-entry">
                       <time
                         datetime={postDate.toISOString()}
-                        class="w-12 shrink-0 text-xs font-medium text-primary-600 dark:text-primary-400"
+                        class="archive-entry__date"
                       >
-                        {postDate.getMonth() + 1}月
+                        {String(postDate.getMonth() + 1).padStart(2, '0')}.{String(postDate.getDate()).padStart(2, '0')}
                       </time>
-                      <a
-                        href={`${getPostUrl(post)}`}
-                        class="min-w-0 text-base font-medium text-neutral-900 transition-colors duration-200 hover:text-primary-600 dark:text-neutral-200 dark:hover:text-primary-400"
-                      >
-                        {post.data.title}
-                      </a>
+                      <div class="archive-entry__body">
+                        <a href={getPostUrl(post)} class="archive-entry__title">
+                          {post.data.title}
+                        </a>
 
-                      {normalizeTags(post.data.tags).length > 0 && (
-                        <div class="flex flex-wrap gap-1.5">
-                          {normalizeTags(post.data.tags).map((tag: string) => {
-                            const slug = getTagSlug(tag);
-                            const label = getTagLabel(tag);
-                            const className = 'rounded-md border border-neutral-300 bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-600 transition-colors duration-200 hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-primary-700 dark:hover:bg-primary-950/40 dark:hover:text-primary-300';
+                        {normalizeTags(post.data.tags).length > 0 && (
+                          <div class="archive-entry__tags">
+                            {normalizeTags(post.data.tags).map((tag: string) => {
+                              const slug = getTagSlug(tag);
+                              const label = getTagLabel(tag);
 
-                            return slug ? (
-                              <a href={createTagUrl(tag)} class={className}>
-                                #{label}
-                              </a>
-                            ) : (
-                              <span class={className}>#{label}</span>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
+                              return slug ? (
+                                <a href={createTagUrl(tag)}>#{label}</a>
+                              ) : (
+                                <span>#{label}</span>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    </li>
                   );
                 })}
-              </div>
-            </div>
+              </ol>
+            </section>
           );
         })
       }
@@ -281,29 +267,370 @@ const years = Object.keys(postsByYearMonth)
   import tippy from 'tippy.js';
   import 'tippy.js/dist/tippy.css';
 
-  document.querySelectorAll('[data-heatmap-cell]').forEach((cell) => {
-    const template = cell.querySelector('template[data-heatmap-tooltip]');
+  const initializeArchiveHeatmap = () => {
+    document.querySelectorAll<HTMLElement>('[data-heatmap-cell]').forEach((cell) => {
+      if (cell.dataset.tooltipReady === 'true') {
+        return;
+      }
 
-    if (!(template instanceof HTMLTemplateElement)) {
-      return;
-    }
+      const template = cell.querySelector('template[data-heatmap-tooltip]');
 
-    tippy(cell, {
-      allowHTML: true,
-      appendTo: document.body,
-      content: template.innerHTML,
-      delay: [80, 40],
-      duration: [140, 100],
-      interactive: true,
-      maxWidth: 'none',
-      offset: [0, 10],
-      placement: 'top',
-      theme: 'archive-heatmap',
+      if (!(template instanceof HTMLTemplateElement)) {
+        return;
+      }
+
+      cell.dataset.tooltipReady = 'true';
+      tippy(cell, {
+        allowHTML: true,
+        appendTo: document.body,
+        content: template.innerHTML,
+        delay: [80, 40],
+        duration: [140, 100],
+        interactive: true,
+        maxWidth: 'none',
+        offset: [0, 10],
+        placement: 'top',
+        theme: 'archive-heatmap',
+        trigger: 'mouseenter focus',
+      });
     });
-  });
+  };
+
+  initializeArchiveHeatmap();
+  document.addEventListener('astro:page-load', initializeArchiveHeatmap);
 </script>
 
 <style is:global>
+  .archive-page {
+    --archive-ink: rgb(23 23 23);
+    --archive-muted: rgb(115 115 115);
+    --archive-faint: rgb(163 163 163);
+    --archive-line: rgb(212 212 212 / 0.72);
+    --archive-hover: rgb(245 245 245 / 0.62);
+    width: min(100%, 56rem);
+    margin-inline: auto;
+    padding: 3.5rem 1rem 5rem;
+    color: var(--archive-ink);
+  }
+
+  .dark .archive-page {
+    --archive-ink: rgb(229 229 229);
+    --archive-muted: rgb(163 163 163);
+    --archive-faint: rgb(115 115 115);
+    --archive-line: rgb(82 82 82 / 0.64);
+    --archive-hover: rgb(38 38 38 / 0.5);
+  }
+
+  .archive-intro {
+    max-width: 42rem;
+    margin-bottom: 3.75rem;
+  }
+
+  .archive-title {
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 750;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+
+  .archive-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.55rem;
+    margin: 1.35rem 0 0;
+    color: var(--archive-muted);
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+
+  .archive-summary strong {
+    color: var(--archive-ink);
+    font-weight: 600;
+  }
+
+  .archive-trace {
+    margin-bottom: 4.25rem;
+  }
+
+  .archive-year-heading {
+    display: flex;
+    align-items: center;
+  }
+
+  .archive-trace__range {
+    color: var(--archive-faint);
+    font-size: 0.72rem;
+    margin: 0 0 1rem;
+    text-align: right;
+  }
+
+  .archive-heatmap-scroll {
+    overflow-x: auto;
+    padding: 0.2rem 0 0.45rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--archive-line) transparent;
+  }
+
+  .archive-heatmap-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(52, minmax(0.55rem, 1fr));
+    gap: 0.22rem;
+    min-width: 36rem;
+  }
+
+  .archive-heatmap-cell {
+    aspect-ratio: 1;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 2px;
+    appearance: none;
+    background: rgb(229 229 229 / 0.72);
+    cursor: default;
+    transition: background-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .dark .archive-heatmap-cell {
+    background: rgb(64 64 64 / 0.7);
+  }
+
+  .archive-heatmap-cell[data-level='1'] {
+    background: hsl(var(--primary) / 0.16);
+  }
+
+  .archive-heatmap-cell[data-level='2'] {
+    background: hsl(var(--primary) / 0.3);
+  }
+
+  .archive-heatmap-cell[data-level='3'] {
+    background: hsl(var(--primary) / 0.55);
+  }
+
+  .archive-heatmap-cell[data-level='4'] {
+    background: hsl(var(--primary) / 0.78);
+  }
+
+  .dark .archive-heatmap-cell[data-level='1'] {
+    background: hsl(var(--primary) / 0.2);
+  }
+
+  .dark .archive-heatmap-cell[data-level='2'] {
+    background: hsl(var(--primary) / 0.38);
+  }
+
+  .dark .archive-heatmap-cell[data-level='3'] {
+    background: hsl(var(--primary) / 0.64);
+  }
+
+  .dark .archive-heatmap-cell[data-level='4'] {
+    background: hsl(var(--primary) / 0.88);
+  }
+
+  .archive-heatmap-cell:hover {
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.32);
+  }
+
+  .archive-heatmap-cell:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+
+  .archive-years {
+    display: grid;
+    gap: 4rem;
+  }
+
+  .archive-year-heading {
+    gap: 0.75rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .archive-year-heading h2 {
+    position: relative;
+    margin: 0;
+    font-size: 1.85rem;
+    font-weight: 720;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+
+  .archive-year-heading span {
+    color: var(--archive-faint);
+    font-size: 0.72rem;
+  }
+
+  .archive-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .archive-entry {
+    display: grid;
+    grid-template-columns: 3.7rem minmax(0, 1fr);
+    gap: 0.85rem;
+    padding: 0.9rem 0.45rem;
+    border-bottom: 1px dashed var(--archive-line);
+    transition: background-color 150ms ease;
+  }
+
+  .archive-entry:hover {
+    background: var(--archive-hover);
+  }
+
+  .archive-entry__date {
+    padding-top: 0.15rem;
+    color: var(--archive-faint);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.73rem;
+    font-weight: 500;
+    line-height: 1.45;
+  }
+
+  .archive-entry__body {
+    min-width: 0;
+  }
+
+  .archive-entry__title {
+    color: var(--archive-ink);
+    font-size: 1rem;
+    font-weight: 580;
+    line-height: 1.5;
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .archive-entry__title:hover,
+  .archive-entry__title:focus-visible,
+  .archive-entry__tags a:hover,
+  .archive-entry__tags a:focus-visible {
+    color: hsl(var(--primary));
+  }
+
+  .dark .archive-entry__title:hover,
+  .dark .archive-entry__title:focus-visible,
+  .dark .archive-entry__tags a:hover,
+  .dark .archive-entry__tags a:focus-visible {
+    color: hsl(var(--primary));
+  }
+
+  .archive-entry__title:focus-visible,
+  .archive-entry__tags a:focus-visible {
+    border-radius: 2px;
+    outline: 2px solid hsl(var(--primary) / 0.72);
+    outline-offset: 3px;
+  }
+
+  .archive-entry__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.65rem;
+    margin-top: 0.28rem;
+    color: var(--archive-faint);
+    font-size: 0.72rem;
+    line-height: 1.5;
+  }
+
+  .archive-entry__tags a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .archive-tooltip {
+    width: 18rem;
+    overflow: hidden;
+    border: 1px solid rgb(229 229 229);
+    border-radius: 6px;
+    background: rgb(255 255 255);
+    color: rgb(64 64 64);
+    text-align: left;
+    box-shadow: 0 14px 38px rgb(23 23 23 / 0.14);
+  }
+
+  .dark .archive-tooltip {
+    border-color: rgb(64 64 64);
+    background: rgb(23 23 23);
+    color: rgb(212 212 212);
+    box-shadow: 0 14px 38px rgb(0 0 0 / 0.38);
+  }
+
+  .archive-tooltip__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 0.75rem 0.45rem;
+  }
+
+  .archive-tooltip__date {
+    min-width: 0;
+    overflow: hidden;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .archive-tooltip__words,
+  .archive-tooltip__count,
+  .archive-tooltip__more {
+    color: rgb(115 115 115);
+    font-size: 0.65rem;
+  }
+
+  .archive-tooltip__words {
+    flex-shrink: 0;
+  }
+
+  .archive-tooltip__count {
+    padding: 0 0.75rem 0.5rem;
+    border-bottom: 1px solid rgb(229 229 229);
+  }
+
+  .dark .archive-tooltip__count {
+    border-color: rgb(64 64 64);
+  }
+
+  .archive-tooltip__posts {
+    padding: 0.55rem 0.75rem 0.65rem;
+  }
+
+  .archive-tooltip__link {
+    display: block;
+    overflow: hidden;
+    padding-block: 0.15rem;
+    color: inherit;
+    font-size: 0.72rem;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .archive-tooltip__link:hover {
+    color: hsl(var(--primary));
+  }
+
+  .dark .archive-tooltip__link:hover {
+    color: hsl(var(--primary));
+  }
+
+  .archive-tooltip__empty {
+    color: rgb(163 163 163);
+    font-size: 0.72rem;
+  }
+
+  .archive-tooltip__more {
+    margin-top: 0.25rem;
+  }
+
   .tippy-box[data-theme~='archive-heatmap'] {
     background: transparent;
     border-radius: 0;
@@ -320,6 +647,56 @@ const years = Object.keys(postsByYearMonth)
   }
 
   .dark .tippy-box[data-theme~='archive-heatmap'] > .tippy-arrow {
-    color: rgb(2 6 23);
+    color: rgb(23 23 23);
+  }
+
+  @media (max-width: 640px) {
+    .archive-page {
+      padding: 2.5rem 0.75rem 4rem;
+    }
+
+    .archive-intro {
+      margin-bottom: 3rem;
+    }
+
+    .archive-title {
+      font-size: 2rem;
+    }
+
+    .archive-summary {
+      gap: 0.15rem 0.42rem;
+      font-size: 0.82rem;
+    }
+
+    .archive-trace {
+      margin-bottom: 3.4rem;
+    }
+
+    .archive-years {
+      gap: 3.25rem;
+    }
+
+    .archive-entry {
+      grid-template-columns: 3.15rem minmax(0, 1fr);
+      gap: 0.6rem;
+      padding-inline: 0.15rem;
+    }
+
+    .archive-entry__title {
+      font-size: 0.94rem;
+    }
+
+    .archive-tooltip {
+      width: min(18rem, calc(100vw - 1.5rem));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .archive-heatmap-cell,
+    .archive-entry,
+    .archive-entry__title,
+    .archive-entry__tags a {
+      transition: none;
+    }
   }
 </style>

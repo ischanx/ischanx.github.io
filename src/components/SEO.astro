@@ -10,6 +10,7 @@ const {
   image = site.avatar,
   type = 'website',
   canonical,
+  markdownAlternate,
   publishDate,
   modifiedDate,
   author = site.author,
@@ -61,6 +62,7 @@ const canonicalURL = getCanonicalURL(canonical);
 
 <!-- RSS和规范链接 -->
 <link rel="canonical" href={canonicalURL} />
+{markdownAlternate && <link rel="alternate" type="text/markdown" href={getCanonicalURL(markdownAlternate)} />}
 <link rel="alternate" type="application/rss+xml" title={`${site.title} RSS Feed`} href={`${site.url}/rss.xml`} />
 <link rel="alternate" type="application/atom+xml" title={`${site.title} Atom Feed`} href={`${site.url}/atom.xml`} />
 <link rel="alternate" type="application/rss+xml" title={`${site.title} RSS 2.0 Feed`} href={`${site.url}/rss2.xml`} />

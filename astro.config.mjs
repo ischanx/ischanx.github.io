@@ -43,7 +43,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   server: {
-    port: 3000,
+    port: 3080,
   },
   i18n: {
     defaultLocale: site.language,
