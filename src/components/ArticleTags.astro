@@ -8,20 +8,22 @@ import {
 
 interface Props {
   tags?: string[];
+  wordCount: number;
+  readTime: number;
 }
 
-const { tags } = Astro.props;
+const { tags, wordCount, readTime } = Astro.props;
 const normalizedTags = normalizeTags(tags);
 ---
 
 <div
-  class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[13px] leading-6 text-neutral-500 dark:text-neutral-400 animate-slide-up"
+  class="article-secondary-meta animate-slide-up"
+  style="animation-delay: 200ms;"
 >
   {
     normalizedTags.length > 0 && (
       <div
-        class="flex flex-wrap gap-1.5 md:gap-2 animate-slide-up"
-        style="animation-delay: 200ms;"
+        class="article-tag-list"
       >
         {normalizedTags.map((tag: string) => {
           const slug = getTagSlug(tag);
@@ -41,4 +43,41 @@ const normalizedTags = normalizeTags(tags);
       </div>
     )
   }
+
+  <div class="article-reading-stats">
+    <span class="article-reading-stat">
+      {wordCount} 字
+    </span>
+    <span class="article-reading-stat">
+      {readTime} 分钟阅读
+    </span>
+  </div>
 </div>
+
+<style>
+  @reference "../styles/global.css";
+
+  .article-secondary-meta {
+    @apply flex w-full flex-wrap items-center gap-x-4 gap-y-1.5 text-[13px] leading-6 text-neutral-500 dark:text-neutral-400;
+    justify-content: space-between;
+  }
+
+  .article-tag-list,
+  .article-reading-stats {
+    @apply flex flex-wrap items-center gap-x-2 gap-y-1;
+  }
+
+  .article-reading-stats {
+    @apply gap-x-2.5;
+    margin-left: auto;
+  }
+
+  .article-reading-stat {
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap;
+  }
+
+  .article-reading-stat:not(:first-child)::before {
+    @apply mr-0.5 text-neutral-300 dark:text-neutral-600;
+    content: '·';
+  }
+</style>

@@ -52,13 +52,6 @@ const articleMarkdownUrl = new URL(markdownUrl, site.url).toString();
           <small>复制当前页面地址</small>
         </span>
       </button>
-      <button type="button" role="menuitem" data-article-action="copy-markdown">
-        <span class="article-actions__item-icon" aria-hidden="true"><Icon name="copy" fontSize="16px" /></span>
-        <span class="article-actions__item-copy">
-          <strong>复制 Markdown</strong>
-          <small>复制全文，方便交给 AI</small>
-        </span>
-      </button>
       <a href={articleMarkdownUrl} role="menuitem" target="_blank" rel="noopener noreferrer">
         <span class="article-actions__item-icon" aria-hidden="true"><Icon name="file-text" fontSize="16px" /></span>
         <span class="article-actions__item-copy">
@@ -239,13 +232,6 @@ const articleMarkdownUrl = new URL(markdownUrl, site.url).toString();
           if (action === 'copy-link') {
             await writeToClipboard(url);
             showFeedback('链接已复制');
-          }
-
-          if (action === 'copy-markdown') {
-            const response = await fetch(markdownUrl);
-            if (!response.ok) throw new Error('Markdown request failed');
-            await writeToClipboard(await response.text());
-            showFeedback('Markdown 已复制');
           }
 
           if (action === 'ask-chatgpt') {

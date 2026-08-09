@@ -48,11 +48,9 @@ export default function remarkColorBlocks() {
 
       node.data = {
         ...node.data,
-        hName: 'div',
+        hName: 'color-block',
         hProperties: {
-          ...node.data?.hProperties,
-          className: ['color-block', `color-block--${color}`],
-          dataColorBlock: color,
+          color,
         },
       };
     });

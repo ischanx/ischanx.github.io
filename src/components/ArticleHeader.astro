@@ -1,5 +1,4 @@
 ---
-import Icon from './Icon.astro';
 import ArticleActions from './ArticleActions.astro';
 import { formatDate } from '../utils/date';
 
@@ -10,8 +9,6 @@ interface Props {
   author?: string;
   category?: string;
   categorySlug?: string;
-  wordCount: number;
-  readTime: number;
   url: string;
   markdownUrl: string;
 }
@@ -23,8 +20,6 @@ const {
   author,
   category,
   categorySlug,
-  wordCount,
-  readTime,
   url,
   markdownUrl,
 } = Astro.props;
@@ -55,38 +50,25 @@ const {
   </div>
 
   <div class="article-meta">
+    {
+      author && (
+        <span class="article-meta-item">
+          {author}
+        </span>
+      )
+    }
+
     <time datetime={createDate.toISOString()} class="article-meta-item">
-      <Icon name="calendar" fontSize="13px" class="article-meta-icon" />
       {formatDate(createDate)}
     </time>
 
     {
       updateDate && updateDate > createDate && (
         <span class="article-meta-item">
-          <Icon name="edit" fontSize="13px" class="article-meta-icon" />
           更新于 {formatDate(updateDate)}
         </span>
       )
     }
-
-    {
-      author && (
-        <span class="article-meta-item">
-          <Icon name="user" fontSize="13px" class="article-meta-icon" />
-          {author}
-        </span>
-      )
-    }
-
-    <span class="article-meta-item">
-      <Icon name="file-text" fontSize="13px" class="article-meta-icon" />
-      {wordCount} 字
-    </span>
-
-    <span class="article-meta-item">
-      <Icon name="clock" fontSize="13px" class="article-meta-icon" />
-      {readTime} 分钟阅读
-    </span>
   </div>
 </header>
 
@@ -122,11 +104,7 @@ const {
   }
 
   .article-meta-item:not(:first-child)::before {
-    @apply mr-1 hidden h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-600 sm:inline-block;
-    content: '';
-  }
-
-  .article-meta-icon {
-    @apply shrink-0 opacity-70;
+    @apply mr-0.5 text-neutral-300 dark:text-neutral-600;
+    content: '·';
   }
 </style>

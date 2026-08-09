@@ -1,17 +1,10 @@
 // @ts-check
 import { defineConfig } from "astro/config";
-import { unified } from "@astrojs/markdown-remark";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import rss from "@astrojs/rss";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
-import remarkDirective from "remark-directive";
-import remarkGfm from "remark-gfm";
-import remarkColorBlocks from "./src/utils/remark-color-blocks.mjs";
-import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypePrettyCode from "rehype-pretty-code";
 import { site } from "./src/config";
 import fs from "fs";
 import path from "path";
@@ -41,6 +34,12 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // Shiki ships a few large language modules, but they are only requested
+      // when an article contains that language. Streamdown/Mermaid are selected
+      // per article below their page boundary, so these are not initial chunks.
+      chunkSizeWarningLimit: 800,
+    },
   },
   server: {
     port: 3080,
@@ -79,27 +78,6 @@ export default defineConfig({
       },
     },
   ],
-  markdown: {
-    syntaxHighlight: false, // 禁用默认的语法高亮，使用 rehype-pretty-code 替代
-    processor: unified({
-      remarkPlugins: [remarkGfm, remarkDirective, remarkColorBlocks],
-      rehypePlugins: [
-        rehypeSlug,
-        [rehypeAutolinkHeadings, { behavior: "append" }],
-        [
-          rehypePrettyCode,
-          {
-            theme: {
-              dark: "github-dark",
-              light: "github-light",
-            },
-            keepBackground: true,
-            grid: true,
-          },
-        ],
-      ],
-    }),
-  },
   prefetch: {
     defaultStrategy: "hover",
   },

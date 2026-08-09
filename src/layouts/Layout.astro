@@ -4,10 +4,8 @@ import Footer from '../components/Footer.astro';
 import SEO from '../components/SEO.astro';
 import GlobalSearch from '../components/GlobalSearch.astro';
 import Analytics from '../components/Analytics.astro';
-import PaperPlaneCursor from '../components/PaperPlaneCursor.astro';
 import { site } from '../config';
 import '../styles/global.css';
-import '../styles/rehype-pretty-code.css';
 
 interface Props {
   title?: string;
@@ -94,8 +92,6 @@ const {
 
     <!-- 全局搜索 -->
     <GlobalSearch />
-
-    <PaperPlaneCursor />
 
     <!-- 搜索快捷键提示 -->
     <div

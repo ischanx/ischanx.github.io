@@ -1,5 +1,5 @@
 ---
-import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import PostNavigation from '../../components/PostNavigation.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
@@ -7,6 +7,9 @@ import ReadingProgress from '../../components/ReadingProgress.astro';
 import ArticleHeader from '../../components/ArticleHeader.astro';
 import ArticleTags from '../../components/ArticleTags.astro';
 import ArticleContent from '../../components/ArticleContent.astro';
+import StreamdownArticleBase from '../../components/article/StreamdownArticleBase';
+import StreamdownArticleCode from '../../components/article/StreamdownArticleCode';
+import StreamdownArticleRich from '../../components/article/StreamdownArticleRich';
 import { site } from '../../config';
 import { countWords, readingTime } from '../../utils/content';
 import { getLastModifiedDateFromGit } from '../../utils/git';
@@ -51,7 +54,6 @@ const { post, prevPost, nextPost } = Astro.props as {
   prevPost: CollectionEntry<'blog'> | null;
   nextPost: CollectionEntry<'blog'> | null;
 };
-const { Content } = await render(post);
 const {
   title,
   description,
@@ -65,6 +67,12 @@ const category = post.data.category ?? getCategoryLabel(categorySlug);
 
 // 获取原始Markdown内容
 const rawContent = post.body ?? '';
+const hasCodeFence = /^\s*(?:```|~~~)/m.test(rawContent);
+const hasMermaid = /^\s*(?:```|~~~)mermaid(?:\s|$)/m.test(rawContent);
+const hasMath = /(?:^|\n)\s*\$\$[\s\S]+?\$\$\s*(?:\n|$)/m.test(rawContent);
+const hasTable = /^\s*\|.+\|\s*\n\s*\|(?:\s*:?-+:?\s*\|)+\s*$/m.test(
+  rawContent
+);
 // 计算字数
 const wordCount = countWords(rawContent);
 // 计算阅读时间
@@ -103,16 +111,24 @@ if (!lastUpdateDate) {
           author={author}
           category={category}
           categorySlug={categorySlug}
-          wordCount={wordCount}
-          readTime={readTime}
           url={getPostUrl(post)}
           markdownUrl={`${getPostUrl(post)}.md`}
         />
 
-        <ArticleTags tags={tags} />
+        <ArticleTags tags={tags} wordCount={wordCount} readTime={readTime} />
 
         <ArticleContent>
-          <Content />
+          {
+            hasMermaid || hasMath ? (
+              <StreamdownArticleRich markdown={rawContent} client:idle />
+            ) : hasCodeFence ? (
+              <StreamdownArticleCode markdown={rawContent} client:idle />
+            ) : hasTable ? (
+              <StreamdownArticleBase markdown={rawContent} client:idle />
+            ) : (
+              <StreamdownArticleBase markdown={rawContent} />
+            )
+          }
         </ArticleContent>
 
         <!-- 文章导航 -->

@@ -49,6 +49,7 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        sidebar: 'hsl(var(--sidebar))',
         'gray-850': '#1a202c',
       },
       animation: {
