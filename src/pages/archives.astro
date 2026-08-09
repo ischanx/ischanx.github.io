@@ -11,6 +11,7 @@ import {
 import { getPostUrl } from '../utils/route';
 import { countWords } from '../utils/content';
 import { site } from '../config';
+import JournalPage from '../components/JournalPage.astro';
 
 type BlogPost = CollectionEntry<'blog'>;
 
@@ -136,17 +137,20 @@ const years = Object.keys(postsByYearMonth)
 ---
 
 <Layout title="归档">
-  <div class="archive-page">
-    <header class="archive-intro">
-      <h1 class="archive-title">写过的这些年</h1>
-      <p class="archive-summary">
-        从第一篇到现在，已经写了 <strong>{runningTime}</strong>
-        <span aria-hidden="true">·</span>
-        <strong>{totalPosts}</strong> 篇文章
-        <span aria-hidden="true">·</span>
-        <strong>{totalWords.toLocaleString()}</strong> 字
-      </p>
-    </header>
+  <JournalPage
+    title="写过的这些年"
+    backgroundImage="/img/page-heroes/archives.webp"
+    backgroundPosition="center 54%"
+  >
+    <p slot="meta" class="archive-summary">
+      从第一篇到现在，已经写了 <strong>{runningTime}</strong>
+      <span aria-hidden="true">·</span>
+      <strong>{totalPosts}</strong> 篇文章
+      <span aria-hidden="true">·</span>
+      <strong>{totalWords.toLocaleString()}</strong> 字
+    </p>
+
+    <div class="archive-page">
 
     <section class="archive-trace" aria-label="文章发布热力图">
       <p class="archive-trace__range">
@@ -259,8 +263,9 @@ const years = Object.keys(postsByYearMonth)
           );
         })
       }
+      </div>
     </div>
-  </div>
+  </JournalPage>
 </Layout>
 
 <script>
@@ -307,9 +312,6 @@ const years = Object.keys(postsByYearMonth)
     --archive-faint: rgb(163 163 163);
     --archive-line: rgb(212 212 212 / 0.72);
     --archive-hover: rgb(245 245 245 / 0.62);
-    width: min(100%, 56rem);
-    margin-inline: auto;
-    padding: 3.5rem 1rem 5rem;
     color: var(--archive-ink);
   }
 
@@ -319,21 +321,6 @@ const years = Object.keys(postsByYearMonth)
     --archive-faint: rgb(115 115 115);
     --archive-line: rgb(82 82 82 / 0.64);
     --archive-hover: rgb(38 38 38 / 0.5);
-  }
-
-  .archive-intro {
-    max-width: 42rem;
-    margin-bottom: 3.75rem;
-  }
-
-  .archive-title {
-    position: relative;
-    display: inline-block;
-    margin: 0;
-    font-size: clamp(2rem, 5vw, 2.8rem);
-    font-weight: 750;
-    line-height: 1.2;
-    letter-spacing: 0;
   }
 
   .archive-summary {
@@ -651,18 +638,6 @@ const years = Object.keys(postsByYearMonth)
   }
 
   @media (max-width: 640px) {
-    .archive-page {
-      padding: 2.5rem 0.75rem 4rem;
-    }
-
-    .archive-intro {
-      margin-bottom: 3rem;
-    }
-
-    .archive-title {
-      font-size: 2rem;
-    }
-
     .archive-summary {
       gap: 0.15rem 0.42rem;
       font-size: 0.82rem;

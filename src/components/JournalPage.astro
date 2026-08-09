@@ -2,12 +2,40 @@
 interface Props {
   title: string;
   description?: string;
+  backgroundImage?: string;
+  backgroundPosition?: string;
 }
 
-const { title, description } = Astro.props;
+const {
+  title,
+  description,
+  backgroundImage,
+  backgroundPosition = 'center',
+} = Astro.props;
 ---
 
-<div class="journal-page">
+<div
+  class:list={[
+    'journal-page',
+    { 'journal-page--illustrated': Boolean(backgroundImage) },
+  ]}
+>
+  {
+    backgroundImage && (
+      <div class="journal-page__backdrop" aria-hidden="true">
+        <img
+          src={backgroundImage}
+          alt=""
+          width="1672"
+          height="941"
+          loading="eager"
+          decoding="async"
+          fetchpriority="low"
+          style={`object-position: ${backgroundPosition};`}
+        />
+      </div>
+    )
+  }
   <slot name="before" />
   <header class="journal-page__header">
     <h1 class="journal-page__title">{title}</h1>
@@ -19,14 +47,70 @@ const { title, description } = Astro.props;
 
 <style>
   .journal-page {
+    isolation: isolate;
+    position: relative;
     width: min(100%, 56rem);
     margin-inline: auto;
     padding: 3.5rem 1rem 5rem;
   }
 
   .journal-page__header {
+    position: relative;
+    z-index: 1;
     max-width: 42rem;
     margin-bottom: 3.75rem;
+  }
+
+  .journal-page--illustrated .journal-page__header {
+    min-height: 9.5rem;
+    margin-bottom: 2.75rem;
+  }
+
+  .journal-page__backdrop {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 50%;
+    width: min(100vw, 72rem);
+    height: 16rem;
+    overflow: hidden;
+    pointer-events: none;
+    transform: translateX(-50%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 72%,
+      transparent 100%
+    );
+  }
+
+  .journal-page__backdrop::after {
+    position: absolute;
+    content: '';
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--background)) 0%,
+      hsl(var(--background) / 0.98) 30%,
+      hsl(var(--background) / 0.78) 48%,
+      hsl(var(--background) / 0.12) 76%,
+      hsl(var(--background) / 0.72) 100%
+    );
+  }
+
+  .journal-page__backdrop img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.34;
+    mix-blend-mode: multiply;
+  }
+
+  :global(.dark) .journal-page__backdrop img {
+    opacity: 0.14;
+    filter: invert(1);
+    mix-blend-mode: screen;
   }
 
   .journal-page__title {
@@ -62,6 +146,34 @@ const { title, description } = Astro.props;
 
     .journal-page__header {
       margin-bottom: 3rem;
+    }
+
+    .journal-page--illustrated .journal-page__header {
+      min-height: 8.5rem;
+      margin-bottom: 2.35rem;
+    }
+
+    .journal-page__backdrop {
+      width: 100vw;
+      height: 14rem;
+    }
+
+    .journal-page__backdrop::after {
+      background: linear-gradient(
+        90deg,
+        hsl(var(--background)) 0%,
+        hsl(var(--background) / 0.96) 38%,
+        hsl(var(--background) / 0.52) 68%,
+        hsl(var(--background) / 0.18) 100%
+      );
+    }
+
+    .journal-page__backdrop img {
+      opacity: 0.27;
+    }
+
+    :global(.dark) .journal-page__backdrop img {
+      opacity: 0.12;
     }
 
     .journal-page__title {
