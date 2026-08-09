@@ -20,6 +20,8 @@ export const tagMap: Record<string, string> = {
   'mini-program': '小程序',
   computer: '计算机',
   fundamentals: '基础知识',
+  math: '数学',
+  'open-source': '开源',
   business: '业务',
   'system-design': '系统设计',
   performance: '性能',
