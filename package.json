@@ -43,7 +43,7 @@
     "@streamdown/code": "^1.1.1",
     "@streamdown/math": "^1.0.2",
     "@streamdown/mermaid": "^1.0.2",
-    "astro": "^7.2.0",
+    "astro": "^7.2.8",
     "date-fns": "^4.4.0",
     "fuse.js": "^7.5.0",
     "katex": "^0.16.47",
